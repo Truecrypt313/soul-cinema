@@ -42,6 +42,8 @@ const FALLBACK: Item[] = [
     thumbnail_url: null,
     format_badge: '1:1',
   },
+]
+
 
 export function Portfolio() {
   const [items, setItems] = useState<Item[]>(FALLBACK)
