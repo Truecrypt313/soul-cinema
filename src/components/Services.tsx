@@ -1,96 +1,75 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { Film, Megaphone, ShoppingBag, Monitor, Rocket, Layers } from 'lucide-react'
+import { Film, Megaphone, Sparkles, ShoppingBag, Monitor, Layers } from 'lucide-react'
 
 const SERVICES = [
   {
     icon: Film,
     title: 'Produktvideos',
-    description: 'Hochwertige Videos für physische und digitale Produkte – ideal für Shops, Ads und Landingpages.',
+    tagline: 'Zeig, was dein Produkt kann.',
+    description: 'Hochwertige Videos für physische und digitale Produkte – ideal für Shops, Landingpages und Kampagnen.',
   },
   {
     icon: Megaphone,
-    title: 'Social-Media-Ads',
-    description: 'Kurze, aufmerksamkeitsstarke Creatives für TikTok, Instagram Reels, YouTube Shorts und Meta Ads.',
+    title: 'Social Ads',
+    tagline: 'Creatives, die Aufmerksamkeit stoppen.',
+    description: 'Kurze, starke Video-Ads für TikTok, Instagram Reels, YouTube Shorts und Meta Ads.',
+  },
+  {
+    icon: Sparkles,
+    title: 'Werbevideos',
+    tagline: 'Markenstark. Klar. Visuell hochwertig.',
+    description: 'Videos für Produktlaunches, Angebote und Kampagnen, die professionell wirken sollen.',
   },
   {
     icon: ShoppingBag,
     title: 'E-Commerce Videos',
+    tagline: 'Mehr Conversion im Shop.',
     description: 'Produktvideos für Online-Shops, Amazon, Shopify und D2C Brands.',
   },
   {
     icon: Monitor,
     title: 'SaaS & App Videos',
-    description: 'Visuelle Videos, die digitale Produkte, Apps oder Features einfach verständlich darstellen.',
-  },
-  {
-    icon: Rocket,
-    title: 'Launch Creatives',
-    description: 'Video-Assets für Produktlaunches, neue Angebote und Kampagnenstarts.',
+    tagline: 'Digitale Produkte sichtbar machen.',
+    description: 'Videos, die Apps, SaaS oder Features verständlich und visuell stark präsentieren.',
   },
   {
     icon: Layers,
     title: 'Content Packages',
-    description: 'Mehrere Video-Varianten, Hooks und Formate für Tests, Kampagnen und regelmäßigen Content.',
+    tagline: 'Mehrere Varianten für Tests & Kampagnen.',
+    description: 'Hooks, Formate und Versionen für Paid Ads, Kampagnen und regelmäßigen Content.',
   },
 ]
 
 export function Services() {
-  const [visible, setVisible] = useState(false)
-  useEffect(() => {
-    const t = setTimeout(() => setVisible(true), 200)
-    return () => clearTimeout(t)
-  }, [])
-
   return (
-    <section
-      className="relative py-32 overflow-hidden"
-      style={{
-        background: 'linear-gradient(135deg, #0a0a0f 0%, #0f0f1a 50%, #0a0a0f 100%)',
-      }}
-    >
-      {/* Ambient glows */}
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-accent-blue/10 rounded-full blur-3xl" />
-      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-accent-purple/10 rounded-full blur-3xl" />
-
-      <div className="container mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
-        <div className="text-center mb-16">
-          <div className={`inline-flex items-center gap-3 mb-6 transform transition-all duration-1000 ${
-            visible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-          }`}>
-            <div className="w-3 h-3 bg-accent-emerald rounded-full animate-pulse" />
-            <span className="text-sm font-semibold text-white/70">Leistungen</span>
-            <div className="w-3 h-3 bg-accent-blue rounded-full animate-pulse" />
+    <section className="relative py-28 sm:py-32 bg-[#0A0A0A]">
+      <div className="container mx-auto px-6 sm:px-8 lg:px-12">
+        <div className="max-w-3xl mb-16">
+          <div className="flex items-center gap-3 mb-5">
+            <span className="h-px w-8 bg-[#C9963B]" />
+            <span className="text-xs font-semibold tracking-[0.2em] uppercase text-[#C9963B]">Leistungen</span>
           </div>
-
-          <h2 className={`text-5xl sm:text-6xl lg:text-7xl font-black leading-tight mb-6 text-white transform transition-all duration-1000 delay-200 ${
-            visible ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0'
-          }`}>
-            Videos für Produkte, Kampagnen und Social Media.
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#F4F0E8] leading-tight tracking-tight mb-5">
+            Videos für <span className="text-highlight">Produkte</span>, <span className="text-highlight">Ads</span> und <span className="text-highlight">Online-Kampagnen</span>.
           </h2>
-
-          <p className={`text-xl text-white/70 leading-relaxed max-w-3xl mx-auto transform transition-all duration-1000 delay-400 ${
-            visible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-          }`}>
-            Für Unternehmen, die Produkte hochwertig präsentieren und online stärker sichtbar machen möchten.
+          <p className="text-base sm:text-lg text-[#A8A29E] leading-relaxed">
+            Für Unternehmen, die ihre Produkte hochwertig präsentieren und online mehr <span className="text-highlight">Aufmerksamkeit</span> erzeugen möchten.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
-          {SERVICES.map((s, i) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-7xl">
+          {SERVICES.map((s) => (
             <div
               key={s.title}
-              className={`group relative bg-white/[0.03] backdrop-blur-sm border border-white/10 rounded-2xl p-8 hover:bg-white/[0.06] hover:border-white/20 gentle-animation hover:-translate-y-1 transform transition-all duration-700 ${
-                visible ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0'
-              }`}
-              style={{ transitionDelay: `${i * 100 + 600}ms` }}
+              className="group relative bg-[#141414] border border-white/[0.06] rounded-2xl p-8 hover:border-[#C9963B]/40 gentle-animation hover:-translate-y-1"
             >
-              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-accent-blue/30 to-accent-purple/30 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <s.icon className="w-7 h-7 text-white" />
+              <div className="w-12 h-12 rounded-xl bg-accent-soft flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <s.icon className="w-6 h-6 text-[#C9963B]" />
               </div>
-              <h3 className="text-2xl font-black text-white mb-3">{s.title}</h3>
-              <p className="text-white/70 leading-relaxed">{s.description}</p>
+              <h3 className="text-xl font-bold text-[#F4F0E8] mb-1">{s.title}</h3>
+              <p className="text-[#C9963B]/90 text-sm font-medium mb-3">{s.tagline}</p>
+              <p className="text-[#A8A29E] text-sm leading-relaxed">{s.description}</p>
             </div>
           ))}
         </div>
