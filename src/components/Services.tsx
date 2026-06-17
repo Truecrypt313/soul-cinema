@@ -26,8 +26,8 @@ const SERVICES = [
   },
   {
     icon: Rocket,
-    title: 'Launch Videos',
-    description: 'Starke Video-Assets für Produktlaunches, neue Angebote und Kampagnenstarts.',
+    title: 'Launch Creatives',
+    description: 'Video-Assets für Produktlaunches, neue Angebote und Kampagnenstarts.',
   },
   {
     icon: Layers,
@@ -67,13 +67,13 @@ export function Services() {
           <h2 className={`text-5xl sm:text-6xl lg:text-7xl font-black leading-tight mb-6 text-white transform transition-all duration-1000 delay-200 ${
             visible ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0'
           }`}>
-            Videos für Produkte, Kampagnen und Social Media
+            Videos für Produkte, Kampagnen und Social Media.
           </h2>
 
           <p className={`text-xl text-white/70 leading-relaxed max-w-3xl mx-auto transform transition-all duration-1000 delay-400 ${
             visible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
           }`}>
-            Für Marken, Shops und Unternehmen, die ihre Produkte hochwertig präsentieren und online sichtbarer machen möchten.
+            Für Unternehmen, die Produkte hochwertig präsentieren und online stärker sichtbar machen möchten.
           </p>
         </div>
 

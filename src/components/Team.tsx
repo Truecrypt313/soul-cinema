@@ -17,15 +17,15 @@ export function Team() {
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-3 mb-6">
             <div className="w-3 h-3 bg-accent-emerald rounded-full animate-pulse" />
-            <span className="text-sm font-semibold text-muted-foreground">Für wen ist Soul Cinema geeignet?</span>
+            <span className="text-sm font-semibold text-muted-foreground">Für wen Soul Cinema arbeitet</span>
             <div className="w-3 h-3 bg-accent-blue rounded-full animate-pulse" />
           </div>
           <h2 className="text-5xl sm:text-6xl lg:text-7xl font-black leading-tight mb-8 text-foreground">
             <span className="block mb-2">Für Produkte, die</span>
-            <span className="block">online sichtbar werden sollen</span>
+            <span className="block">online sichtbar werden sollen.</span>
           </h2>
           <p className="text-xl lg:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
-            Ideal für Marken, Shops, Startups und Unternehmen, die ihre Produkte professionell präsentieren und mehr Aufmerksamkeit in Social Media erzeugen möchten.
+            Soul Cinema arbeitet für Marken, Shops, Startups und Unternehmen, die ihre Produkte professionell präsentieren und mit starken Creatives mehr Aufmerksamkeit erzeugen möchten.
           </p>
         </div>
 

@@ -84,10 +84,10 @@ export function Contact() {
             <div className="w-3 h-3 bg-accent-blue rounded-full animate-pulse" />
           </div>
           <h2 className="text-5xl sm:text-6xl lg:text-7xl font-black leading-tight mb-6">
-            Bereit für Ihr Produktvideo?
+            Bereit für Ihr nächstes Produktvideo?
           </h2>
           <p className="text-xl lg:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed mb-4">
-            Senden Sie uns kurz Ihr Produkt, Ihre Website oder Ihre Idee. Wir prüfen, welcher Videoansatz am besten passt, und melden uns mit einer Einschätzung zurück.
+            Senden Sie uns kurz Ihr Produkt, Ihre Website oder Ihre Idee. Wir prüfen, welcher Videoansatz passt, und melden uns mit einer Einschätzung zurück.
           </p>
           <a href="mailto:hallo@soulcinema.de" className="inline-flex items-center gap-2 text-foreground font-semibold hover:text-accent-blue gentle-animation">
             <Mail className="w-4 h-4" /> hallo@soulcinema.de
@@ -116,6 +116,7 @@ export function Contact() {
               <div className="sm:col-span-2">
                 <label htmlFor="product_url" className="block text-sm font-semibold text-foreground mb-2">Website oder Produktlink</label>
                 <input id="product_url" type="url" value={form.product_url} onChange={set('product_url')} className={inputCls} placeholder="https://…" maxLength={500} />
+                <p className="text-xs text-muted-foreground mt-1">Ein Shop-, Amazon-, App- oder Landingpage-Link reicht aus.</p>
               </div>
               <div>
                 <label htmlFor="product_type" className="block text-sm font-semibold text-foreground mb-2">Produkttyp *</label>
@@ -163,7 +164,7 @@ export function Contact() {
             </button>
 
             <p className="text-xs text-muted-foreground text-center">
-              Mit dem Absenden stimmen Sie zu, dass wir Ihre Angaben zur Bearbeitung Ihrer Anfrage verarbeiten dürfen. Details siehe <a href="/datenschutz" className="underline">Datenschutz</a>.
+              Antwort in der Regel innerhalb von 24 Stunden. Mit dem Absenden stimmen Sie zu, dass wir Ihre Angaben zur Bearbeitung Ihrer Anfrage verarbeiten dürfen. Details siehe <a href="/datenschutz" className="underline">Datenschutz</a>.
             </p>
           </form>
         </div>

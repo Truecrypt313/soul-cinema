@@ -1,11 +1,11 @@
 'use client'
 
 const STEPS = [
-  { number: '01', title: 'Anfrage', text: 'Sie senden uns Produktbilder, vorhandenes Material oder einen Link zum Produkt.' },
-  { number: '02', title: 'Analyse', text: 'Wir prüfen Produkt, Zielgruppe, Plattform und mögliche Videoansätze.' },
+  { number: '01', title: 'Anfrage', text: 'Sie senden uns Produktbilder, vorhandenes Material oder einen Produktlink.' },
+  { number: '02', title: 'Analyse', text: 'Wir prüfen Produkt, Zielgruppe, Plattform und Werbeziel.' },
   { number: '03', title: 'Konzept', text: 'Wir entwickeln Hook, Szenenidee, Stilrichtung und passende Formate.' },
-  { number: '04', title: 'Produktion', text: 'Soul Cinema erstellt das Video KI-gestützt, visuell kuratiert und passend zum Produkt.' },
-  { number: '05', title: 'Lieferung', text: 'Sie erhalten fertige Videos für Social Media, Ads, Landingpages oder Shop-Seiten.' },
+  { number: '04', title: 'Produktion', text: 'Wir produzieren das Video mit moderner Video- und Postproduktion.' },
+  { number: '05', title: 'Lieferung', text: 'Sie erhalten fertige Videos für Social Media, Paid Ads, Shops oder Landingpages.' },
 ]
 
 export function About() {
@@ -26,10 +26,10 @@ export function About() {
             <div className="w-3 h-3 bg-accent-blue rounded-full animate-pulse" />
           </div>
           <h2 className="text-5xl sm:text-6xl lg:text-7xl font-black leading-tight mb-6">
-            In 5 Schritten zum Produktvideo
+            Von der Produktidee zum fertigen Ad Creative.
           </h2>
           <p className="text-xl text-muted-foreground leading-relaxed max-w-3xl mx-auto">
-            Vom Produktlink bis zum fertigen Video – klar, schnell und professionell.
+            Ein klarer Produktionsprozess – vom ersten Briefing bis zum fertigen Video.
           </p>
         </div>
 
@@ -53,17 +53,17 @@ export function About() {
             <div className="inline-flex items-center gap-6 bg-card/80 backdrop-blur-sm clean-border rounded-2xl px-8 py-4 subtle-shadow flex-wrap justify-center">
               <div className="flex items-center gap-3">
                 <div className="w-2 h-2 bg-accent-emerald rounded-full animate-pulse" />
-                <span className="text-sm font-semibold text-foreground">Flexibler Projektablauf</span>
+                <span className="text-sm font-semibold text-foreground">Klare Konzepte</span>
               </div>
               <div className="w-px h-6 bg-border hidden sm:block" />
               <div className="flex items-center gap-3">
                 <div className="w-2 h-2 bg-accent-blue rounded-full animate-pulse" />
-                <span className="text-sm font-semibold text-foreground">KI-gestützte Produktion</span>
+                <span className="text-sm font-semibold text-foreground">Moderne Produktion</span>
               </div>
               <div className="w-px h-6 bg-border hidden sm:block" />
               <div className="flex items-center gap-3">
                 <div className="w-2 h-2 bg-accent-purple rounded-full animate-pulse" />
-                <span className="text-sm font-semibold text-foreground">Social-Media-Optimiert</span>
+                <span className="text-sm font-semibold text-foreground">Social-Media-optimiert</span>
               </div>
             </div>
           </div>
