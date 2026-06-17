@@ -175,7 +175,7 @@ export function Hero() {
           className="inline-flex items-center gap-2 self-start glass-effect rounded-full px-4 py-2 mb-6"
         >
           <span className="w-2 h-2 bg-accent-emerald rounded-full animate-pulse" />
-          <span className="text-white/90 text-sm font-medium">KI-gestützte Produktvideos für Social Ads</span>
+          <span className="text-white/90 text-sm font-medium">Product Video & Social Ad Studio</span>
         </motion.div>
 
         <motion.h1
@@ -193,7 +193,7 @@ export function Hero() {
           transition={{ duration: 1, delay: 0.9 }}
           className="text-lg sm:text-xl text-white/80 max-w-2xl mb-8"
         >
-          Soul Cinema erstellt hochwertige Marketing- und Ad-Videos für digitale und physische Produkte – schnell, visuell stark und optimiert für Social Media.
+          Soul Cinema entwickelt und produziert hochwertige Werbevideos für digitale und physische Produkte – für Social Media, Paid Ads, Shops und Landingpages.
         </motion.p>
 
         <motion.ul
@@ -202,7 +202,7 @@ export function Hero() {
           transition={{ duration: 1, delay: 1.1 }}
           className="flex flex-wrap gap-x-6 gap-y-2 text-white/80 text-sm mb-8"
         >
-          {['Für physische & digitale Produkte', 'Produktbilder oder Produktlink reichen aus', 'Optimiert für Social Ads', 'KI-gestützt produziert'].map(b => (
+          {['Für physische & digitale Produkte', 'Produktbilder oder Produktlink reichen aus', 'Für Social Ads, Shops & Landingpages', 'Konzept, Produktion & Ad Creatives aus einer Hand'].map(b => (
             <li key={b} className="flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-accent-emerald" />
               {b}
@@ -226,7 +226,7 @@ export function Hero() {
             href="#portfolio"
             className="glass-effect text-white font-semibold px-7 py-4 rounded-md hover:bg-white/20 gentle-animation"
           >
-            Beispiele ansehen
+            Arbeiten ansehen
           </a>
         </motion.div>
       </div>
@@ -241,7 +241,7 @@ export function Hero() {
         <h2 className="text-right text-2xl xl:text-3xl font-black leading-tight text-white/90">
           <span className="block">Produktvideos.</span>
           <span className="block">Social Ads.</span>
-          <span className="block">KI-gestützt produziert.</span>
+          <span className="block">Performance Creatives.</span>
         </h2>
       </motion.div>
     </div>

@@ -17,18 +17,18 @@ type Item = {
 const FALLBACK: Item[] = [
   {
     id: 'fallback-1',
-    title: 'Product Ad',
-    category: 'Physisches Produkt',
-    description: 'Kurzes Performance Creative für Social Ads.',
+    title: 'Physisches Produkt — Social Ad',
+    category: 'Performance Creative',
+    description: 'Kurzes 9:16 Creative für Instagram Reels, TikTok und Meta Ads.',
     video_url: null,
     thumbnail_url: null,
     format_badge: '9:16',
   },
   {
     id: 'fallback-2',
-    title: 'Digital Product Reel',
-    category: 'Digitales Produkt',
-    description: 'Visuelle Story für ein digitales Produkt, Tool oder Feature.',
+    title: 'Digitales Produkt — Feature Video',
+    category: 'Produktstory',
+    description: 'Visuelle Produktstory für Apps, SaaS, Tools oder digitale Angebote.',
     video_url: null,
     thumbnail_url: null,
     format_badge: '9:16',
@@ -36,44 +36,19 @@ const FALLBACK: Item[] = [
   {
     id: 'fallback-3',
     title: 'E-Commerce Creative',
-    category: 'Online-Shop',
-    description: 'Produktvideo für Shop, Kampagne oder Landingpage.',
+    category: 'Shop & Landingpage',
+    description: 'Produktvideo für Shop, Landingpage und Performance-Kampagnen.',
     video_url: null,
     thumbnail_url: null,
     format_badge: '1:1',
   },
 ]
-
-export function Portfolio() {
-  const [items, setItems] = useState<Item[]>(FALLBACK)
-
-  useEffect(() => {
-    let active = true
-    supabase
-      .from('portfolio_items')
-      .select('id, title, category, description, video_url, thumbnail_url, format_badge')
-      .eq('published', true)
-      .order('sort_order', { ascending: true })
-      .then(({ data }) => {
-        if (active && data && data.length > 0) setItems(data as Item[])
-      })
-    return () => { active = false }
-  }, [])
-
-  return (
-    <section className="relative py-32 bg-background">
-      <div className="container mx-auto px-6 sm:px-8 lg:px-12">
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-3 mb-6">
-            <div className="w-3 h-3 bg-accent-emerald rounded-full animate-pulse" />
-            <span className="text-sm font-semibold text-muted-foreground">Ausgewählte Arbeiten</span>
-            <div className="w-3 h-3 bg-accent-blue rounded-full animate-pulse" />
-          </div>
+...
           <h2 className="text-5xl sm:text-6xl lg:text-7xl font-black leading-tight mb-6">
-            Ausgewählte Video-Beispiele
+            Arbeiten, die Produkte sichtbar machen.
           </h2>
           <p className="text-xl lg:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
-            Beispiele für Produktvideos, Social Ads und Performance Creatives für digitale und physische Produkte.
+            Produktvideos, Social Ads und Performance Creatives für Marken, Shops und digitale Produkte.
           </p>
         </div>
 

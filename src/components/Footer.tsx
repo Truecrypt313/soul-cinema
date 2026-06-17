@@ -13,7 +13,7 @@ export function Footer() {
               Soul Cinema
             </div>
             <p className="text-background/70 leading-relaxed text-sm">
-              Soul Cinema erstellt hochwertige Produktvideos und Performance Creatives für digitale und physische Produkte – optimiert für Social Media, Ads und Web.
+              Soul Cinema entwickelt Produktvideos und Performance Creatives für digitale und physische Produkte – für Social Media, Ads, Shops und Web.
             </p>
           </div>
 
