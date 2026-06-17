@@ -42,8 +42,32 @@ const FALLBACK: Item[] = [
     thumbnail_url: null,
     format_badge: '1:1',
   },
-]
-...
+
+export function Portfolio() {
+  const [items, setItems] = useState<Item[]>(FALLBACK)
+
+  useEffect(() => {
+    let active = true
+    supabase
+      .from('portfolio_items')
+      .select('id, title, category, description, video_url, thumbnail_url, format_badge')
+      .eq('published', true)
+      .order('sort_order', { ascending: true })
+      .then(({ data }) => {
+        if (active && data && data.length > 0) setItems(data as Item[])
+      })
+    return () => { active = false }
+  }, [])
+
+  return (
+    <section className="relative py-32 bg-background">
+      <div className="container mx-auto px-6 sm:px-8 lg:px-12">
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center gap-3 mb-6">
+            <div className="w-3 h-3 bg-accent-emerald rounded-full animate-pulse" />
+            <span className="text-sm font-semibold text-muted-foreground">Ausgewählte Arbeiten</span>
+            <div className="w-3 h-3 bg-accent-blue rounded-full animate-pulse" />
+          </div>
           <h2 className="text-5xl sm:text-6xl lg:text-7xl font-black leading-tight mb-6">
             Arbeiten, die Produkte sichtbar machen.
           </h2>
