@@ -4,58 +4,35 @@ import { motion } from 'framer-motion'
 import { Volume2, VolumeX, Menu, X } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
 
+const NAV = [
+  { href: '#portfolio', label: 'Arbeiten' },
+  { href: '#about', label: 'Prozess' },
+  { href: '#services', label: 'Leistungen' },
+  { href: '#contact', label: 'Anfrage' },
+]
+
 export function Hero() {
   const [isMuted, setIsMuted] = useState(true)
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
 
-  // Scroll detection
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.scrollY
-      setIsScrolled(scrollTop > 50) // Show background after 50px scroll
-    }
-
+    const handleScroll = () => setIsScrolled(window.scrollY > 50)
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Ensure video is muted immediately on load to prevent any audio
   useEffect(() => {
     if (videoRef.current) {
-      console.log('Video element found, setting up...')
       videoRef.current.volume = 0
       videoRef.current.muted = true
       videoRef.current.defaultMuted = true
-      
-      // Add event listeners for debugging
-      videoRef.current.addEventListener('loadstart', () => console.log('Video: loadstart'))
-      videoRef.current.addEventListener('loadedmetadata', () => console.log('Video: loadedmetadata'))
-      videoRef.current.addEventListener('canplay', () => console.log('Video: canplay'))
-      videoRef.current.addEventListener('playing', () => console.log('Video: playing'))
-      videoRef.current.addEventListener('error', (e) => console.error('Video error:', e))
-      
-      // Force mute on play
-      videoRef.current.addEventListener('play', () => {
-        if (videoRef.current) {
-          console.log('Video play event fired')
-          videoRef.current.muted = isMuted
-          videoRef.current.volume = isMuted ? 0 : 0.7
-        }
-      })
-      
-      // Try to play the video
-      const playPromise = videoRef.current.play()
-      if (playPromise !== undefined) {
-        playPromise
-          .then(() => console.log('Video autoplay successful'))
-          .catch(error => console.error('Video autoplay failed:', error))
-      }
+      const p = videoRef.current.play()
+      if (p) p.catch(() => {})
     }
   }, [])
 
-  // Update video mute state when isMuted changes
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.muted = isMuted
@@ -63,42 +40,18 @@ export function Hero() {
     }
   }, [isMuted])
 
-  // Handle body scroll lock when mobile menu is open
   useEffect(() => {
-    if (isMobileMenuOpen) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = 'unset'
-    }
-
-    // Cleanup on unmount
-    return () => {
-      document.body.style.overflow = 'unset'
-    }
+    document.body.style.overflow = isMobileMenuOpen ? 'hidden' : 'unset'
+    return () => { document.body.style.overflow = 'unset' }
   }, [isMobileMenuOpen])
 
-  // Close mobile menu on scroll
-  useEffect(() => {
-    const handleScroll = () => {
-      if (isMobileMenuOpen) {
-        setIsMobileMenuOpen(false)
-      }
-    }
-
-    if (isMobileMenuOpen) {
-      window.addEventListener('scroll', handleScroll)
-    }
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-    }
-  }, [isMobileMenuOpen])
-
-
+  const goContact = () => {
+    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
+    setIsMobileMenuOpen(false)
+  }
 
   return (
     <div className="relative h-screen w-full overflow-hidden bg-black">
-      {/* MASSIVE VIDEO - Takes up 95% of space */}
       <video
         ref={videoRef}
         className="absolute inset-0 w-full h-full object-cover scale-110"
@@ -108,106 +61,68 @@ export function Hero() {
         playsInline
       >
         <source src="https://mojli.s3.us-east-2.amazonaws.com/Mojli+Website+upscaled+(12mb).webm" type="video/webm" />
-        Your browser does not support the video tag.
       </video>
 
-      {/* Full-Width Navbar */}
+      {/* Dark overlay for readability */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/70 pointer-events-none" />
+
+      {/* Nav */}
       <motion.nav
         initial={{ opacity: 0, y: -30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.3 }}
         className="fixed top-0 left-0 right-0 w-full z-[110]"
       >
-        <div 
-          className={`w-full px-6 sm:px-8 lg:px-12 py-4 transition-all duration-300 ease-out ${
-            isScrolled 
-              ? 'bg-black/80 backdrop-blur-xl border-b border-white/10' 
-              : 'bg-transparent'
-          }`}
-        >
+        <div className={`w-full px-6 sm:px-8 lg:px-12 py-4 transition-all duration-300 ease-out ${
+          isScrolled ? 'bg-black/80 backdrop-blur-xl border-b border-white/10' : 'bg-transparent'
+        }`}>
           <div className="flex items-center justify-between">
-            {/* Logo */}
             <motion.div
               whileHover={{ scale: 1.05 }}
               className="flex items-center cursor-pointer"
-              onClick={() => {
-                window.scrollTo({ top: 0, behavior: 'smooth' })
-              }}
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             >
-              <span className="font-bagel text-white text-xl tracking-wider">MOJJU</span>
+              <span className="font-bagel text-white text-xl tracking-wider">Soul Cinema</span>
             </motion.div>
 
-            {/* Navigation Menu */}
             <div className="hidden md:flex items-center space-x-8">
-              <a 
-                href="#portfolio" 
-                className="text-white hover:text-white/80 font-medium gentle-animation hover:scale-105"
-              >
-                Work
-              </a>
-              <a 
-                href="#about" 
-                className="text-white hover:text-white/80 font-medium gentle-animation hover:scale-105"
-              >
-                Process
-              </a>
-              <a 
-                href="#services" 
-                className="text-white hover:text-white/80 font-medium gentle-animation hover:scale-105"
-              >
-                Capabilities
-              </a>
-              <a 
-                href="#team" 
-                className="text-white hover:text-white/80 font-medium gentle-animation hover:scale-105"
-              >
-                Team
-              </a>
-              <a 
-                href="#contact" 
-                className="text-white hover:text-white/80 font-medium gentle-animation hover:scale-105"
-              >
-                Contact
-              </a>
+              {NAV.map(n => (
+                <a key={n.href} href={n.href} className="text-white hover:text-white/80 font-medium gentle-animation hover:scale-105">
+                  {n.label}
+                </a>
+              ))}
             </div>
 
-            {/* Right Side - Video Controls + CTA + Mobile Menu */}
             <div className="flex items-center space-x-3 relative">
-              {/* Video Controls with Sound On indicator */}
               <div className="relative">
                 <button
                   onClick={() => setIsMuted(!isMuted)}
+                  aria-label={isMuted ? 'Ton aktivieren' : 'Ton stummschalten'}
                   className="glass-effect p-3 rounded-full text-white hover:bg-white/20 gentle-animation cursor-pointer"
                 >
                   {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
                 </button>
-                
-                {/* Sound On indicator - only show when muted */}
                 {isMuted && (
                   <div className="absolute -bottom-10 right-0 flex items-center text-white/80">
-                    <span className="whitespace-nowrap font-medium text-sm mr-2">Sound On</span>
+                    <span className="whitespace-nowrap font-medium text-sm mr-2">Ton aktivieren</span>
                     <span className="text-lg">↗</span>
                   </div>
                 )}
               </div>
-              
-              {/* CTA Button - Hidden on mobile */}
+
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={() => {
-                  const contactSection = document.getElementById('contact')
-                  contactSection?.scrollIntoView({ behavior: 'smooth' })
-                }}
-                className="hidden sm:block bg-red-600 backdrop-blur-sm text-white font-semibold px-6 py-3 rounded-md hover:bg-red-700 gentle-animation ml-4 cursor-pointer"
+                onClick={goContact}
+                className="hidden sm:block bg-white text-black font-semibold px-6 py-3 rounded-md hover:bg-white/90 gentle-animation ml-4 cursor-pointer"
               >
-                Book a Call
+                Projekt anfragen
               </motion.button>
 
-              {/* Mobile Hamburger Menu Button */}
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="md:hidden glass-effect p-3 rounded-full text-white hover:bg-white/20 active:bg-white/30 gentle-animation cursor-pointer z-[120] relative"
+                aria-label="Menü"
+                className="md:hidden glass-effect p-3 rounded-full text-white hover:bg-white/20 gentle-animation cursor-pointer z-[120] relative"
               >
                 {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
@@ -216,113 +131,119 @@ export function Hero() {
         </div>
       </motion.nav>
 
-      {/* Mobile Menu Overlay */}
+      {/* Mobile menu */}
       {isMobileMenuOpen && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
-          className="md:hidden fixed inset-0 bg-black/50 backdrop-blur-md z-[80] cursor-pointer"
+        <div
+          className="md:hidden fixed inset-0 bg-black/50 backdrop-blur-md z-[80]"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}
-
-      {/* Mobile Menu Panel */}
       <motion.div
-        initial={{ x: '100%' }}
+        initial={false}
         animate={{ x: isMobileMenuOpen ? '0%' : '100%' }}
         transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-        className="md:hidden fixed top-0 right-0 h-full w-72 max-w-[85vw] bg-black/90 backdrop-blur-xl border-l border-white/10 z-[90] mobile-menu-panel pointer-events-auto"
-        onClick={(e) => e.stopPropagation()}
+        className="md:hidden fixed top-0 right-0 h-full w-72 max-w-[85vw] bg-black/95 backdrop-blur-xl border-l border-white/10 z-[90]"
       >
-        <div className="flex flex-col h-full">
-          {/* Close Button at the top */}
-          <div className="flex justify-end p-4">
-            <button
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="glass-effect p-3 rounded-full text-white hover:bg-white/20 active:bg-white/30 gentle-animation cursor-pointer"
-            >
-              <X className="w-5 h-5" />
-            </button>
+        <div className="flex flex-col h-full p-6 pt-20">
+          <div className="flex flex-col space-y-3 text-white">
+            {NAV.map(n => (
+              <a
+                key={n.href}
+                href={n.href}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="px-4 py-3 hover:bg-white/10 rounded-lg font-medium text-lg"
+              >
+                {n.label}
+              </a>
+            ))}
           </div>
-          
-          <div className="flex flex-col px-6 pb-6 h-full">
-            {/* Mobile Navigation Links */}
-            <div className="flex flex-col space-y-4 text-white">
-              <a 
-                href="#portfolio" 
-                className="mobile-menu-link px-4 py-3 hover:text-white/80 hover:bg-white/10 rounded-lg gentle-animation font-medium text-lg active:bg-white/20"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Work
-              </a>
-              <a 
-                href="#about" 
-                className="mobile-menu-link px-4 py-3 hover:text-white/80 hover:bg-white/10 rounded-lg gentle-animation font-medium text-lg active:bg-white/20"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Process
-              </a>
-              <a 
-                href="#services" 
-                className="mobile-menu-link px-4 py-3 hover:text-white/80 hover:bg-white/10 rounded-lg gentle-animation font-medium text-lg active:bg-white/20"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Capabilities
-              </a>
-              <a 
-                href="#team" 
-                className="mobile-menu-link px-4 py-3 hover:text-white/80 hover:bg-white/10 rounded-lg gentle-animation font-medium text-lg active:bg-white/20"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Team
-              </a>
-              <a 
-                href="#contact" 
-                className="mobile-menu-link px-4 py-3 hover:text-white/80 hover:bg-white/10 rounded-lg gentle-animation font-medium text-lg active:bg-white/20"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Contact
-              </a>
-            </div>
-
-            {/* Mobile CTA Button */}
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => {
-                const contactSection = document.getElementById('contact')
-                contactSection?.scrollIntoView({ behavior: 'smooth' })
-                setIsMobileMenuOpen(false)
-              }}
-              className="bg-red-600 text-white font-semibold px-6 py-3 rounded-lg hover:bg-red-700 active:bg-red-800 gentle-animation mt-8 cursor-pointer"
-            >
-              Book a Call
-            </motion.button>
-          </div>
+          <button
+            onClick={goContact}
+            className="bg-white text-black font-semibold px-6 py-3 rounded-lg mt-8"
+          >
+            Projekt anfragen
+          </button>
         </div>
       </motion.div>
 
+      {/* Hero content */}
+      <div className="relative z-20 h-full flex flex-col justify-center px-6 sm:px-8 lg:px-12 max-w-5xl">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="inline-flex items-center gap-2 self-start glass-effect rounded-full px-4 py-2 mb-6"
+        >
+          <span className="w-2 h-2 bg-accent-emerald rounded-full animate-pulse" />
+          <span className="text-white/90 text-sm font-medium">KI-gestützte Produktvideos für Social Ads</span>
+        </motion.div>
 
+        <motion.h1
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.6 }}
+          className="text-4xl sm:text-5xl lg:text-7xl font-black text-white leading-[1.05] mb-6 max-w-4xl"
+        >
+          Produktvideos, die Aufmerksamkeit erzeugen.
+        </motion.h1>
 
-      {/* Big Studio Title - Lower Left */}
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.9 }}
+          className="text-lg sm:text-xl text-white/80 max-w-2xl mb-8"
+        >
+          Soul Cinema erstellt hochwertige Marketing- und Ad-Videos für digitale und physische Produkte – schnell, visuell stark und optimiert für Social Media.
+        </motion.p>
+
+        <motion.ul
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1, delay: 1.1 }}
+          className="flex flex-wrap gap-x-6 gap-y-2 text-white/80 text-sm mb-8"
+        >
+          {['Für physische & digitale Produkte', 'Produktbilder oder Produktlink reichen aus', 'Optimiert für Social Ads', 'KI-gestützt produziert'].map(b => (
+            <li key={b} className="flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-accent-emerald" />
+              {b}
+            </li>
+          ))}
+        </motion.ul>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 1.3 }}
+          className="flex flex-wrap gap-3"
+        >
+          <button
+            onClick={goContact}
+            className="bg-white text-black font-semibold px-7 py-4 rounded-md hover:bg-white/90 gentle-animation"
+          >
+            Projekt anfragen
+          </button>
+          <a
+            href="#portfolio"
+            className="glass-effect text-white font-semibold px-7 py-4 rounded-md hover:bg-white/20 gentle-animation"
+          >
+            Beispiele ansehen
+          </a>
+        </motion.div>
+      </div>
+
+      {/* Bottom title */}
       <motion.div
         initial={{ opacity: 0, x: -50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 1, delay: 1.5 }}
-        className="absolute bottom-12 left-6 sm:left-8 lg:left-12 z-40"
+        className="absolute bottom-8 right-6 sm:right-8 lg:right-12 z-30 hidden lg:block"
       >
-        <div className="max-w-2xl">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-black leading-tight text-white">
-            <span className="block">AI FILM</span>
-            <span className="block">PRODUCTION</span>
-            <span className="block">WITHOUT LIMITS</span>
-          </h1>
-        </div>
+        <h2 className="text-right text-2xl xl:text-3xl font-black leading-tight text-white/90">
+          <span className="block">Produktvideos.</span>
+          <span className="block">Social Ads.</span>
+          <span className="block">KI-gestützt produziert.</span>
+        </h2>
       </motion.div>
-
-
     </div>
   )
 }
