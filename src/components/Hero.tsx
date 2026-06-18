@@ -81,6 +81,7 @@ export function Hero() {
         className="absolute inset-0 w-full h-full object-cover scale-110"
         autoPlay muted loop playsInline preload="metadata"
         poster={posterUrl || undefined}
+        aria-label="Hintergrundvideo: kinoreife Produktaufnahmen"
       >
         <source src={videoUrl} />
       </video>
