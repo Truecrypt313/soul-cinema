@@ -73,7 +73,7 @@ jobs:
         run: echo "BASE_URL=${{ github.event.inputs.target_url }}" >> "$GITHUB_ENV"
 
       - name: Run visual screenshot tests
-        run: npx playwright test tests/visual/screenshot.spec.ts --project=chromium --reporter=list
+        run: npx playwright test tests/visual/screenshot.spec.ts --reporter=list
 
       - name: Upload visual QA artifacts
         if: always()
