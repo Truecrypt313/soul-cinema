@@ -9,9 +9,15 @@ import { Trash2, Plus, Upload } from 'lucide-react'
 type Item = {
   id: string; title: string; category: string | null; description: string | null
   video_url: string | null; thumbnail_url: string | null; format_badge: string | null
+  platform: string | null; project_goal: string | null; featured: boolean
   published: boolean; sort_order: number
 }
-const empty = { title: '', category: '', description: '', video_url: '', thumbnail_url: '', format_badge: '9:16', published: false, sort_order: 10 }
+const empty = { title: '', category: '', description: '', video_url: '', thumbnail_url: '', format_badge: '9:16', platform: '', project_goal: '', featured: false, published: false, sort_order: 10 }
+
+const IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp']
+const VIDEO_TYPES = ['video/mp4', 'video/webm']
+const MAX_IMAGE = 5 * 1024 * 1024
+const MAX_VIDEO = 80 * 1024 * 1024
 
 // Signed-URL cache for previews (private bucket)
 async function signedFor(path: string | null): Promise<string | null> {
@@ -43,22 +49,41 @@ export default function AdminPortfolio() {
   useEffect(() => { load() }, [])
 
   const uploadFile = async (file: File, kind: 'thumb' | 'video') => {
+    const allowed = kind === 'thumb' ? IMAGE_TYPES : VIDEO_TYPES
+    const max = kind === 'thumb' ? MAX_IMAGE : MAX_VIDEO
+    if (!allowed.includes(file.type)) {
+      toast({ title: 'Falscher Dateityp', description: `Erlaubt: ${allowed.join(', ')}`, variant: 'destructive' })
+      return null
+    }
+    if (file.size > max) {
+      toast({ title: 'Datei zu groß', description: `Maximal ${Math.round(max / 1024 / 1024)} MB.`, variant: 'destructive' })
+      return null
+    }
     setUploading(kind)
     const ext = file.name.split('.').pop() || 'bin'
     const path = `${kind}s/${crypto.randomUUID()}.${ext}`
     const { error } = await supabase.storage.from('portfolio-media').upload(path, file, { upsert: false, contentType: file.type })
     setUploading(null)
     if (error) { toast({ title: 'Upload fehlgeschlagen', description: error.message, variant: 'destructive' }); return null }
-    return path // store path; preview via signed URL
+    return path
   }
 
   const save = async () => {
     const payload = {
       title: editing.title, category: editing.category || null, description: editing.description || null,
       video_url: editing.video_url || null, thumbnail_url: editing.thumbnail_url || null,
-      format_badge: editing.format_badge || null, published: !!editing.published,
+      format_badge: editing.format_badge || null,
+      platform: editing.platform || null, project_goal: editing.project_goal || null,
+      featured: !!editing.featured,
+      published: !!editing.published,
       sort_order: Number(editing.sort_order) || 0,
     }
+    const { error } = editing.id
+      ? await supabase.from('portfolio_items').update(payload).eq('id', editing.id)
+      : await supabase.from('portfolio_items').insert(payload)
+    if (error) return toast({ title: 'Fehler', description: error.message, variant: 'destructive' })
+    toast({ title: 'Gespeichert' }); setEditing(null); load()
+  }
     const { error } = editing.id
       ? await supabase.from('portfolio_items').update(payload).eq('id', editing.id)
       : await supabase.from('portfolio_items').insert(payload)
