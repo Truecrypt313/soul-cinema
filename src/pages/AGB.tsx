@@ -1,8 +1,14 @@
 import { Link } from 'react-router-dom'
+import { Seo } from '@/components/Seo'
 
 export default function AGB() {
   return (
     <main className="min-h-screen bg-background text-foreground py-20">
+      <Seo
+        title="AGB — Soul Cinema"
+        description="Allgemeine Geschäftsbedingungen von Soul Cinema für Videoproduktion, Social Ads und Performance Creatives."
+        path="/agb"
+      />
       <div className="container mx-auto px-6 max-w-3xl">
         <Link to="/" className="text-sm text-muted-foreground hover:text-foreground">← Zurück</Link>
         <h1 className="text-4xl sm:text-5xl font-black mt-6 mb-8">Allgemeine Geschäftsbedingungen</h1>
