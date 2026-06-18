@@ -130,8 +130,11 @@ export type Database = {
           category: string | null
           created_at: string
           description: string | null
+          featured: boolean
           format_badge: string | null
           id: string
+          platform: string | null
+          project_goal: string | null
           published: boolean
           sort_order: number
           thumbnail_url: string | null
@@ -143,8 +146,11 @@ export type Database = {
           category?: string | null
           created_at?: string
           description?: string | null
+          featured?: boolean
           format_badge?: string | null
           id?: string
+          platform?: string | null
+          project_goal?: string | null
           published?: boolean
           sort_order?: number
           thumbnail_url?: string | null
@@ -156,8 +162,11 @@ export type Database = {
           category?: string | null
           created_at?: string
           description?: string | null
+          featured?: boolean
           format_badge?: string | null
           id?: string
+          platform?: string | null
+          project_goal?: string | null
           published?: boolean
           sort_order?: number
           thumbnail_url?: string | null
