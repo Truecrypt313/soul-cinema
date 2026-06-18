@@ -12,15 +12,18 @@ type Item = {
   video_url: string | null
   thumbnail_url: string | null
   format_badge: string | null
+  platform: string | null
+  project_goal: string | null
+  featured: boolean | null
 }
 
 const FALLBACK: Item[] = [
-  { id: 'f1', title: 'Physisches Produkt — Social Ad', category: 'Performance Creative', description: '9:16 Creative für Instagram Reels, TikTok und Meta Ads.', video_url: null, thumbnail_url: null, format_badge: '9:16' },
-  { id: 'f2', title: 'Digitales Produkt — Feature Video', category: 'Produktstory', description: 'Kurzes Video, das ein Tool, eine App oder ein digitales Angebot präsentiert.', video_url: null, thumbnail_url: null, format_badge: '9:16' },
-  { id: 'f3', title: 'E-Commerce Creative', category: 'Shop & Landingpage', description: 'Produktvideo für Shop, Landingpage und Performance-Kampagnen.', video_url: null, thumbnail_url: null, format_badge: '1:1' },
-  { id: 'f4', title: 'Launch Creative', category: 'Kampagne', description: 'Video-Asset für einen Produktlaunch oder Kampagnenstart.', video_url: null, thumbnail_url: null, format_badge: '16:9' },
-  { id: 'f5', title: 'Brand Product Video', category: 'Marke', description: 'Hochwertiges Produktvideo für Website, Shop und Social Media.', video_url: null, thumbnail_url: null, format_badge: '16:9' },
-  { id: 'f6', title: 'Content Package', category: 'Varianten', description: 'Mehrere Varianten für Hooks, Formate und Kampagnentests.', video_url: null, thumbnail_url: null, format_badge: '9:16' },
+  { id: 'f1', title: 'Physisches Produkt — Social Ad', category: 'Beispiel-Format', description: '9:16 Creative für Instagram Reels, TikTok und Meta Ads.', video_url: null, thumbnail_url: null, format_badge: '9:16', platform: 'Meta · TikTok', project_goal: 'Awareness & Conversion', featured: true },
+  { id: 'f2', title: 'Digitales Produkt — Feature Video', category: 'Beispiel-Format', description: 'Kurzes Video, das ein Tool, eine App oder ein digitales Angebot präsentiert.', video_url: null, thumbnail_url: null, format_badge: '9:16', platform: 'Landingpage', project_goal: 'Sign-ups', featured: false },
+  { id: 'f3', title: 'E-Commerce Creative', category: 'Mögliches Creative', description: 'Produktvideo für Shop, Landingpage und Performance-Kampagnen.', video_url: null, thumbnail_url: null, format_badge: '1:1', platform: 'Shopify · Meta', project_goal: 'Sales', featured: false },
+  { id: 'f4', title: 'Launch Creative', category: 'Beispiel-Format', description: 'Video-Asset für einen Produktlaunch oder Kampagnenstart.', video_url: null, thumbnail_url: null, format_badge: '16:9', platform: 'YouTube · Web', project_goal: 'Launch', featured: false },
+  { id: 'f5', title: 'Brand Product Video', category: 'Mögliches Creative', description: 'Hochwertiges Produktvideo für Website, Shop und Social Media.', video_url: null, thumbnail_url: null, format_badge: '16:9', platform: 'Website', project_goal: 'Brand', featured: false },
+  { id: 'f6', title: 'Content Package', category: 'Beispiel-Format', description: 'Mehrere Varianten für Hooks, Formate und Kampagnentests.', video_url: null, thumbnail_url: null, format_badge: '9:16', platform: 'Meta · TikTok', project_goal: 'A/B-Tests', featured: false },
 ]
 
 export function Portfolio() {
@@ -31,8 +34,9 @@ export function Portfolio() {
     let active = true
     supabase
       .from('portfolio_items')
-      .select('id, title, category, description, video_url, thumbnail_url, format_badge')
+      .select('id, title, category, description, video_url, thumbnail_url, format_badge, platform, project_goal, featured')
       .eq('published', true)
+      .order('featured', { ascending: false })
       .order('sort_order', { ascending: true })
       .then(({ data }) => {
         if (active && data && data.length > 0) {
@@ -95,14 +99,25 @@ export function Portfolio() {
                 )}
               </div>
               <div className="p-6">
-                {item.category && (
-                  <span className="text-[10px] font-semibold text-[#C9963B] uppercase tracking-[0.18em]">
-                    {item.category}
-                  </span>
-                )}
+                <div className="flex items-center gap-2 flex-wrap">
+                  {item.category && (
+                    <span className="text-[10px] font-semibold text-[#C9963B] uppercase tracking-[0.18em]">
+                      {item.category}
+                    </span>
+                  )}
+                  {item.featured && (
+                    <span className="text-[10px] font-semibold text-[#0A0A0A] bg-[#C9963B] uppercase tracking-wider px-1.5 py-0.5 rounded">Featured</span>
+                  )}
+                </div>
                 <h3 className="text-lg font-bold text-[#F4F0E8] mt-2 mb-2">{item.title}</h3>
                 {item.description && (
-                  <p className="text-[#A8A29E] text-sm leading-relaxed">{item.description}</p>
+                  <p className="text-[#A8A29E] text-sm leading-relaxed mb-3">{item.description}</p>
+                )}
+                {(item.platform || item.project_goal) && (
+                  <div className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-[#A8A29E] border-t border-white/[0.05] pt-3">
+                    {item.platform && <span><span className="text-[#A8A29E]/60">Plattform · </span><span className="text-[#F4F0E8]">{item.platform}</span></span>}
+                    {item.project_goal && <span><span className="text-[#A8A29E]/60">Ziel · </span><span className="text-[#F4F0E8]">{item.project_goal}</span></span>}
+                  </div>
                 )}
               </div>
             </article>
