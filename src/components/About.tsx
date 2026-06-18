@@ -5,12 +5,31 @@ import { useCmsList } from '@/hooks/useCms'
 type Row = { id: string; step_number: string | null; title: string; description: string | null }
 
 const FALLBACK: Row[] = [
-  { id: '1', step_number: '01', title: 'Material senden', description: 'Produktbilder, vorhandenes Material oder ein Produktlink reichen für den Start aus.' },
-  { id: '2', step_number: '02', title: 'Strategie', description: 'Wir prüfen Produkt, Zielgruppe, Plattform und Werbeziel.' },
-  { id: '3', step_number: '03', title: 'Konzept', description: 'Hook, Szenenidee, Stilrichtung und Format werden auf den Einsatzkanal abgestimmt.' },
-  { id: '4', step_number: '04', title: 'Produktion', description: 'Wir erstellen das Video mit moderner Video- und Postproduktion.' },
-  { id: '5', step_number: '05', title: 'Lieferung', description: 'Du erhältst fertige Dateien für Social Ads, Shop, Landingpage oder Website.' },
+  { id: '1', step_number: '01', title: 'Anfrage', description: 'Du lieferst: Produktlink, Bilder oder vorhandenes Material.||Wir machen: Erste Einschätzung zu Format, Ziel und Aufwand.' },
+  { id: '2', step_number: '02', title: 'Briefing', description: 'Du lieferst: Antworten auf wenige kurze Fragen.||Wir machen: Zielgruppe, Plattform und Werbeziel klar.' },
+  { id: '3', step_number: '03', title: 'Konzept', description: 'Du lieferst: Feedback zur Richtung.||Wir machen: Hook, Szenenidee, Stilrichtung und Format.' },
+  { id: '4', step_number: '04', title: 'Produktion', description: 'Du lieferst: Freigabe.||Wir machen: Video, Schnitt, Sound, Text und Anpassungen.' },
+  { id: '5', step_number: '05', title: 'Lieferung', description: 'Du bekommst: Fertige Videos für Social Ads, Shop, Landingpage oder Website.' },
 ]
+
+function StepDescription({ text }: { text: string }) {
+  const parts = text.split('||').map(p => p.trim()).filter(Boolean)
+  if (parts.length === 0) return null
+  return (
+    <div className="space-y-1.5">
+      {parts.map((p, i) => {
+        const m = p.match(/^([^:]+:)\s*(.*)$/)
+        if (!m) return <p key={i} className="text-sm text-[#B8B2AA] leading-relaxed">{p}</p>
+        return (
+          <p key={i} className="text-sm text-[#B8B2AA] leading-relaxed">
+            <span className="text-[#C9963B]/90 font-semibold">{m[1]} </span>
+            {m[2]}
+          </p>
+        )
+      })}
+    </div>
+  )
+}
 
 export function About() {
   const steps = useCmsList<Row>('process_steps', FALLBACK)
@@ -25,7 +44,7 @@ export function About() {
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#F4F0E8] leading-tight tracking-tight mb-5">
             Vom <span className="text-highlight">Produktlink</span> zum fertigen <span className="text-highlight">Werbevideo</span>.
           </h2>
-          <p className="text-base sm:text-lg text-[#A8A29E] leading-relaxed">
+          <p className="text-base sm:text-lg text-[#B8B2AA] leading-relaxed">
             Ein klarer Ablauf – von der ersten Anfrage bis zur fertigen Video-Datei.
           </p>
         </FadeUp>
@@ -35,8 +54,8 @@ export function About() {
             <FadeUp key={s.id} delay={i * 0.05}>
               <div className="relative h-full bg-[#141414] border border-white/[0.06] rounded-2xl p-6 hover:border-[#C9963B]/40 gentle-animation">
                 {s.step_number && <div className="text-3xl font-black text-[#C9963B]/80 mb-3 tracking-tight">{s.step_number}</div>}
-                <h3 className="font-bold text-base text-[#F4F0E8] mb-2">{s.title}</h3>
-                {s.description && <p className="text-sm text-[#A8A29E] leading-relaxed">{s.description}</p>}
+                <h3 className="font-bold text-base text-[#F4F0E8] mb-3">{s.title}</h3>
+                {s.description && <StepDescription text={s.description} />}
                 {i < steps.length - 1 && <div className="hidden lg:block absolute top-9 -right-2.5 w-5 h-px bg-[#C9963B]/30" />}
               </div>
             </FadeUp>

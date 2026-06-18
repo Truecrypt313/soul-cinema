@@ -95,9 +95,23 @@ export function Contact() {
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#F4F0E8] leading-tight tracking-tight mb-5">
               Bereit, dein <span className="text-highlight">Produkt sichtbar</span> zu machen?
             </h2>
-            <p className="text-base sm:text-lg text-[#A8A29E] leading-relaxed mb-8">
-              Senden Sie uns kurz Ihr Produkt, Ihre Website oder Ihre Idee. Wir prüfen, welcher Videoansatz passt, und melden uns mit einer Einschätzung zurück.
+            <p className="text-base sm:text-lg text-[#B8B2AA] leading-relaxed mb-8">
+              Ein kurzer Satz zu deinem Produkt genügt. Wir melden uns mit einer Einschätzung, welcher <span className="text-highlight">Videoansatz</span> sinnvoll ist.
             </p>
+
+            <ul className="space-y-2.5 mb-8">
+              {[
+                'Antwort in der Regel innerhalb von 24 Stunden',
+                'Keine automatische Buchung',
+                'Persönliche Einschätzung vor Projektstart',
+                'Produktlink oder Bilder reichen aus',
+              ].map(t => (
+                <li key={t} className="flex items-start gap-2.5 text-sm text-[#F4F0E8]/90">
+                  <CheckCircle2 className="w-4 h-4 text-[#C9963B] mt-0.5 shrink-0" aria-hidden="true" />
+                  <span>{t}</span>
+                </li>
+              ))}
+            </ul>
 
             <div className="space-y-4">
               <a href={`mailto:${email}`} className="flex items-center gap-3 text-[#F4F0E8] hover:text-[#C9963B] gentle-animation">
@@ -118,7 +132,6 @@ export function Contact() {
                   <span className="font-medium">Termin buchen</span>
                 </a>
               )}
-              <div className="text-sm text-[#A8A29E]">Antwort in der Regel innerhalb von <span className="text-highlight font-semibold">24 Stunden</span>.</div>
             </div>
           </FadeUp>
 
@@ -142,13 +155,15 @@ export function Contact() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label htmlFor="name" className="block text-xs font-semibold text-[#F4F0E8] mb-2 uppercase tracking-wider">Name *</label>
-                    <input id="name" required value={form.name} onChange={set('name')} className={inputCls} maxLength={200} />
-                    {errors.name && <p className={errCls}>{errors.name}</p>}
+                    <input id="name" required value={form.name} onChange={set('name')} className={inputCls} maxLength={200}
+                      aria-invalid={!!errors.name} aria-describedby={errors.name ? 'name-err' : undefined} />
+                    {errors.name && <p id="name-err" className={errCls}>{errors.name}</p>}
                   </div>
                   <div>
                     <label htmlFor="email" className="block text-xs font-semibold text-[#F4F0E8] mb-2 uppercase tracking-wider">E-Mail *</label>
-                    <input id="email" type="email" required value={form.email} onChange={set('email')} className={inputCls} maxLength={255} />
-                    {errors.email && <p className={errCls}>{errors.email}</p>}
+                    <input id="email" type="email" required value={form.email} onChange={set('email')} className={inputCls} maxLength={255}
+                      aria-invalid={!!errors.email} aria-describedby={errors.email ? 'email-err' : undefined} />
+                    {errors.email && <p id="email-err" className={errCls}>{errors.email}</p>}
                   </div>
                 </div>
 
@@ -198,8 +213,9 @@ export function Contact() {
                   <label htmlFor="message" className="block text-xs font-semibold text-[#F4F0E8] mb-2 uppercase tracking-wider">Projektbeschreibung *</label>
                   <textarea id="message" required rows={5} maxLength={4000} value={form.message} onChange={set('message')}
                     className={`${inputCls} resize-none`}
+                    aria-invalid={!!errors.message} aria-describedby={errors.message ? 'message-err' : undefined}
                     placeholder="Produkt, Zielgruppe, Plattform – und ob Produktbilder oder ein Produktlink vorhanden sind." />
-                  {errors.message && <p className={errCls}>{errors.message}</p>}
+                  {errors.message && <p id="message-err" className={errCls}>{errors.message}</p>}
                 </div>
 
                 <button type="submit" disabled={busy}

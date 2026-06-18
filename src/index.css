@@ -11,7 +11,7 @@
   --color-surface: #141414;
   --color-surface-soft: #1C1C1C;
   --color-text: #F4F0E8;
-  --color-muted: #A8A29E;
+  --color-muted: #B8B2AA;
   --color-accent: #C9963B;
   --color-accent-soft: rgba(201, 150, 59, 0.14);
 
@@ -27,7 +27,7 @@
   --secondary: #1C1C1C;
   --secondary-foreground: #F4F0E8;
   --muted: #1C1C1C;
-  --muted-foreground: #A8A29E;
+  --muted-foreground: #B8B2AA;
   --accent: #1C1C1C;
   --accent-foreground: #F4F0E8;
   --destructive: #ef4444;

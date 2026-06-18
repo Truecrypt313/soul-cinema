@@ -28,7 +28,7 @@ const FALLBACK: Item[] = [
 
 export function Portfolio() {
   const [items, setItems] = useState<Item[]>(FALLBACK)
-  const [isLive, setIsLive] = useState(false)
+  const [liveCount, setLiveCount] = useState(0)
 
   useEffect(() => {
     let active = true
@@ -41,29 +41,29 @@ export function Portfolio() {
       .then(({ data }) => {
         if (active && data && data.length > 0) {
           setItems(data as Item[])
-          setIsLive(true)
+          setLiveCount(data.length)
         }
       })
     return () => { active = false }
   }, [])
 
+  const hasRealCases = liveCount >= 3
   return (
     <section className="relative py-28 sm:py-32 bg-[#0A0A0A] border-t border-white/[0.04]">
       <div className="container mx-auto px-6 sm:px-8 lg:px-12">
         <div className="max-w-3xl mb-16">
           <div className="flex items-center gap-3 mb-5">
             <span className="h-px w-8 bg-[#C9963B]" />
-            <span className="text-xs font-semibold tracking-[0.2em] uppercase text-[#C9963B]">{isLive ? 'Portfolio' : 'Ausgewählte Projekte'}</span>
+            <span className="text-xs font-semibold tracking-[0.2em] uppercase text-[#C9963B]">{hasRealCases ? 'Portfolio' : 'Beispiel-Formate'}</span>
           </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#F4F0E8] leading-tight tracking-tight mb-5">
-            Arbeiten, die Produkte sichtbar machen.
+            {hasRealCases ? 'Ausgewählte Arbeiten.' : 'Beispiel-Formate für dein Produkt.'}
           </h2>
-          <p className="text-base sm:text-lg text-[#A8A29E] leading-relaxed">
-            <span className="text-highlight">Produktvideos</span>, <span className="text-highlight">Social Ads</span> und Performance Creatives für <span className="text-highlight">Marken, Shops und digitale Produkte</span>.
+          <p className="text-base sm:text-lg text-[#B8B2AA] leading-relaxed">
+            {hasRealCases
+              ? <><span className="text-highlight">Produktvideos</span>, <span className="text-highlight">Social Ads</span> und Performance Creatives für <span className="text-highlight">Marken, Shops und digitale Produkte</span>.</>
+              : 'Noch keine finalen Referenzen veröffentlicht. Diese Formate zeigen, welche Arten von Creatives Soul Cinema produzieren kann.'}
           </p>
-          {!isLive && (
-            <p className="mt-3 text-xs text-[#A8A29E]/70 uppercase tracking-wider">Beispielhafte Formate · Referenzen folgen</p>
-          )}
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 max-w-7xl">
@@ -100,12 +100,15 @@ export function Portfolio() {
               </div>
               <div className="p-6">
                 <div className="flex items-center gap-2 flex-wrap">
-                  {item.category && (
+                  {!hasRealCases && (
+                    <span className="text-[10px] font-semibold text-[#C9963B] uppercase tracking-[0.18em] bg-[#C9963B]/10 border border-[#C9963B]/30 px-2 py-0.5 rounded">Beispiel-Format</span>
+                  )}
+                  {hasRealCases && item.category && (
                     <span className="text-[10px] font-semibold text-[#C9963B] uppercase tracking-[0.18em]">
                       {item.category}
                     </span>
                   )}
-                  {item.featured && (
+                  {hasRealCases && item.featured && (
                     <span className="text-[10px] font-semibold text-[#0A0A0A] bg-[#C9963B] uppercase tracking-wider px-1.5 py-0.5 rounded">Featured</span>
                   )}
                 </div>

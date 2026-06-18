@@ -7,12 +7,12 @@ type Reason = { id: string; icon_name: string | null; title: string; description
 type Audience = { id: string; icon_name: string | null; title: string; description: string | null }
 
 const REASONS_FB: Reason[] = [
-  { id: '1', icon_name: 'Target', title: 'Produktverständnis', description: 'Wir analysieren Produkt, Zielgruppe und Plattform, bevor ein Creative entsteht.' },
-  { id: '2', icon_name: 'Sparkles', title: 'Ad-orientierte Konzepte', description: 'Jedes Video wird mit Hook, Format und Einsatzkanal entwickelt.' },
-  { id: '3', icon_name: 'Zap', title: 'Schneller Start', description: 'Produktbilder, vorhandenes Material oder ein Produktlink reichen für die erste Einschätzung aus.' },
-  { id: '4', icon_name: 'Smartphone', title: 'Für Social Media gemacht', description: 'Videos werden für mobile Formate, kurze Aufmerksamkeitsspannen und klare Botschaften entwickelt.' },
-  { id: '5', icon_name: 'Layers', title: 'Mehrere Varianten möglich', description: 'Auf Wunsch entstehen verschiedene Hooks, Formate und Versionen für Kampagnen und Tests.' },
-  { id: '6', icon_name: 'PackageCheck', title: 'Klare Lieferung', description: 'Sie erhalten fertige Dateien für Social Media, Ads, Landingpages oder Shops.' },
+  { id: '1', icon_name: 'Zap', title: 'Produktlink reicht', description: 'Du brauchst kein fertiges Videomaterial. Ein Link, Bilder oder vorhandene Assets reichen oft für den Start.' },
+  { id: '2', icon_name: 'Target', title: 'Ad-orientierte Konzepte', description: 'Jedes Creative wird mit Hook, Plattform und Einsatzkanal gedacht.' },
+  { id: '3', icon_name: 'Sparkles', title: 'Keine generischen Templates', description: 'Videos werden auf Produkt, Zielgruppe und Wirkung zugeschnitten.' },
+  { id: '4', icon_name: 'Layers', title: 'Mehrere Varianten möglich', description: 'Auf Wunsch entstehen verschiedene Hooks, Formate und Versionen für Kampagnen.' },
+  { id: '5', icon_name: 'Smartphone', title: 'Für Social Media gemacht', description: 'Optimiert für mobile Formate, kurze Aufmerksamkeitsspannen und klare Botschaften.' },
+  { id: '6', icon_name: 'PackageCheck', title: 'Klare Lieferung', description: 'Du erhältst fertige Dateien für Ads, Shop, Landingpage oder Website.' },
 ]
 const AUDIENCE_FB: Audience[] = [
   { id: '1', icon_name: 'ShoppingCart', title: 'E-Commerce Shops', description: null },

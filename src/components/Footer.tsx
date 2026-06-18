@@ -6,7 +6,7 @@ import { useSettings, setting } from '@/hooks/useCms'
 export function Footer() {
   const s = useSettings()
   const email = setting<string>(s, 'contact_email', 'hallo@soulcinema.de')
-  const text = setting<string>(s, 'footer_text', 'Soul Cinema entwickelt Produktvideos und Performance Creatives für digitale und physische Produkte – für Social Media, Ads, Shops und Web.')
+  const text = setting<string>(s, 'footer_text', 'Soul Cinema — Ad Studio für Produktvideos, Werbevideos und Social Ads. Für Shops, Landingpages, Marken und digitale Produkte.')
   return (
     <footer className="relative py-16 bg-[#0A0A0A] border-t border-white/[0.06]">
       <div className="container mx-auto px-6 sm:px-8 lg:px-12">

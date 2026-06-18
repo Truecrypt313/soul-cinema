@@ -28,7 +28,7 @@ export function Hero() {
   const bullets = setting<string[]>(s, 'hero_bullets', [
     'Produktbilder oder Produktlink reichen aus',
     'Für digitale & physische Produkte',
-    'Für Social Ads, Shops & Landingpages',
+    'Formate für Meta, TikTok, YouTube & Shop',
     'Konzept, Produktion & Lieferung aus einer Hand',
   ])
   const primaryCta = setting<string>(s, 'primary_cta_label', 'Projekt anfragen')
@@ -81,12 +81,14 @@ export function Hero() {
         className="absolute inset-0 w-full h-full object-cover scale-110"
         autoPlay muted loop playsInline preload="metadata"
         poster={posterUrl || undefined}
+        aria-label="Hintergrundvideo: kinoreife Produktaufnahmen"
       >
         <source src={videoUrl} />
       </video>
 
-      <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/90 pointer-events-none" />
-      <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-transparent pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/55 to-black/95 sm:from-black/70 sm:via-black/50 sm:to-black/90 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent sm:from-black/60 sm:via-transparent pointer-events-none" />
+      <div className="absolute inset-0 bg-black/25 sm:bg-transparent pointer-events-none" />
 
       <motion.nav
         initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
@@ -154,7 +156,7 @@ export function Hero() {
         </motion.div>
 
         <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.5 }}
-          className="font-brand text-5xl sm:text-6xl lg:text-7xl text-[#F4F0E8] leading-[1.05] tracking-tight mb-6 max-w-4xl">
+          className="font-brand text-[2.5rem] leading-[1.1] sm:text-5xl sm:leading-[1.05] lg:text-7xl text-[#F4F0E8] tracking-tight mb-6 max-w-4xl">
           {headline.split(/(Produkt|Kinoreif)/g).map((part, i) =>
             (part === 'Produkt' || part === 'Kinoreif')
               ? <span key={i} className="text-highlight">{part}</span>
@@ -182,11 +184,11 @@ export function Hero() {
         </motion.ul>
 
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 1.2 }}
-          className="flex flex-wrap gap-3">
-          <button onClick={goContact} className="bg-[#C9963B] text-[#0A0A0A] font-semibold px-7 py-3.5 rounded-md hover:bg-[#d9a64b] gentle-animation">
+          className="flex flex-col sm:flex-row sm:flex-wrap gap-3 w-full sm:w-auto max-w-sm sm:max-w-none">
+          <button onClick={goContact} className="w-full sm:w-auto bg-[#C9963B] text-[#0A0A0A] font-semibold px-7 py-4 sm:py-3.5 rounded-md hover:bg-[#d9a64b] gentle-animation min-h-12">
             {primaryCta}
           </button>
-          <a href="#portfolio" className="glass-effect text-[#F4F0E8] font-semibold px-7 py-3.5 rounded-md hover:text-[#C9963B] gentle-animation">
+          <a href="#portfolio" className="w-full sm:w-auto text-center text-[#F4F0E8]/85 sm:glass-effect sm:text-[#F4F0E8] font-medium sm:font-semibold px-7 py-3 sm:py-3.5 rounded-md hover:text-[#C9963B] gentle-animation min-h-12 flex items-center justify-center underline-offset-4 underline sm:no-underline">
             {secondaryCta}
           </a>
         </motion.div>
