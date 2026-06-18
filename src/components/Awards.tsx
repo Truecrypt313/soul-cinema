@@ -1,21 +1,36 @@
 'use client'
+import { FadeUp } from './FadeUp'
+import { Icon } from '@/lib/icon'
+import { useCmsList } from '@/hooks/useCms'
 
-import { Search, Target, Zap, Smartphone, Layers, PackageCheck } from 'lucide-react'
+type Reason = { id: string; icon_name: string | null; title: string; description: string | null }
+type Audience = { id: string; icon_name: string | null; title: string; description: string | null }
 
-const REASONS = [
-  { icon: Search, title: 'Produktverständnis', text: 'Wir analysieren Produkt, Zielgruppe und Plattform, bevor ein Creative entsteht.' },
-  { icon: Target, title: 'Ad-orientierte Konzepte', text: 'Jedes Video wird mit Hook, Format und Einsatzkanal entwickelt.' },
-  { icon: Zap, title: 'Schneller Start', text: 'Produktbilder, vorhandenes Material oder ein Produktlink reichen für die erste Einschätzung aus.' },
-  { icon: Smartphone, title: 'Für Social Media gemacht', text: 'Videos werden für mobile Formate, kurze Aufmerksamkeitsspannen und klare Botschaften entwickelt.' },
-  { icon: Layers, title: 'Mehrere Varianten möglich', text: 'Auf Wunsch entstehen verschiedene Hooks, Formate und Versionen für Kampagnen und Tests.' },
-  { icon: PackageCheck, title: 'Klare Lieferung', text: 'Sie erhalten fertige Dateien für Social Media, Ads, Landingpages oder Shops.' },
+const REASONS_FB: Reason[] = [
+  { id: '1', icon_name: 'Target', title: 'Produktverständnis', description: 'Wir analysieren Produkt, Zielgruppe und Plattform, bevor ein Creative entsteht.' },
+  { id: '2', icon_name: 'Sparkles', title: 'Ad-orientierte Konzepte', description: 'Jedes Video wird mit Hook, Format und Einsatzkanal entwickelt.' },
+  { id: '3', icon_name: 'Zap', title: 'Schneller Start', description: 'Produktbilder, vorhandenes Material oder ein Produktlink reichen für die erste Einschätzung aus.' },
+  { id: '4', icon_name: 'Smartphone', title: 'Für Social Media gemacht', description: 'Videos werden für mobile Formate, kurze Aufmerksamkeitsspannen und klare Botschaften entwickelt.' },
+  { id: '5', icon_name: 'Layers', title: 'Mehrere Varianten möglich', description: 'Auf Wunsch entstehen verschiedene Hooks, Formate und Versionen für Kampagnen und Tests.' },
+  { id: '6', icon_name: 'PackageCheck', title: 'Klare Lieferung', description: 'Sie erhalten fertige Dateien für Social Media, Ads, Landingpages oder Shops.' },
+]
+const AUDIENCE_FB: Audience[] = [
+  { id: '1', icon_name: 'ShoppingCart', title: 'E-Commerce Shops', description: null },
+  { id: '2', icon_name: 'Package', title: 'Physische Produkte', description: null },
+  { id: '3', icon_name: 'Cloud', title: 'Digitale Produkte', description: null },
+  { id: '4', icon_name: 'Smartphone', title: 'SaaS & Apps', description: null },
+  { id: '5', icon_name: 'Rocket', title: 'Produktlaunches', description: null },
+  { id: '6', icon_name: 'Megaphone', title: 'Social Ads', description: null },
+  { id: '7', icon_name: 'Building2', title: 'Marken & Startups', description: null },
 ]
 
 export function Awards() {
+  const reasons = useCmsList<Reason>('reasons', REASONS_FB)
+  const audience = useCmsList<Audience>('audience_items', AUDIENCE_FB)
   return (
     <section className="relative py-28 sm:py-32 bg-[#0A0A0A] border-t border-white/[0.04]">
       <div className="container mx-auto px-6 sm:px-8 lg:px-12">
-        <div className="max-w-3xl mb-16">
+        <FadeUp className="max-w-3xl mb-16">
           <div className="flex items-center gap-3 mb-5">
             <span className="h-px w-8 bg-[#C9963B]" />
             <span className="text-xs font-semibold tracking-[0.2em] uppercase text-[#C9963B]">Warum Soul Cinema</span>
@@ -24,24 +39,36 @@ export function Awards() {
             Warum Soul Cinema?
           </h2>
           <p className="text-base sm:text-lg text-[#A8A29E] leading-relaxed">
-            Wir verbinden <span className="text-highlight">Produktverständnis</span>, <span className="text-highlight">kreative Konzepte</span> und moderne Produktion zu <span className="text-highlight">Werbevideos</span>, die online funktionieren.
+            Wir verbinden <span className="text-highlight">Produktverständnis</span>, kreative Konzepte und moderne Produktion zu <span className="text-highlight">Werbevideos</span>, die online funktionieren.
           </p>
-        </div>
+        </FadeUp>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-7xl">
-          {REASONS.map((r) => (
-            <div
-              key={r.title}
-              className="group bg-[#141414] border border-white/[0.06] rounded-2xl p-7 hover:border-[#C9963B]/40 gentle-animation hover:-translate-y-1"
-            >
-              <div className="w-11 h-11 rounded-lg bg-accent-soft flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-                <r.icon className="w-5 h-5 text-[#C9963B]" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-7xl mb-20">
+          {reasons.map((r, i) => (
+            <FadeUp key={r.id} delay={i * 0.05}>
+              <div className="group h-full bg-[#141414] border border-white/[0.06] rounded-2xl p-7 hover:border-[#C9963B]/40 gentle-animation hover:-translate-y-1">
+                <div className="w-11 h-11 rounded-lg bg-accent-soft flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+                  <Icon name={r.icon_name} className="w-5 h-5 text-[#C9963B]" />
+                </div>
+                <h3 className="text-lg font-bold text-[#F4F0E8] mb-2">{r.title}</h3>
+                {r.description && <p className="text-[#A8A29E] text-sm leading-relaxed">{r.description}</p>}
               </div>
-              <h3 className="text-lg font-bold text-[#F4F0E8] mb-2">{r.title}</h3>
-              <p className="text-[#A8A29E] text-sm leading-relaxed">{r.text}</p>
-            </div>
+            </FadeUp>
           ))}
         </div>
+
+        <FadeUp className="max-w-3xl mb-8">
+          <h3 className="text-2xl sm:text-3xl font-bold text-[#F4F0E8] mb-3">Für wen ist Soul Cinema geeignet?</h3>
+          <p className="text-[#A8A29E]">Wir arbeiten mit Brands, Shops und Teams, die ihre Produkte online sichtbar machen wollen.</p>
+        </FadeUp>
+        <FadeUp className="flex flex-wrap gap-3 max-w-5xl">
+          {audience.map(a => (
+            <div key={a.id} className="inline-flex items-center gap-2 bg-[#141414] border border-white/[0.06] hover:border-[#C9963B]/40 rounded-full px-4 py-2.5 gentle-animation">
+              <Icon name={a.icon_name} className="w-4 h-4 text-[#C9963B]" />
+              <span className="text-sm text-[#F4F0E8]/90">{a.title}</span>
+            </div>
+          ))}
+        </FadeUp>
       </div>
     </section>
   )
