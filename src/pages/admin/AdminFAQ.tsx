@@ -1,0 +1,12 @@
+import { EntityCrud } from './_EntityCrud'
+export default function AdminFAQ() {
+  return <EntityCrud
+    table="faq_items" title="FAQ"
+    intro="Häufige Fragen im FAQ-Bereich."
+    defaults={{ question: '', answer: '' }}
+    previewLabel={r => r.question}
+    fields={[
+      { key: 'question', label: 'Frage' },
+      { key: 'answer', label: 'Antwort', type: 'textarea', rows: 5 },
+    ]} />
+}
