@@ -1,0 +1,17 @@
+# Soul Cinema
+
+> Soul Cinema ist ein Ad Studio für Produktvideos, Werbevideos und Social Ads – für digitale und physische Produkte. Konzept, Produktion und Lieferung aus einer Hand.
+
+Wir produzieren kinoreife Produktvideos, Performance-Creatives für Meta, TikTok und YouTube sowie Launch-Kampagnen für Marken, Shops und SaaS-Produkte.
+
+## Pages
+
+- [Startseite](/): Leistungen, Prozess, Preise, Portfolio, FAQ und Kontakt.
+- [Impressum](/impressum): Anbieterkennzeichnung gemäß § 5 TMG.
+- [Datenschutz](/datenschutz): Datenschutzerklärung nach DSGVO.
+- [AGB](/agb): Allgemeine Geschäftsbedingungen.
+
+## Kontakt
+
+- E-Mail: hallo@soulcinema.de
+- Website: https://soulcinema.de
