@@ -22,14 +22,14 @@ export function Pricing() {
             <span className="text-xs font-semibold tracking-[0.2em] uppercase text-[#C9963B]">Preise</span>
           </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#F4F0E8] leading-tight tracking-tight mb-5">
-            Pakete für unterschiedliche Ziele.
+            Transparente <span className="text-highlight">Einstiegspakete</span>.
           </h2>
-          <p className="text-base sm:text-lg text-[#A8A29E] leading-relaxed">
-            Vom einzelnen <span className="text-highlight">Produktvideo</span> bis zum Creative-Paket für Kampagnen.
+          <p className="text-base sm:text-lg text-[#B8B2AA] leading-relaxed">
+            Der finale Preis richtet sich nach Umfang, Materiallage, Anzahl der Varianten und gewünschten Formaten.
           </p>
         </FadeUp>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-6xl">
+        <div className={`grid grid-cols-1 md:grid-cols-2 ${pkgs.length >= 4 ? 'lg:grid-cols-4' : 'lg:grid-cols-3'} gap-5 max-w-7xl`}>
           {pkgs.map((p, i) => {
             const features = Array.isArray(p.features) ? p.features : []
             return (
@@ -64,8 +64,8 @@ export function Pricing() {
           })}
         </div>
 
-        <p className="mt-10 text-center text-xs text-[#A8A29E] max-w-2xl mx-auto">
-          Alle Preise verstehen sich als Einstiegspreise und richten sich nach Umfang, Materiallage und gewünschter Anzahl an Varianten.
+        <p className="mt-10 text-center text-xs text-[#B8B2AA] max-w-2xl mx-auto">
+          Alle Preise sind Einstiegspreise und werden nach Briefing final kalkuliert.
         </p>
       </div>
     </section>
