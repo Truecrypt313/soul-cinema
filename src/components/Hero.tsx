@@ -20,10 +20,11 @@ const FALLBACK_VIDEO = 'https://mojli.s3.us-east-2.amazonaws.com/Mojli+Website+u
 export function Hero() {
   const s = useSettings()
   const videoUrl = setting<string>(s, 'hero_video_url', FALLBACK_VIDEO)
+  const posterUrl = setting<string>(s, 'hero_poster_url', '')
   const badge = setting<string>(s, 'hero_badge', 'Ad Studio für Produktvideos & Social Ads')
   const headline = setting<string>(s, 'hero_headline', 'Dein Produkt. Kinoreif in Szene gesetzt.')
-  const subline = setting<string>(s, 'hero_subline', 'Wir entwickeln Produktvideos und Social Ads für digitale und physische Produkte – aus Produktbildern, vorhandenem Material oder einem Produktlink.')
-  const secondary = setting<string>(s, 'hero_secondary_line', 'Für Shops, Brands, digitale Produkte und Kampagnen, die online sichtbar werden sollen.')
+  const subline = setting<string>(s, 'hero_subline', 'Sende uns Produktbilder, vorhandenes Material oder einen Produktlink. Wir entwickeln daraus hochwertige Produktvideos und Social Ads für Shops, Landingpages und Kampagnen.')
+  const secondary = setting<string>(s, 'hero_secondary_line', 'Für Marken, Shops, digitale Produkte und Unternehmen, die online sichtbar werden wollen.')
   const bullets = setting<string[]>(s, 'hero_bullets', [
     'Produktbilder oder Produktlink reichen aus',
     'Für digitale & physische Produkte',
@@ -62,7 +63,7 @@ export function Hero() {
   }
 
   // Highlight specific words in subline
-  const highlightWords = ['Produktvideos', 'Social Ads', 'Produktbildern', 'Produktlink']
+  const highlightWords = ['Produktbilder', 'Produktlink', 'Produktvideos', 'Social Ads', 'Shops', 'Landingpages']
   const renderHighlighted = (text: string) => {
     const re = new RegExp(`(${highlightWords.join('|')})`, 'g')
     return text.split(re).map((part, i) =>
@@ -79,6 +80,7 @@ export function Hero() {
         key={videoUrl}
         className="absolute inset-0 w-full h-full object-cover scale-110"
         autoPlay muted loop playsInline preload="metadata"
+        poster={posterUrl || undefined}
       >
         <source src={videoUrl} />
       </video>
