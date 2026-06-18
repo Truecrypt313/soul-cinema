@@ -9,9 +9,15 @@ import { Trash2, Plus, Upload } from 'lucide-react'
 type Item = {
   id: string; title: string; category: string | null; description: string | null
   video_url: string | null; thumbnail_url: string | null; format_badge: string | null
+  platform: string | null; project_goal: string | null; featured: boolean
   published: boolean; sort_order: number
 }
-const empty = { title: '', category: '', description: '', video_url: '', thumbnail_url: '', format_badge: '9:16', published: false, sort_order: 10 }
+const empty = { title: '', category: '', description: '', video_url: '', thumbnail_url: '', format_badge: '9:16', platform: '', project_goal: '', featured: false, published: false, sort_order: 10 }
+
+const IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp']
+const VIDEO_TYPES = ['video/mp4', 'video/webm']
+const MAX_IMAGE = 5 * 1024 * 1024
+const MAX_VIDEO = 80 * 1024 * 1024
 
 // Signed-URL cache for previews (private bucket)
 async function signedFor(path: string | null): Promise<string | null> {
@@ -43,20 +49,33 @@ export default function AdminPortfolio() {
   useEffect(() => { load() }, [])
 
   const uploadFile = async (file: File, kind: 'thumb' | 'video') => {
+    const allowed = kind === 'thumb' ? IMAGE_TYPES : VIDEO_TYPES
+    const max = kind === 'thumb' ? MAX_IMAGE : MAX_VIDEO
+    if (!allowed.includes(file.type)) {
+      toast({ title: 'Falscher Dateityp', description: `Erlaubt: ${allowed.join(', ')}`, variant: 'destructive' })
+      return null
+    }
+    if (file.size > max) {
+      toast({ title: 'Datei zu groß', description: `Maximal ${Math.round(max / 1024 / 1024)} MB.`, variant: 'destructive' })
+      return null
+    }
     setUploading(kind)
     const ext = file.name.split('.').pop() || 'bin'
     const path = `${kind}s/${crypto.randomUUID()}.${ext}`
     const { error } = await supabase.storage.from('portfolio-media').upload(path, file, { upsert: false, contentType: file.type })
     setUploading(null)
     if (error) { toast({ title: 'Upload fehlgeschlagen', description: error.message, variant: 'destructive' }); return null }
-    return path // store path; preview via signed URL
+    return path
   }
 
   const save = async () => {
     const payload = {
       title: editing.title, category: editing.category || null, description: editing.description || null,
       video_url: editing.video_url || null, thumbnail_url: editing.thumbnail_url || null,
-      format_badge: editing.format_badge || null, published: !!editing.published,
+      format_badge: editing.format_badge || null,
+      platform: editing.platform || null, project_goal: editing.project_goal || null,
+      featured: !!editing.featured,
+      published: !!editing.published,
       sort_order: Number(editing.sort_order) || 0,
     }
     const { error } = editing.id
@@ -114,37 +133,52 @@ export default function AdminPortfolio() {
             <FieldRow field={{ key: 'format_badge', label: 'Format Badge', placeholder: '9:16 / 1:1 / 16:9' }} value={editing.format_badge} onChange={v => setEditing({ ...editing, format_badge: v })} />
 
             <div>
-              <label className="block text-xs uppercase text-muted-foreground mb-1">Thumbnail</label>
+              <label className="block text-xs uppercase text-muted-foreground mb-1">Thumbnail (JPG, PNG, WebP · max. 5 MB)</label>
               <div className="flex items-center gap-2">
                 <input value={editing.thumbnail_url ?? ''} onChange={e => setEditing({ ...editing, thumbnail_url: e.target.value })} className={inp} placeholder="URL oder Storage-Pfad" />
                 <label className="px-3 py-2 rounded-md border border-border cursor-pointer hover:bg-foreground/5 inline-flex items-center gap-1.5 text-xs whitespace-nowrap">
-                  <Upload className="w-3.5 h-3.5" /> {uploading === 'thumb' ? '…' : 'Upload'}
-                  <input type="file" accept="image/*" className="hidden" onChange={async e => {
-                    const f = e.target.files?.[0]; if (!f) return
+                  <Upload className="w-3.5 h-3.5" /> {uploading === 'thumb' ? 'Lädt…' : 'Upload'}
+                  <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden" disabled={!!uploading} onChange={async e => {
+                    const f = e.target.files?.[0]; e.target.value = ''; if (!f) return
                     const path = await uploadFile(f, 'thumb')
                     if (path) setEditing({ ...editing, thumbnail_url: path })
                   }} />
                 </label>
               </div>
+              {editing.thumbnail_url && /^https?:\/\//.test(editing.thumbnail_url) && (
+                <img src={editing.thumbnail_url} alt="" className="mt-2 max-h-40 rounded border border-border" />
+              )}
             </div>
 
             <div>
-              <label className="block text-xs uppercase text-muted-foreground mb-1">Video</label>
+              <label className="block text-xs uppercase text-muted-foreground mb-1">Video (MP4, WebM · max. 80 MB)</label>
               <div className="flex items-center gap-2">
                 <input value={editing.video_url ?? ''} onChange={e => setEditing({ ...editing, video_url: e.target.value })} className={inp} placeholder="URL oder Storage-Pfad" />
                 <label className="px-3 py-2 rounded-md border border-border cursor-pointer hover:bg-foreground/5 inline-flex items-center gap-1.5 text-xs whitespace-nowrap">
-                  <Upload className="w-3.5 h-3.5" /> {uploading === 'video' ? '…' : 'Upload'}
-                  <input type="file" accept="video/*" className="hidden" onChange={async e => {
-                    const f = e.target.files?.[0]; if (!f) return
+                  <Upload className="w-3.5 h-3.5" /> {uploading === 'video' ? 'Lädt…' : 'Upload'}
+                  <input type="file" accept="video/mp4,video/webm" className="hidden" disabled={!!uploading} onChange={async e => {
+                    const f = e.target.files?.[0]; e.target.value = ''; if (!f) return
                     const path = await uploadFile(f, 'video')
                     if (path) setEditing({ ...editing, video_url: path })
                   }} />
                 </label>
               </div>
+              {editing.video_url && /^https?:\/\//.test(editing.video_url) && (
+                <video src={editing.video_url} controls className="mt-2 max-h-48 rounded border border-border" />
+              )}
             </div>
 
             <div className="grid grid-cols-2 gap-3">
+              <FieldRow field={{ key: 'platform', label: 'Plattform', placeholder: 'Meta · TikTok · Shopify' }} value={editing.platform} onChange={v => setEditing({ ...editing, platform: v })} />
+              <FieldRow field={{ key: 'project_goal', label: 'Ziel / Use Case', placeholder: 'z. B. Sales, Launch' }} value={editing.project_goal} onChange={v => setEditing({ ...editing, project_goal: v })} />
+            </div>
+
+            <div className="grid grid-cols-3 gap-3">
               <FieldRow field={{ key: 'sort_order', label: 'Sortierung', type: 'number' }} value={editing.sort_order} onChange={v => setEditing({ ...editing, sort_order: v })} />
+              <label className="flex items-end gap-2 pb-2">
+                <input type="checkbox" checked={!!editing.featured} onChange={e => setEditing({ ...editing, featured: e.target.checked })} />
+                <span>Featured</span>
+              </label>
               <label className="flex items-end gap-2 pb-2">
                 <input type="checkbox" checked={!!editing.published} onChange={e => setEditing({ ...editing, published: e.target.checked })} />
                 <span>Veröffentlicht</span>

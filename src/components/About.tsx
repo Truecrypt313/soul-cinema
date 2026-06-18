@@ -5,11 +5,11 @@ import { useCmsList } from '@/hooks/useCms'
 type Row = { id: string; step_number: string | null; title: string; description: string | null }
 
 const FALLBACK: Row[] = [
-  { id: '1', step_number: '01', title: 'Analyse', description: 'Wir prüfen Produkt, Zielgruppe und Plattform und definieren das Ziel des Videos.' },
-  { id: '2', step_number: '02', title: 'Konzept', description: 'Hook, Storyboard und Format werden auf den Einsatzkanal abgestimmt.' },
-  { id: '3', step_number: '03', title: 'Produktion', description: 'Aus Produktbildern, vorhandenem Material oder einem Produktlink entsteht das Video.' },
-  { id: '4', step_number: '04', title: 'Schnitt & Sound', description: 'Cut, Sounddesign, Musik und Branding werden finalisiert.' },
-  { id: '5', step_number: '05', title: 'Lieferung', description: 'Sie erhalten fertige Dateien für Social Media, Ads, Landingpages oder Shops.' },
+  { id: '1', step_number: '01', title: 'Material senden', description: 'Produktbilder, vorhandenes Material oder ein Produktlink reichen für den Start aus.' },
+  { id: '2', step_number: '02', title: 'Strategie', description: 'Wir prüfen Produkt, Zielgruppe, Plattform und Werbeziel.' },
+  { id: '3', step_number: '03', title: 'Konzept', description: 'Hook, Szenenidee, Stilrichtung und Format werden auf den Einsatzkanal abgestimmt.' },
+  { id: '4', step_number: '04', title: 'Produktion', description: 'Wir erstellen das Video mit moderner Video- und Postproduktion.' },
+  { id: '5', step_number: '05', title: 'Lieferung', description: 'Du erhältst fertige Dateien für Social Ads, Shop, Landingpage oder Website.' },
 ]
 
 export function About() {

@@ -9,6 +9,7 @@ import { FAQ } from '@/components/FAQ'
 import { Contact } from '@/components/Contact'
 import { Footer } from '@/components/Footer'
 import { Seo } from '@/components/Seo'
+import { useSettings, setting } from '@/hooks/useCms'
 
 const FAQS = [
   { q: 'Was brauche ich für ein Projekt?', a: 'Produktbilder, vorhandenes Material oder ein Produktlink reichen für eine erste Einschätzung. Alles weitere klären wir gemeinsam.' },
@@ -54,12 +55,21 @@ const serviceLd = {
 }
 
 export default function Landing() {
+  const s = useSettings()
+  const title = setting<string>(s, 'seo_title', 'Soul Cinema — Produktvideos, Werbevideos & Social Ads')
+  const description = setting<string>(s, 'seo_description', 'Soul Cinema ist ein Ad Studio für Produktvideos, Werbevideos und Social Ads – für digitale und physische Produkte. Konzept, Produktion & Lieferung aus einer Hand.')
+  const ogTitle = setting<string>(s, 'og_title', title)
+  const ogDescription = setting<string>(s, 'og_description', description)
+  const ogImage = setting<string>(s, 'og_image_url', 'https://soulcinema.de/og-image.jpg')
   return (
     <div className="min-h-screen bg-[#0A0A0A] text-[#F4F0E8]">
       <Seo
-        title="Soul Cinema — Produktvideos, Werbevideos & Social Ads"
-        description="Soul Cinema ist ein Ad Studio für Produktvideos, Werbevideos und Social Ads – für digitale und physische Produkte. Konzept, Produktion & Lieferung aus einer Hand."
+        title={title}
+        description={description}
         path="/"
+        image={ogImage}
+        ogTitle={ogTitle}
+        ogDescription={ogDescription}
         jsonLd={[faqLd, serviceLd]}
       />
       <main className="relative" role="main">

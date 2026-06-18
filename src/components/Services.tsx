@@ -6,12 +6,12 @@ import { useCmsList } from '@/hooks/useCms'
 type Row = { id: string; icon_name: string | null; title: string; tagline: string | null; description: string | null }
 
 const FALLBACK: Row[] = [
-  { id: '1', icon_name: 'Film', title: 'Produktvideos', tagline: 'Hochwertig in Szene gesetzt', description: 'Kinoreife Produktvideos für Shops, Landingpages und Markenauftritte.' },
-  { id: '2', icon_name: 'Megaphone', title: 'Social Ads', tagline: 'Performance-Creatives', description: 'Hook-getriebene Video-Ads für Meta, TikTok und YouTube.' },
-  { id: '3', icon_name: 'Layers', title: 'Launch Creatives', tagline: 'Für Produkt-Launches', description: 'Kampagnen-Creatives mit mehreren Hooks und Formaten für A/B-Tests.' },
-  { id: '4', icon_name: 'Smartphone', title: 'SaaS & App Videos', tagline: 'Digitale Produkte sichtbar machen', description: 'Erklär- und Promo-Videos für Apps, Tools und Software.' },
-  { id: '5', icon_name: 'ShoppingBag', title: 'E-Commerce Reels', tagline: 'Conversion im Fokus', description: 'Short-Form-Videos für Produktseiten, Shops und Marken-Feeds.' },
-  { id: '6', icon_name: 'Package', title: 'Content Pakete', tagline: 'Kontinuierlicher Output', description: 'Monatliche Pakete für Marken, die regelmäßig neuen Video-Content brauchen.' },
+  { id: '1', icon_name: 'Film', title: 'Produktvideos', tagline: 'Für Shop, Website und Social Media', description: 'Wir zeigen Produktnutzen, Anwendung und Wirkung in einem hochwertigen Video – ideal für Shops, Landingpages und Markenauftritte.' },
+  { id: '2', icon_name: 'Megaphone', title: 'Social Ads', tagline: 'Creatives, die Aufmerksamkeit stoppen', description: 'Kurze, hook-starke Video-Ads für Meta, TikTok, YouTube Shorts und Kampagnen, die schnell verstanden werden.' },
+  { id: '3', icon_name: 'Layers', title: 'Launch Creatives', tagline: 'Für Produktstarts und Kampagnen', description: 'Video-Assets mit mehreren Hooks und Formaten für Launches, Angebote und A/B-Tests.' },
+  { id: '4', icon_name: 'Smartphone', title: 'SaaS & App Videos', tagline: 'Digitale Produkte verständlich machen', description: 'Videos, die Apps, Tools, Plattformen und Features klar erklären und visuell stark präsentieren.' },
+  { id: '5', icon_name: 'ShoppingBag', title: 'E-Commerce Reels', tagline: 'Für Produktseiten und Feeds', description: 'Short-Form-Videos für Shopify, Amazon, WooCommerce, Reels und Marken-Feeds.' },
+  { id: '6', icon_name: 'Package', title: 'Content Pakete', tagline: 'Regelmäßiger Creative-Output', description: 'Kontinuierliche Video-Varianten, Hooks und Formate für Marken, die regelmäßig neue Creatives brauchen.' },
 ]
 
 export function Services() {

@@ -37,7 +37,7 @@ export function Contact() {
   const [form, setForm] = useState(empty)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [busy, setBusy] = useState(false)
-  const [sent, setSent] = useState<string | null>(null)
+  const [sent, setSent] = useState<{ name: string; email: string } | null>(null)
 
   const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setForm(prev => ({ ...prev, [k]: e.target.value }))
@@ -53,7 +53,11 @@ export function Contact() {
       setErrors(errs)
       return
     }
-    if (form.website) { setSent(form.name); setForm(empty); return } // honeypot
+    if (form.website) {
+      // Spam: silently discard, reset form, no thank-you card
+      setForm(empty)
+      return
+    }
     setBusy(true)
     const { error } = await supabase.from('contact_leads').insert({
       name: parsed.data.name,
@@ -72,7 +76,7 @@ export function Contact() {
       toast({ title: 'Anfrage konnte nicht gesendet werden', description: `Bitte erneut versuchen oder an ${email} schreiben.`, variant: 'destructive' })
       return
     }
-    setSent(parsed.data.name)
+    setSent({ name: parsed.data.name, email: parsed.data.email })
     setForm(empty)
   }
 
@@ -124,9 +128,9 @@ export function Contact() {
                 <div className="w-14 h-14 mx-auto rounded-full bg-accent-soft flex items-center justify-center mb-5">
                   <CheckCircle2 className="w-7 h-7 text-[#C9963B]" />
                 </div>
-                <h3 className="text-2xl font-bold text-[#F4F0E8] mb-3">Danke, {sent}!</h3>
+                <h3 className="text-2xl font-bold text-[#F4F0E8] mb-3">Danke, {sent.name}!</h3>
                 <p className="text-[#A8A29E] mb-2">Wir haben deine Anfrage erhalten und melden uns in der Regel innerhalb von <span className="text-highlight font-semibold">24 Stunden</span>.</p>
-                <p className="text-sm text-[#A8A29E]/80">Deine Anfrage wurde an Soul Cinema übermittelt.</p>
+                <p className="text-sm text-[#A8A29E]/80">Wir melden uns per E-Mail an <span className="text-[#F4F0E8] font-medium">{sent.email}</span>.</p>
                 <button onClick={() => setSent(null)} className="mt-6 text-sm text-[#C9963B] hover:underline">Weitere Anfrage senden</button>
               </div>
             ) : (
@@ -162,7 +166,7 @@ export function Contact() {
                 <div>
                   <label htmlFor="product_url" className="block text-xs font-semibold text-[#F4F0E8] mb-2 uppercase tracking-wider">Website oder Produktlink</label>
                   <input id="product_url" type="url" value={form.product_url} onChange={set('product_url')} className={inputCls} placeholder="https://…" maxLength={500} />
-                  <p className="text-xs text-[#A8A29E]/80 mt-1.5">Ein Shop-, Amazon-, App- oder Landingpage-Link reicht aus.</p>
+                  <p className="text-xs mt-1.5"><span className="text-highlight font-semibold">Ein Shop-, Amazon-, App- oder Landingpage-Link reicht aus.</span></p>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -203,6 +207,9 @@ export function Contact() {
                   {busy ? 'Wird gesendet…' : (<><Send className="w-4 h-4" /> Projekt anfragen</>)}
                 </button>
 
+                <p className="text-xs text-[#A8A29E] text-center">
+                  Keine automatische Buchung. Wir prüfen deine Anfrage persönlich.
+                </p>
                 <p className="text-[11px] text-[#A8A29E]/80 text-center leading-relaxed">
                   Mit dem Absenden stimmen Sie zu, dass wir Ihre Angaben zur Bearbeitung Ihrer Anfrage verarbeiten dürfen. Details siehe <a href="/datenschutz" className="underline hover:text-[#C9963B]">Datenschutz</a>.
                 </p>
