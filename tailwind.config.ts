@@ -18,7 +18,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        bagel: ['Bagel Fat One', 'cursive'],
+        brand: ['Cormorant Garamond', 'Georgia', 'serif'],
+        bagel: ['Cormorant Garamond', 'Georgia', 'serif'],
       },
       colors: {
         border: "var(--border)",

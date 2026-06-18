@@ -4,7 +4,7 @@ import { Portfolio } from '@/components/Portfolio'
 import { About } from '@/components/About'
 import { Awards } from '@/components/Awards'
 import { Pricing } from '@/components/Pricing'
-import { Team } from '@/components/Team'
+import { Testimonials } from '@/components/Testimonials'
 import { FAQ } from '@/components/FAQ'
 import { Contact } from '@/components/Contact'
 import { Footer } from '@/components/Footer'
@@ -19,7 +19,7 @@ export default function Landing() {
         <section id="process" aria-label="Prozess"><About /></section>
         <section id="why" aria-label="Warum Soul Cinema"><Awards /></section>
         <section id="pricing" aria-label="Preise"><Pricing /></section>
-        <section id="audience" aria-label="Was Kunden brauchen"><Team /></section>
+        <Testimonials />
         <section id="faq" aria-label="FAQ"><FAQ /></section>
         <section id="contact" aria-label="Kontakt"><Contact /></section>
       </main>
