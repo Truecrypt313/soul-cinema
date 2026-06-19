@@ -7,7 +7,7 @@ import { supabase } from '@/integrations/supabase/client'
 import { Mail, Send, CheckCircle2, MessageCircle, Calendar } from 'lucide-react'
 import { FadeUp } from './FadeUp'
 import { useSettings, setting } from '@/hooks/useCms'
-import { track } from '@/lib/analytics'
+import { track, getAttribution, getInterestPackage } from '@/lib/analytics'
 
 const schema = z.object({
   name: z.string().trim().min(1, 'Bitte Namen angeben').max(200),
@@ -73,6 +73,8 @@ export function Contact() {
       return
     }
     setBusy(true)
+    const attr = getAttribution()
+    const interest = getInterestPackage()
     const { error } = await supabase.from('contact_leads').insert({
       name: parsed.data.name,
       company: parsed.data.company || null,
@@ -84,7 +86,17 @@ export function Contact() {
       message: parsed.data.message,
       budget: parsed.data.budget || null,
       status: 'new',
-    })
+      referrer_domain: attr.referrer_domain ?? null,
+      utm_source: attr.utm_source ?? null,
+      utm_medium: attr.utm_medium ?? null,
+      utm_campaign: attr.utm_campaign ?? null,
+      utm_content: attr.utm_content ?? null,
+      utm_term: attr.utm_term ?? null,
+      landing_page: attr.landing_page ?? null,
+      conversion_page: (typeof window !== 'undefined' ? window.location.pathname : null),
+      device_type: attr.device_type ?? null,
+      interest_package: interest ?? null,
+    } as any)
     setBusy(false)
     if (error) {
       track({ event_name: 'contact_submit_error', metadata: { error_code: 'insert' } })
