@@ -161,7 +161,7 @@ export default function Admin() {
         <header className="lg:hidden sticky top-0 z-20 bg-card/80 backdrop-blur border-b border-border px-4 py-3 flex items-center justify-between">
           <button onClick={() => setSidebarOpen(true)} className="p-2 -ml-2"><Menu className="w-5 h-5" /></button>
           <Link to="/" className="font-brand text-lg">Soul Cinema</Link>
-          <div className="w-9" />
+          <ThemeToggle />
         </header>
         <main className="p-6 lg:p-10 max-w-6xl">
           <Routes>
