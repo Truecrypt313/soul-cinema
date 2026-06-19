@@ -252,6 +252,9 @@ function EmailNotes() {
       <div className="text-[11px]">Standard: <code>smtp.strato.de</code> · Port <code>465</code> (SSL/TLS) · Fallback Port <code>587</code> (STARTTLS).</div>
     </div>
   )
+}
+
+
 
 function ListEditor({ value, onChange }: { value: string[]; onChange: (v: string[]) => void }) {
   const inp = 'w-full px-3 py-2 rounded-md bg-background border border-border'
