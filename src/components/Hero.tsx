@@ -130,6 +130,7 @@ export function Hero() {
                 className="glass-effect p-2.5 rounded-full text-[#F4F0E8] hover:text-[#C9963B] gentle-animation">
                 {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
               </button>
+              <ThemeToggle variant="glass" className="text-[#F4F0E8] hover:text-[#C9963B]" />
               <button onClick={goContact}
                 className="hidden sm:inline-flex bg-[#C9963B] text-[#0A0A0A] font-semibold px-5 py-2.5 rounded-md hover:bg-[#d9a64b] gentle-animation">
                 {primaryCta}
