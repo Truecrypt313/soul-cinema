@@ -34,7 +34,7 @@ export function Pricing() {
             const features = Array.isArray(p.features) ? p.features : []
             return (
               <FadeUp key={p.id} delay={i * 0.07} className="h-full">
-                <div className={`relative h-full rounded-2xl p-8 gentle-animation ${
+                <div className={`relative h-full flex flex-col rounded-2xl p-8 gentle-animation ${
                   p.highlighted
                     ? 'bg-gradient-to-b from-[#1c1814] to-[#141414] border border-[#C9963B]/40 elevated-shadow'
                     : 'bg-card border border-white/[0.06] hover:border-[#C9963B]/30'
@@ -53,7 +53,7 @@ export function Pricing() {
                       </li>
                     ))}
                   </ul>
-                  <a href="#contact" className={`block text-center w-full font-semibold py-3 rounded-md gentle-animation ${
+                  <a href="#contact" className={`block text-center mt-auto w-full font-semibold py-3 rounded-md gentle-animation ${
                     p.highlighted ? 'bg-[#C9963B] text-[#0A0A0A] hover:bg-[#d9a64b]' : 'border border-[#C9963B]/40 text-foreground hover:bg-[#C9963B]/10 hover:text-[#C9963B]'
                   }`}>
                     {p.cta_label || 'Projekt anfragen'}
