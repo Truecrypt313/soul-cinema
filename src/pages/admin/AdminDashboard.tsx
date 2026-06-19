@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { supabase } from '@/integrations/supabase/client'
 import { Inbox, Briefcase, FileText, HelpCircle, Tag, Star, AlertTriangle, Lightbulb, CheckCircle2, Circle } from 'lucide-react'
 
-type Lead = { id: string; name: string; email: string; status: string; created_at: string; message: string }
+type Lead = { id: string; name: string; email: string; status: string; created_at: string; message: string; utm_source?: string | null; follow_up_at?: string | null }
 
 const PLACEHOLDER_VIDEO = 'mojli.s3.us-east-2.amazonaws.com'
 
@@ -19,8 +19,8 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     (async () => {
-      const { data } = await supabase.from('contact_leads').select('id,name,email,status,created_at,message').order('created_at', { ascending: false })
-      const l = (data as Lead[]) ?? []
+      const { data } = await supabase.from('contact_leads' as any).select('id,name,email,status,created_at,message,utm_source,follow_up_at').order('created_at', { ascending: false })
+      const l = ((data as unknown) as Lead[]) ?? []
       setLeads(l)
       const c: Record<string, number> = {}
       for (const x of l) c[x.status] = (c[x.status] ?? 0) + 1
@@ -136,13 +136,16 @@ export default function AdminDashboard() {
       )}
 
       <h2 className="text-sm uppercase tracking-wider text-muted-foreground mb-3">Anfragen</h2>
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
         <Stat label="Neu" value={counts.new ?? 0} color="text-[#C9963B]" />
         <Stat label="Kontaktiert" value={counts.contacted ?? 0} />
         <Stat label="In Gespräch" value={counts.in_talks ?? 0} />
         <Stat label="Gewonnen" value={counts.won ?? 0} color="text-green-500" />
         <Stat label="Verloren" value={counts.lost ?? 0} color="text-muted-foreground" />
       </div>
+
+      <LeadInsightsCard leads={leads} />
+
 
       <h2 className="text-sm uppercase tracking-wider text-muted-foreground mb-3">Inhalte</h2>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
@@ -188,6 +191,45 @@ export default function AdminDashboard() {
           </div>
         </aside>
       </div>
+    </div>
+  )
+}
+
+function LeadInsightsCard({ leads }: { leads: Lead[] }) {
+  const now = Date.now()
+  const ms7 = 7 * 86400000
+  const ms30 = 30 * 86400000
+  const new7 = leads.filter(l => now - new Date(l.created_at).getTime() <= ms7).length
+  const open = leads.filter(l => l.status !== 'won' && l.status !== 'lost').length
+  const followDue = leads.filter(l => l.follow_up_at && new Date(l.follow_up_at).getTime() <= now && l.status !== 'won' && l.status !== 'lost').length
+  const last30 = leads.filter(l => now - new Date(l.created_at).getTime() <= ms30 && l.utm_source)
+  const sourceMap = new Map<string, number>()
+  for (const l of last30) sourceMap.set(l.utm_source!, (sourceMap.get(l.utm_source!) ?? 0) + 1)
+  const topSource = Array.from(sourceMap.entries()).sort((a, b) => b[1] - a[1])[0]
+  const hasAny = leads.length > 0
+
+  return (
+    <section className="mb-10 bg-card clean-border rounded-xl p-5">
+      <h2 className="text-lg font-bold mb-3">Lead-Insights</h2>
+      {!hasAny ? (
+        <div className="text-sm text-muted-foreground">Noch keine Anfragen — sobald welche eingehen, erscheinen hier Quelle und Wiedervorlagen.</div>
+      ) : (
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <Mini label="Neue Leads (7 Tage)" value={String(new7)} />
+          <Mini label="Offene Leads" value={String(open)} />
+          <Mini label="Follow-ups fällig" value={String(followDue)} accent={followDue > 0} />
+          <Mini label="Top-Quelle (30 Tage)" value={topSource ? `${topSource[0]} (${topSource[1]})` : '—'} />
+        </div>
+      )}
+    </section>
+  )
+}
+
+function Mini({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
+  return (
+    <div className="bg-background rounded-lg p-4 border border-border">
+      <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</div>
+      <div className={`text-2xl font-black mt-1 ${accent ? 'text-red-400' : 'text-foreground'}`}>{value}</div>
     </div>
   )
 }

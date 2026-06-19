@@ -41,10 +41,16 @@ const RANGES = [
   { key: '90d', label: '90 Tage', days: 90 },
 ] as const
 
+type LeadRow = {
+  utm_source: string | null; utm_campaign: string | null; referrer_domain: string | null
+  interest_package: string | null; device_type: string | null; created_at: string
+}
+
 export default function AdminAnalytics() {
   const [days, setDays] = useState<number>(7)
   const [events, setEvents] = useState<Ev[]>([])
   const [leadsCount, setLeadsCount] = useState(0)
+  const [leadRows, setLeadRows] = useState<LeadRow[]>([])
   const [settings, setSettings] = useState<Settings | null>(null)
   const [saltConfigured, setSaltConfigured] = useState<boolean | null>(null)
   const [loading, setLoading] = useState(true)
@@ -63,15 +69,17 @@ export default function AdminAnalytics() {
     ;(async () => {
       setLoading(true)
       const since = new Date(Date.now() - days * 86400000).toISOString()
-      const [{ data: evs }, { count }, { data: st }] = await Promise.all([
+      const [{ data: evs }, { count }, { data: st }, { data: lrows }] = await Promise.all([
         supabase.from('analytics_events').select('*').gte('created_at', since).order('created_at', { ascending: false }).limit(20000),
         supabase.from('contact_leads').select('*', { count: 'exact', head: true }).gte('created_at', since),
         supabase.from('analytics_settings').select('*').eq('id', 1).maybeSingle(),
+        supabase.from('contact_leads' as any).select('utm_source, utm_campaign, referrer_domain, interest_package, device_type, created_at').gte('created_at', since),
       ])
       if (!active) return
       setEvents((evs as Ev[]) ?? [])
       setLeadsCount(count ?? 0)
       setSettings((st as Settings) ?? null)
+      setLeadRows(((lrows as unknown) as LeadRow[]) ?? [])
       setLoading(false)
     })()
     return () => { active = false }
@@ -286,6 +294,11 @@ export default function AdminAnalytics() {
         </section>
       </div>
 
+      {/* Lead Attribution (Phase C) */}
+      <LeadAttributionBlock rows={leadRows} />
+
+
+
       {/* Settings */}
       {settings && (
         <section className="bg-card clean-border rounded-xl p-5">
@@ -355,3 +368,45 @@ function DeviceCard({ icon: Icon, label, value }: { icon: any; label: string; va
     </div>
   )
 }
+
+function LeadAttributionBlock({ rows }: { rows: LeadRow[] }) {
+  const group = (key: keyof LeadRow) => {
+    const m = new Map<string, number>()
+    for (const r of rows) {
+      const v = (r[key] as string | null) || '—'
+      m.set(v, (m.get(v) ?? 0) + 1)
+    }
+    return Array.from(m.entries()).sort((a, b) => b[1] - a[1]).slice(0, 10)
+  }
+
+  if (rows.length === 0) {
+    return (
+      <section className="bg-card clean-border rounded-xl p-5 mb-6">
+        <h2 className="text-lg font-bold mb-2">Lead-Attribution</h2>
+        <p className="text-sm text-muted-foreground">
+          Noch keine Lead-Attribution vorhanden. Neue Anfragen werden ab jetzt mit Quelle und Kampagne erfasst.
+        </p>
+      </section>
+    )
+  }
+
+  return (
+    <section className="bg-card clean-border rounded-xl p-5 mb-6">
+      <h2 className="text-lg font-bold mb-1">Lead-Attribution</h2>
+      <p className="text-xs text-muted-foreground mb-4">{rows.length} Leads im gewählten Zeitraum. Quellen, Kampagnen und Paketinteresse aus dem Kontaktformular.</p>
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div><h3 className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Leads nach UTM Source</h3>
+          <Table rows={group('utm_source')} emptyText="—" labelCol="Quelle" /></div>
+        <div><h3 className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Leads nach UTM Campaign</h3>
+          <Table rows={group('utm_campaign')} emptyText="—" labelCol="Kampagne" /></div>
+        <div><h3 className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Leads nach Referrer</h3>
+          <Table rows={group('referrer_domain')} emptyText="—" labelCol="Domain" /></div>
+        <div><h3 className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Leads nach Paketinteresse</h3>
+          <Table rows={group('interest_package')} emptyText="—" labelCol="Paket" /></div>
+        <div><h3 className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Leads nach Gerät</h3>
+          <Table rows={group('device_type')} emptyText="—" labelCol="Gerät" /></div>
+      </div>
+    </section>
+  )
+}
+

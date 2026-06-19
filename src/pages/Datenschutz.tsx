@@ -117,7 +117,19 @@ export default function Datenschutz() {
 
           <section>
             <h2 className="text-foreground text-2xl font-bold mb-4">6. Kontaktformular</h2>
-            <p>Wenn Sie uns über das Kontaktformular Anfragen zukommen lassen, werden Ihre Angaben aus dem Formular inklusive der von Ihnen dort angegebenen Kontaktdaten zur Bearbeitung der Anfrage und für den Fall von Anschlussfragen bei uns gespeichert. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO, sofern Ihre Anfrage mit der Erfüllung eines Vertrags zusammenhängt oder zur Durchführung vorvertraglicher Maßnahmen erforderlich ist. In allen übrigen Fällen beruht die Verarbeitung auf unserem berechtigten Interesse an der effektiven Bearbeitung der an uns gerichteten Anfragen (Art. 6 Abs. 1 lit. f DSGVO). Die Daten werden gelöscht, sobald sie für die Bearbeitung nicht mehr erforderlich sind und keine gesetzlichen Aufbewahrungspflichten entgegenstehen.</p>
+            <p className="mb-3">Wenn Sie uns über das Kontaktformular Anfragen zukommen lassen, werden Ihre Angaben aus dem Formular inklusive der von Ihnen dort angegebenen Kontaktdaten zur Bearbeitung der Anfrage und für den Fall von Anschlussfragen bei uns gespeichert. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO, sofern Ihre Anfrage mit der Erfüllung eines Vertrags zusammenhängt oder zur Durchführung vorvertraglicher Maßnahmen erforderlich ist. In allen übrigen Fällen beruht die Verarbeitung auf unserem berechtigten Interesse an der effektiven Bearbeitung der an uns gerichteten Anfragen (Art. 6 Abs. 1 lit. f DSGVO). Die Daten werden gelöscht, sobald sie für die Bearbeitung nicht mehr erforderlich sind und keine gesetzlichen Aufbewahrungspflichten entgegenstehen.</p>
+            <p className="mb-3">Zusätzlich zu Ihren Eingaben werden bei einer Kontaktanfrage technische Kontextdaten zur Anfrage gespeichert, sofern verfügbar:</p>
+            <ul className="list-disc pl-6 space-y-1 mb-3">
+              <li>Quelle der Anfrage und Referrer-Domain (z. B. über welche Website Sie zu uns gelangt sind)</li>
+              <li>Kampagnenparameter aus der URL (UTM-Source, -Medium, -Campaign, -Content, -Term)</li>
+              <li>Aufgerufene Landingpage sowie die Seite, auf der das Formular abgesendet wurde</li>
+              <li>Grobe Geräteklasse (Mobile, Desktop, Tablet)</li>
+              <li>Ggf. das von Ihnen zuvor ausgewählte Preispaket („Paketinteresse")</li>
+            </ul>
+            <p className="mb-3">Zwecke: Bearbeitung Ihrer Anfrage, Zuordnung zu Werbekampagnen und Verbesserung von Website und Angeboten. Rechtsgrundlage: Art. 6 Abs. 1 lit. b bzw. f DSGVO.</p>
+            <p className="mb-3"><strong className="text-foreground">Wichtige Abgrenzung zur Reichweitenmessung (Punkt 10):</strong> Die zur Kontaktanfrage gespeicherten Kontextdaten werden nicht mit den anonymen Analytics-Besucher-Hashes verknüpft. Es wird keine Roh-IP-Adresse im Lead-Datensatz gespeichert. Es werden keine personenbezogenen Analytics-Profile erstellt. Inhalte des Kontaktformulars (Name, E-Mail, Telefon, Nachricht usw.) werden ausdrücklich nicht in Analytics-Ereignissen gespeichert.</p>
+            <p className="mb-3">Zur internen Bearbeitung können Administratoren zu jeder Anfrage einen Status, ein Wiedervorlage-Datum, eine Priorität sowie interne Notizen vergeben. Diese internen Felder werden ausschließlich im Adminbereich angezeigt und nicht auf der Website veröffentlicht.</p>
+            <p className="text-sm italic">Hinweis: Diese Darstellung gibt den aktuell technisch umgesetzten Stand wieder und ersetzt keine rechtliche Beratung.</p>
           </section>
 
           <section>
