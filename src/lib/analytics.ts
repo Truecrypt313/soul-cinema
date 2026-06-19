@@ -125,3 +125,59 @@ export function track(input: TrackInput): void {
 export function trackPageView() {
   track({ event_name: 'page_view' })
 }
+
+// --- Content insights helpers (Phase B) ---
+
+const SECTION_SEEN = new Set<string>()
+
+export function trackFaqOpen(faqId: string, index?: number) {
+  track({
+    event_name: 'faq_open',
+    section_key: 'faq',
+    metadata: { faq_id: faqId.slice(0, 64), ...(typeof index === 'number' ? { faq_index: index } : {}) },
+  })
+}
+
+/**
+ * Observe all <section data-section="key"> elements on the page.
+ * Fires `section_view` once per session per section after ≥1s of ≥50% visibility.
+ */
+export function observeSectionViews(): () => void {
+  if (typeof window === 'undefined' || typeof IntersectionObserver === 'undefined') return () => {}
+  if (dntOn()) return () => {}
+
+  const timers = new Map<Element, number>()
+
+  const io = new IntersectionObserver((entries) => {
+    for (const entry of entries) {
+      const el = entry.target as HTMLElement
+      const key = el.dataset.section || el.id
+      if (!key || SECTION_SEEN.has(key)) continue
+
+      if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+        if (!timers.has(el)) {
+          const t = window.setTimeout(() => {
+            if (SECTION_SEEN.has(key)) return
+            SECTION_SEEN.add(key)
+            track({ event_name: 'section_view', section_key: key })
+            io.unobserve(el)
+            timers.delete(el)
+          }, 1000)
+          timers.set(el, t)
+        }
+      } else {
+        const t = timers.get(el)
+        if (t) { clearTimeout(t); timers.delete(el) }
+      }
+    }
+  }, { threshold: [0, 0.5, 1] })
+
+  const targets = document.querySelectorAll<HTMLElement>('section[data-section], section[id]')
+  targets.forEach((el) => io.observe(el))
+
+  return () => {
+    timers.forEach((t) => clearTimeout(t))
+    timers.clear()
+    io.disconnect()
+  }
+}
