@@ -178,10 +178,10 @@ async function sendViaSmtp(opts: {
   // SMTP_SECURE: 'true' => implicit TLS (port 465). 'false' => STARTTLS (port 587).
   const secureRaw = (Deno.env.get("SMTP_SECURE") ?? (port === 465 ? "true" : "false")).toLowerCase();
   const secure = secureRaw === "true" || secureRaw === "1";
-  const user = Deno.env.get("SMTP_USER");
+  const user = Deno.env.get("SMTP_USER") || Deno.env.get("SMTP_FROM_EMAIL") || "hallo@soulcinema.de";
   const pass = Deno.env.get("SMTP_PASS");
 
-  if (!user || !pass) {
+  if (!pass) {
     throw new Error("SMTP configuration missing");
   }
 
