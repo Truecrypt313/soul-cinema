@@ -190,10 +190,10 @@ export default function AdminPortfolio() {
             </div>
 
             <div className="grid grid-cols-3 gap-3">
-              <FieldRow field={{ key: 'sort_order', label: 'Sortierung', type: 'number' }} value={editing.sort_order} onChange={v => setEditing({ ...editing, sort_order: v })} />
+              <FieldRow field={{ key: 'sort_order', label: 'Reihenfolge', type: 'number' }} value={editing.sort_order} onChange={v => setEditing({ ...editing, sort_order: v })} />
               <label className="flex items-end gap-2 pb-2">
                 <input type="checkbox" checked={!!editing.featured} onChange={e => setEditing({ ...editing, featured: e.target.checked })} />
-                <span>Featured</span>
+                <span>Als Featured markieren</span>
               </label>
               <label className="flex items-end gap-2 pb-2">
                 <input type="checkbox" checked={!!editing.published} onChange={e => setEditing({ ...editing, published: e.target.checked })} />
