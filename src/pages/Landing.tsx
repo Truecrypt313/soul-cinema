@@ -63,7 +63,7 @@ export default function Landing() {
   const ogDescription = setting<string>(s, 'og_description', description)
   const ogImage = setting<string>(s, 'og_image_url', 'https://soulcinema.de/og-image.jpg')
   return (
-    <div className="min-h-screen bg-[#0A0A0A] text-[#F4F0E8]">
+    <div className="min-h-screen bg-background text-foreground">
       <Seo
         title={title}
         description={description}
