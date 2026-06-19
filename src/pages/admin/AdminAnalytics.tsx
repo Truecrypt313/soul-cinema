@@ -171,6 +171,16 @@ export default function AdminAnalytics() {
         </div>
       )}
 
+      {saltConfigured === false && (
+        <div className="mb-6 flex items-start gap-3 bg-orange-500/10 border border-orange-500/30 rounded-xl p-4 text-sm">
+          <AlertTriangle className="w-4 h-4 text-orange-500 mt-0.5" />
+          <div>
+            <strong>ANALYTICS_SALT ist nicht gesetzt.</strong> Es wird ein unsicherer Default-Salt verwendet.
+            Bitte in den Edge-Function-Secrets <code className="px-1 bg-background rounded">ANALYTICS_SALT</code> auf einen langen Zufallswert (≥ 32 Zeichen) setzen, damit Visitor-Hashes nicht erraten werden können.
+          </div>
+        </div>
+      )}
+
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <KPI icon={Users} label="Besucher" value={k.uniqVisitors} hint="Unique (anonym, tageshash)" />
         <KPI icon={Eye} label="Pageviews" value={k.pageViews} />
