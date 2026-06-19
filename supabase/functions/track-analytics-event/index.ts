@@ -112,7 +112,7 @@ Deno.serve(async (req) => {
   if (!parsed.success) return new Response('invalid', { status: 400, headers: corsHeaders })
   const p = parsed.data
 
-  if (!ALLOWED_EVENTS.has(p.event_name)) { console.log('drop:not-allowed', p.event_name); return new Response(null, { status: 204, headers: corsHeaders }) }
+  if (!ALLOWED_EVENTS.has(p.event_name)) return new Response(null, { status: 204, headers: corsHeaders })
 
   const supabase = createClient(
     Deno.env.get('SUPABASE_URL')!,
@@ -121,10 +121,8 @@ Deno.serve(async (req) => {
   )
 
   // settings
-  const { data: settings, error: sErr } = await supabase.from('analytics_settings').select('*').eq('id', 1).maybeSingle()
-  if (sErr) console.log('settings error', sErr.message)
-  if (!settings) { console.log('drop:no-settings'); return new Response(null, { status: 204, headers: corsHeaders }) }
-  if (settings.analytics_enabled === false) { console.log('drop:disabled'); return new Response(null, { status: 204, headers: corsHeaders }) }
+  const { data: settings } = await supabase.from('analytics_settings').select('*').eq('id', 1).maybeSingle()
+  if (!settings || settings.analytics_enabled === false) return new Response(null, { status: 204, headers: corsHeaders })
 
   // per-event toggles
   const ev = p.event_name
