@@ -43,11 +43,17 @@ const FIELDS: Setting[] = [
   { key: 'social_linkedin', label: 'LinkedIn URL', type: 'url', group: 'Footer & Social', placeholder: 'https://linkedin.com/company/…' },
   { key: 'social_youtube', label: 'YouTube URL (optional)', type: 'url', group: 'Footer & Social', placeholder: 'https://youtube.com/@…' },
 
+  // ─── E-Mail-Benachrichtigungen ────────────────────────
+  { key: 'lead_email_notifications_enabled', label: 'E-Mail-Benachrichtigung bei neuer Anfrage', type: 'text', group: 'E-Mail', hint: 'true = aktiviert, false = deaktiviert. Standard: aktiviert.' },
+  { key: 'lead_notification_email', label: 'Empfänger-E-Mail', type: 'email', group: 'E-Mail', placeholder: 'hallo@soulcinema.de' },
+  { key: 'smtp_from_name', label: 'Absender-Name', group: 'E-Mail', placeholder: 'Soul Cinema' },
+  { key: 'smtp_from_email', label: 'Absender-E-Mail', type: 'email', group: 'E-Mail', placeholder: 'hallo@soulcinema.de', hint: 'Muss zur STRATO-Mailbox passen, deren Zugangsdaten als Secret hinterlegt sind.' },
+
   // ─── System ───────────────────────────────────────────
   { key: 'admin_setup_code', label: 'Admin-Setup-Code', group: 'System', hint: 'Nach Aktivierung des ersten Admins bitte leeren – sonst kann jeder mit dem Code ein weiteres Admin-Konto beanspruchen.' },
 ]
 
-const GROUPS = ['Hero', 'Kontakt', 'SEO & Social', 'Footer & Social', 'System'] as const
+const GROUPS = ['Hero', 'Kontakt', 'SEO & Social', 'Footer & Social', 'E-Mail', 'System'] as const
 
 export default function AdminSettings() {
   const { toast } = useToast()
@@ -109,6 +115,7 @@ export default function AdminSettings() {
       {tab === 'Hero' && <HeroPreview values={values} />}
       {tab === 'SEO & Social' && <SocialPreview values={values} />}
       {tab === 'System' && <SystemNotes values={values} />}
+      {tab === 'E-Mail' && <EmailNotes />}
 
       <section className="bg-card clean-border rounded-xl p-5 space-y-4">
         {FIELDS.filter(f => f.group === tab).map(f => {
@@ -236,6 +243,18 @@ function SystemNotes({ values }: { values: Record<string, any> }) {
     </div>
   )
 }
+
+function EmailNotes() {
+  return (
+    <div className="mb-6 bg-card clean-border rounded-xl p-4 text-sm text-muted-foreground space-y-2">
+      <div><strong className="text-foreground">E-Mail-Versand über STRATO SMTP.</strong> Bei jeder neuen Kontaktanfrage wird automatisch eine interne Benachrichtigung an die Empfänger-E-Mail gesendet.</div>
+      <div>SMTP-Zugangsdaten (Host, Port, Benutzer, Passwort) werden ausschließlich als sichere Edge-Function-Secrets gespeichert – niemals im Admin-Panel oder im Code.</div>
+      <div className="text-[11px]">Standard: <code>smtp.strato.de</code> · Port <code>465</code> (SSL/TLS) · Fallback Port <code>587</code> (STARTTLS).</div>
+    </div>
+  )
+}
+
+
 
 function ListEditor({ value, onChange }: { value: string[]; onChange: (v: string[]) => void }) {
   const inp = 'w-full px-3 py-2 rounded-md bg-background border border-border'

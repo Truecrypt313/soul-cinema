@@ -75,7 +75,7 @@ export function Contact() {
     setBusy(true)
     const attr = getAttribution()
     const interest = getInterestPackage()
-    const { error } = await supabase.from('contact_leads').insert({
+    const payload = {
       name: parsed.data.name,
       company: parsed.data.company || null,
       email: parsed.data.email,
@@ -85,7 +85,7 @@ export function Contact() {
       project_goal: parsed.data.project_goal || null,
       message: parsed.data.message,
       budget: parsed.data.budget || null,
-      status: 'new',
+      website: parsed.data.website || '',
       referrer_domain: attr.referrer_domain ?? null,
       utm_source: attr.utm_source ?? null,
       utm_medium: attr.utm_medium ?? null,
@@ -96,10 +96,11 @@ export function Contact() {
       conversion_page: (typeof window !== 'undefined' ? window.location.pathname : null),
       device_type: attr.device_type ?? null,
       interest_package: interest ?? null,
-    } as any)
+    }
+    const { data: res, error } = await supabase.functions.invoke('submit-lead', { body: payload })
     setBusy(false)
-    if (error) {
-      track({ event_name: 'contact_submit_error', metadata: { error_code: 'insert' } })
+    if (error || !(res as any)?.ok) {
+      track({ event_name: 'contact_submit_error', metadata: { error_code: 'submit' } })
       toast({ title: 'Anfrage konnte nicht gesendet werden', description: `Bitte erneut versuchen oder an ${email} schreiben.`, variant: 'destructive' })
       return
     }

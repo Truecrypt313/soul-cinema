@@ -275,6 +275,50 @@ export type Database = {
         }
         Relationships: []
       }
+      lead_notification_logs: {
+        Row: {
+          created_at: string
+          error_message: string | null
+          id: string
+          lead_id: string | null
+          provider: string
+          recipient_email: string | null
+          sent_at: string | null
+          status: string
+          type: string
+        }
+        Insert: {
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          lead_id?: string | null
+          provider?: string
+          recipient_email?: string | null
+          sent_at?: string | null
+          status: string
+          type?: string
+        }
+        Update: {
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          lead_id?: string | null
+          provider?: string
+          recipient_email?: string | null
+          sent_at?: string | null
+          status?: string
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_notification_logs_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "contact_leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lead_status_history: {
         Row: {
           changed_at: string
