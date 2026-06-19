@@ -117,7 +117,7 @@ export default function AdminAnalytics() {
     const sections = new Map<string, number>()
     for (const e of events) {
       if (e.event_name !== 'section_view') continue
-      const key = (e as any).section_key ?? '—'
+      const key = e.section_key ?? '—'
       sections.set(key, (sections.get(key) ?? 0) + 1)
     }
     const sectionList = Array.from(sections.entries()).sort((a, b) => b[1] - a[1])
