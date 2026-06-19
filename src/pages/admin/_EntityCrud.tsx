@@ -143,11 +143,11 @@ export function EntityCrud({
               <FieldRow key={f.key} field={f} value={editing[f.key] ?? ''} onChange={v => setEditing({ ...editing, [f.key]: v })} />
             ))}
             <div className="grid grid-cols-2 gap-3">
-              <FieldRow field={{ key: 'sort_order', label: 'Sortierung', type: 'number' }}
+              <FieldRow field={{ key: 'sort_order', label: 'Reihenfolge', type: 'number', hint: 'Kleinere Zahl = weiter oben.' }}
                 value={editing.sort_order ?? 0} onChange={v => setEditing({ ...editing, sort_order: v })} />
               <label className="flex items-end gap-2 pb-2">
                 <input type="checkbox" checked={editing.visible !== false} onChange={e => setEditing({ ...editing, visible: e.target.checked })} />
-                <span className="text-sm">Sichtbar</span>
+                <span className="text-sm">Auf Website anzeigen</span>
               </label>
             </div>
           </div>
