@@ -2,6 +2,7 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { FadeUp } from './FadeUp'
 import { useCmsList } from '@/hooks/useCms'
+import { trackFaqOpen } from '@/lib/analytics'
 
 type Row = { id: string; question: string; answer: string }
 
