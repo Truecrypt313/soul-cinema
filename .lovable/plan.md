@@ -1,271 +1,247 @@
-# Soul Cinema · Optimierungsplan (PLAN-Modus, keine Umsetzung)
+
+# Soul Cinema – Analytics & KPI Dashboard (Konzept)
 
 ## 1. Executive Summary
 
-Soul Cinema steht inhaltlich und visuell bereits solide: cinematic Dark Theme, Cormorant Garamond/Inter, CMS-gestützte Sektionen, sauberes Admin Panel. Drei Bereiche bremsen die Premium-Wirkung aktuell am stärksten:
+Wir bauen ein **eigenes, first-party Analytics-System** direkt auf der bestehenden Lovable Cloud / Supabase-Infrastruktur. Es ist:
 
-1. **Mobile Hero** ist überladen — Badge + H1 + Subline + zweite Zeile + 4 Bullets + 2 CTAs konkurrieren mit dem Video. Auf 375–412 px verschwindet das Video optisch hinter Text und Overlay.
-2. **Kein Theme-Toggle / kein bewusst gestalteter Light Mode.** Aktuell nur ein Mode.
-3. **Admin Panel** funktioniert, ist aber zu flach: 11 Sidebar-Punkte ohne Gruppen, Settings als Endlos-Formular, Vorschauen rudimentär, kein Draft/Published-Konzept, Mobile-Tauglichkeit OK aber nicht poliert.
+- **Datensparsam:** keine Roh-IP, keine Drittanbieter, keine Tracking-Cookies, keine Heatmaps, kein Fingerprinting.
+- **Server-seitig validiert:** Browser sendet Events ausschließlich über eine Edge Function `track-analytics-event`. Tabellen sind für `anon` schreibgeschützt.
+- **Im Admin sichtbar:** neue Route `/admin/analytics` plus eine kleine KPI-Zeile im bestehenden Dashboard. Auf der öffentlichen Website wird **nichts** angezeigt.
+- **Schaltbar:** in `analytics_settings` lässt sich Analytics global und je Event-Typ deaktivieren.
+- **Phasiert:** wir liefern zuerst einen schlanken MVP (Phase A), keine BI-Suite.
 
-Sekundär: Trust-Bausteine fehlen (echte Cases, Logo-Wall sauber als "demnächst"/Beispiel), Service-Cluster wirken noch generisch im Vergleich zu Referenzseiten.
+Empfehlung am Ende: mit **Phase A: Analytics MVP** starten.
 
-## 2. Wichtigste Probleme (priorisiert)
+## 2. Bestehender Projektstand (Kurz-Audit)
 
-| # | Problem | Schwere | Wo |
-|---|---------|---------|----|
-| 1 | Mobile Hero textlastig, Video kaum sichtbar | hoch | `Hero.tsx` |
-| 2 | Kein Light/Dark Toggle, kein Theme-System | mittel | `index.css`, neuer `ThemeProvider` |
-| 3 | Admin Sidebar nicht gruppiert, Settings unübersichtlich | mittel | `Admin.tsx`, `AdminSettings.tsx` |
-| 4 | Kein Draft/Published-Status für Inhalte | mittel | DB + Admin-Pages |
-| 5 | Portfolio-Fallbacks könnten klarer als Beispiel-Formate kommuniziert sein | niedrig | `Portfolio.tsx` (bereits teilweise umgesetzt) |
-| 6 | Services/Why wirken im Vergleich zu Monsoon/Digital Masters generisch | mittel | DB-Seeds + `Services.tsx` |
-| 7 | Kein Sticky Mobile CTA → Conversion-Verlust auf Scroll | mittel | neue Komponente |
-| 8 | Keine Vorschau für OG-Image als Social-Card-Mockup | niedrig | `AdminSettings.tsx` |
+- Stack: React/Vite, Supabase (`@/integrations/supabase/client`), Tailwind, react-router.
+- Routen: `/`, `/impressum`, `/datenschutz`, `/agb`, `/admin/*`.
+- Admin: bereits umfangreich (`AdminDashboard`, `AdminLeads`, Portfolio, Pricing, FAQ, Services, Testimonials, Settings, Audience, Process, Reasons). Auth läuft über `user_roles` + `has_role('admin')`.
+- Leads: `contact_leads` (13 Felder, Status-Workflow `new/contacted/in_talks/won/lost`) – wird im Dashboard heute schon gezählt.
+- CMS: `site_settings` (key/value) – Erweiterung um Analytics-Toggles bewusst **nicht** hier, sondern in eigener Tabelle (siehe §5), damit Settings sauber typisiert bleiben.
+- Edge Functions: aktuell keine. Secrets `SUPABASE_SERVICE_ROLE_KEY` etc. sind vorhanden.
+- Storage: `portfolio-media` (privat). Nicht relevant für Analytics.
+- Frontend-Touchpoints, die Tracking sinnvoll machen: `Hero` CTA, `StickyMobileCta`, `Pricing` Cards, `Contact` Form, `FAQ` Accordion, WhatsApp/Calendly Links, Theme-Toggle, Sektionen `#services #portfolio #process #pricing #faq #contact`.
 
-## 3. Mobile / Handy Analyse
+**Empfehlung zur Integration:** eigene Admin-Seite `/admin/analytics` (Übersicht, Funnel, CTAs, Geräte, Quellen) **plus** zusätzliche 4-KPI-Zeile oben im bestehenden Dashboard (Besucher 7T, Pageviews 7T, Leads 7T, Conversion 7T) als Quick-Glance.
 
-**Aktueller Hero (375 px):** `h-screen` (100 vh) wird komplett befüllt mit Badge-Pille, H1 (2.5rem), Subline (16 px), zweite Zeile (14 px, muted), 4 Bullets in 1 Spalte, 2 CTAs gestapelt. Drei Overlay-Layer (`from-black/80 via-black/55 to-black/95` + horizontal + flat `bg-black/25`) verdunkeln das Video zusätzlich. Effekt: Video wirkt wie statisches dunkles Bild.
+## 3. Datenschutzfreundliches Analytics-Konzept
 
-**Empfohlene Variante: A+ (reduzierter Fullscreen mit Sticky CTA)**
+Grundprinzipien:
 
-- Badge bleibt.
-- H1 bleibt, aber kleiner (2rem) und auf 2 Zeilen begrenzt.
-- Subline: gekürzte Mobile-Variante (1 Satz, max 90 Zeichen) — pflegbar als optionales `hero_subline_mobile` Setting; Fallback = Desktop-Subline auf 2 Zeilen geclamped (`line-clamp-2`).
-- Zweite Zeile (`hero_secondary_line`): auf Mobile `hidden`.
-- Bullets: auf Mobile auf max. 2 reduzieren (CSS `:nth-child(n+3){display:none}` unter `sm`), oder als horizontale Pillen-Reihe darstellen.
-- Overlay reduzieren: nur ein vertikaler Gradient `from-black/55 via-black/15 to-black/85`, keine Flat-Layer. Video wird sichtbar.
-- CTA-Block: primärer CTA bleibt im Flow, sekundärer CTA wandert in Sticky-Bottom-Bar (auf Mobile fixiert: "Projekt anfragen" + kleiner "WhatsApp"-Button wenn gepflegt). Sticky-Bar verschwindet sobald Kontakt-Sektion im Viewport ist (IntersectionObserver).
-- `min-h-[100svh]` statt `h-screen` (Safari-Adressleisten-Problem lösen).
-- Mobile-Poster-Variante: optional `hero_poster_mobile_url` Setting für ein dezenteres Standbild, falls Autoplay zu unruhig.
+- **Keine Cookies, kein localStorage für Tracking-IDs.** Stattdessen pro Tab eine `sessionStorage`-Zufalls-ID (lebt nur bis Tab-Close, kein Cross-Site-Tracking, in DE meist als technisch erforderlich einstufbar – Hinweis: keine Rechtsberatung).
+- **Visitor-Hash serverseitig:** Edge Function bildet `visitor_hash = sha256(daily_salt || ip || user_agent)`, wobei `daily_salt` täglich rotiert und nur in Function-Memory/Secret lebt. Damit ist die ursprüngliche IP nicht rekonstruierbar und der Hash spätestens nach 24 h nicht mehr verkettbar. Roh-IP wird **nie** gespeichert.
+- **Keine Inhalte aus Formularen** in Events. Es wird nur erfasst: „Formular gestartet/abgesendet/Fehler“, keine Feldwerte.
+- **Bot-Filter:** UA-Heuristik (googlebot, bingbot, headlessChrome, AhrefsBot, etc.) + Drop für Requests ohne `Referer`+`Accept-Language` Kombination + Rate Limit.
+- **Retention:** Default 180 Tage in `analytics_events`. Tages-Aggregate in `analytics_daily` bleiben länger (KPIs ohne Personenbezug).
+- **DNT respektieren:** wenn `navigator.doNotTrack === '1'`, sendet der Client keine Events.
+- **Admin-Schalter:** alles per `analytics_settings` deaktivierbar. Wenn global aus, schickt der Client nichts und die Function lehnt ab.
+- **Consent-Banner:** **kein** Banner vorgesehen. Die Architektur (kein Cookie, keine personenbezogene ID, kein Cross-Site) ist so gewählt, dass in der Regel keine Einwilligung nötig ist. **To-do:** vor Live-Schaltung anwaltlich prüfen lassen – wir behaupten keine Rechtsberatung.
+- **Datenschutzerklärung:** Abschnitt „Eigene Website-Analyse / First-Party Analytics“ ergänzen (siehe §12).
 
-Variante B (Split-Layout Video oben/Text unten) wurde verworfen, weil sie cinematic Wirkung schwächt. Variante D (Poster statt Video) als Fallback empfohlen, falls Performance auf Low-End Android leidet.
+## 4. Empfohlene Architektur
 
-**Weitere Mobile-Befunde:**
-- Navigation OK, Mobile-Menu Drawer sauber.
-- Services/Pricing-Cards: Höhe prüfen, ggf. `text-base` statt `text-lg` für Mobile.
-- Kontaktformular: Felder ok, aber Trust-Block sollte über dem Formular stehen, nicht erst nach Scroll.
-- Footer auf Mobile recht lang — Spalten zu Accordion umbauen (optional).
-- Horizontal Scroll: in `Awards`/`Pricing` 4-Spalten-Grid prüfen.
+```text
+Browser  --(fetch, JSON)-->  Edge Function track-analytics-event
+                                |- Zod-validate payload
+                                |- Bot-Filter + Rate Limit (per IP-Hash)
+                                |- Salt + hash IP+UA -> visitor_hash
+                                |- Insert via service_role into analytics_events
+                                |- 204 No Content
+Admin Panel  --(authed select)-->  analytics_events / analytics_daily
+                                    (RLS: nur admin lesen)
+Cron (Supabase Scheduled Function, später)
+   - rollt täglich Aggregate in analytics_daily
+   - löscht Events älter als retention_days
+```
 
-## 4. Admin Panel Analyse
+- `analytics_events` **GRANT INSERT nur an service_role**, keine direkten anon-Inserts.
+- `anon` darf nichts lesen/schreiben in Analytics-Tabellen.
+- Lese-Policies: `authenticated AND has_role(auth.uid(),'admin')`.
 
-**A) Gut:** Klare URL-Struktur, NavLink-Highlighting, Dashboard mit Stats + Empfehlungen, Settings nach Gruppen, Auth + Setup-Code-Flow, RLS via `user_roles`.
+## 5. Datenbankmodell
 
-**B) Verwirrend für Nicht-Techniker:**
-- 11 Sidebar-Einträge ohne Gruppen — Inhalte vs. System nicht erkennbar.
-- `AdminSettings` ist eine sehr lange Seite mit allen Themen (Hero, Kontakt, SEO, Footer, Sicherheit).
-- "Sichtbar" vs. "Veröffentlicht" wird inkonsistent gehandhabt (Portfolio hat `published`, andere `visible`).
-- JSON-Editor sichtbar — sollte nur für Devs.
+`analytics_events` (Roh-Events, kurzlebig):
 
-**C) Fehlende Felder:**
-- `hero_subline_mobile`, `hero_poster_mobile_url` (siehe Mobile).
-- `social_instagram`, `social_tiktok`, `social_linkedin` (Footer/Trust).
-- `contact_response_time_text` (z.B. "Antwort < 24h").
-- `theme_default` (light/dark).
+- event_name (text, enum-validiert)
+- page_path, section_key, cta_id (text, nullable)
+- metadata (jsonb, whitelisted keys)
+- visitor_hash, session_hash (text, nullable)
+- device_type (`mobile|desktop|tablet`)
+- viewport_bucket (`xs|sm|md|lg|xl`) – kein exakter Pixelwert
+- browser_name, os_name (grob: Chrome/Safari/Firefox/Other; iOS/Android/macOS/Windows/Other)
+- referrer_domain (nur Host, kein Path/Query)
+- utm_source/medium/campaign/content/term
+- theme (`dark|light`)
+- created_at
 
-**D) Fehlende Vorschauen:**
-- OG-Image als Twitter/LinkedIn/Facebook-Card-Mockup (1200×630 Rahmen mit Title/Description Overlay).
-- Hero-Live-Preview (iframe der Landing in der Settings-Sektion oder Mini-Preview-Box).
-- Portfolio: Karten-Preview wie sie auf Landing erscheint.
+`analytics_daily` (Aggregat, langlebig):
 
-**E) Zusammenlegen:**
-- Process + Reasons + Audience in einen "Inhalte/Sektionen"-Bereich mit Tabs (weniger Sidebar-Lärm).
-- FAQ + Testimonials in "Vertrauen & Inhalte".
+- date (pk)
+- page_views, unique_visitors_est, cta_clicks
+- contact_views, contact_starts, contact_submits, contact_errors
+- leads_count
+- mobile/desktop/tablet_visitors
+- top_referrer, top_utm_source
+- updated_at
 
-**F) Trennen:**
-- `AdminSettings` splitten in `Branding & Hero`, `SEO & Social`, `Kontakt & Integrationen`, `System & Sicherheit` (eigene Routen statt eine Seite).
+`analytics_settings` (1 Zeile, Singleton):
 
-**G) Dashboard-Warnungen (bereits teils da, ausbauen):**
-- "Portfolio < 3 Einträge → Landing zeigt Beispiel-Formate" (Hinweis-Karte).
-- "OG-Image fehlt → Social-Shares wirken leer".
-- "Hero-Video nutzt Mojli-Platzhalter".
-- "WhatsApp/Calendly leer".
-- "Admin-Setup-Code noch aktiv → bitte leeren".
-- To-do-Checkliste mit Fortschritts-Balken ("Setup zu 70 % komplett").
+- analytics_enabled (bool, default true)
+- track_page_views, track_cta_clicks, track_section_views, track_form_events, track_referrers, track_device, track_theme (bool)
+- retention_days (int, default 180)
+- bot_filter_enabled (bool, default true)
+- updated_at
 
-**H) UX-Verbesserungen:**
-- Globaler "Auf Live ansehen"-Link je Sektion (Deep-Link zur Landing mit Hash).
-- Sticky "Speichern"-Bar pro Seite statt mehrere kleine Buttons.
-- Toaster-Hinweis nach Save: "Live in ~5 Sek sichtbar".
-- Empty States mit Illustration + CTA ("Noch kein Eintrag · Beispiel anlegen").
-- Mobile-Adminbereich: Sidebar-Drawer existiert, aber Tabellen (`AdminLeads`) brauchen Card-Layout auf < 640 px.
+Bewertung:
+- `analytics_daily` ist **nicht** MVP-blockierend – Phase A kann live mit Direkt-Aggregation aus `analytics_events` (per Date-Trunc) auskommen. `analytics_daily` lohnt sich ab ~50k Events.
+- `lead_status_history` gehört in Phase C (Mini-CRM), nicht MVP.
 
-**I) Sicherheit:**
-- `admin_setup_code` automatisch invalidieren, sobald erster Admin existiert (DB-Trigger oder Edge Function).
-- Audit-Log-Tabelle `admin_actions` (wer hat was geändert) — Nice-to-have.
-- Rate-Limiting auf `contact_leads`-Insert (Edge Function + IP-Hash).
+RLS-Skizze (alle drei Tabellen):
+- `service_role`: ALL.
+- `authenticated` + `has_role(uid,'admin')`: SELECT (+ UPDATE für `analytics_settings`).
+- `anon`: keine Rechte.
 
-**J) Nice-to-have:**
-- Rollen `editor` (alles außer Settings + Sicherheit), `viewer` (read-only).
-- Medienbibliothek (`media_assets` Tabelle + Storage-Bucket; Drag&Drop, Wiederverwendung).
-- Versionierung pro Sektion (vorherige Texte zurückrollen).
+## 6. Edge Function `track-analytics-event`
 
-## 5. Light / Dark Mode Konzept
+- Methode: `POST`, JSON.
+- CORS: nur Origin der Produktions- und Preview-Domain.
+- Validierung mit Zod, **Allowlist** für `event_name` und `metadata.keys`.
+- Payload (Browser):
+  ```
+  { event_name, page_path, section_key?, cta_id?, metadata?,
+    session_id (random, sessionStorage), viewport_w, device_type,
+    theme, referrer, utm:{...} }
+  ```
+- Function:
+  1. Settings laden, wenn `analytics_enabled=false` oder Event-Typ-Toggle aus → 204 ohne Insert.
+  2. Bot-Filter (UA-Liste + heuristisch) → 204.
+  3. Rate Limit pro `visitor_hash`: 60 Events/Minute, 600/Stunde.
+  4. `visitor_hash = sha256(daily_salt || ip || ua)`.
+  5. Insert in `analytics_events`.
+- **Niemals** rohe IP, kein User-Agent-String, keine Form-Felder speichern. UA nur derivativ als `browser_name`/`os_name`.
+- Fehler: 4xx mit kurzem Code, kein Stacktrace nach außen.
 
-**Status:** Nur Dark. Tailwind hat `darkMode: ["class"]`, aber keine `.dark`-Variante in CSS — alle Tokens hängen direkt an `:root`.
+## 7. Event Tracking Konzept
 
-**Konzept:**
-- Default bleibt **Dark** (Brand-DNA).
-- Toggle in Navigation (Sun/Moon Icon, neben Mute-Button).
-- `prefers-color-scheme` als initialer Hint, `localStorage` overridet.
-- `ThemeProvider` setzt `class="dark"` auf `<html>`.
+| Event | MVP | Zweck | Daten | Nicht gespeichert |
+|---|---|---|---|---|
+| `page_view` | ✅ | Reichweite | path, referrer, utm, device | URL-Query außer utm_* |
+| `cta_click` | ✅ | CTA-Performance | cta_id (hero/sticky/contact) | Button-Text |
+| `pricing_cta_click` | ✅ | Paket-Interesse | package_slug, package_tier | Preis |
+| `contact_view` | ✅ | Funnel-Schritt | – | – |
+| `contact_start` | ✅ | Funnel-Schritt | – | Feldwerte |
+| `contact_submit_success` | ✅ | Conversion | – | Name/E-Mail/Message |
+| `contact_submit_error` | ✅ | UX-Probleme | error_code | Validation-Texte |
+| `external_link_click` | ✅ | WA/Calendly | target (`whatsapp|calendly`) | Nummer/URL |
+| `section_view` | B | Content-Interesse | section_key | – |
+| `faq_open` | B | FAQ-Insights | faq_id | Frage-Text (id reicht) |
+| `portfolio_interaction` | B | Case-Interesse | portfolio_id, category | Titel |
+| `theme_change` | B | Theme-Mix | from, to | – |
 
-**Token-Mapping:**
+Strikt verboten: Formularinhalte, Namen, E-Mails, Telefonnummern, Message-Body, Lead-IDs. Diese leben ausschließlich in `contact_leads`.
 
-| Token | Dark (aktuell) | Light (neu, editorial off-white) |
-|---|---|---|
-| `--background` | `#0A0A0A` | `#F7F4ED` (warmes off-white) |
-| `--foreground` | `#F4F0E8` | `#1A1612` (warmes off-black) |
-| `--card` | `#141414` | `#FFFFFF` |
-| `--muted` | `#1C1C1C` | `#EFEAE0` |
-| `--muted-foreground` | `#B8B2AA` | `#5C544A` |
-| `--border` | rgba(244,240,232,0.10) | rgba(26,22,18,0.10) |
-| `--primary` | `#C9963B` | `#A87826` (etwas dunkler für Kontrast auf hellem BG) |
-| `--input` | `#1C1C1C` | `#FFFFFF` |
+## 8. Admin Analytics Dashboard
 
-**Komponenten mit Sonderlogik:**
-- **Hero:** Light Mode behält dunkles Video-Bett (Video selbst ist filmisch dunkel) — Overlay-Gradient bleibt `black/…`, Headline-Farbe wird per Override hell gehalten. Nur Nav-Bar wechselt Farben beim Scroll.
-- **Glass-Effect:** zwei Varianten (`.glass-effect` für Dark, `.glass-effect-light` mit `rgba(0,0,0,0.04)`).
-- **Film Grain:** auf Light dezenter (`opacity: 0.15`).
-- **Admin Panel:** vollständig theme-fähig, Default = Dark (Studio-Tool).
+Neue Route: `/admin/analytics` (Sidebar-Eintrag „Analytics“ unter „Anfragen“). Zusätzlich oben im bestehenden Dashboard 4 Quick-KPIs.
 
-**Verworfen:** Auto-Invert oder reines Whiteboard-Look — würde Brand zerstören.
+Sektionen der neuen Seite (Tabs oder Anker):
 
-## 6. Inspirationsseiten-Vergleich
+1. **Übersicht** – KPI-Cards (Besucher heute/7T/30T, Pageviews, Leads, Conversion %) + Mini-Sparkline pro Card.
+2. **Traffic** – Tabelle Top-Referrer, UTM-Kampagnen, Direct vs. Referral.
+3. **Geräte** – Donut Mobile/Desktop/Tablet, Tabelle Browser/OS grob.
+4. **Conversion Funnel** – Balken: Visit → CTA → Contact View → Start → Submit → Lead.
+5. **CTA Performance** – Tabelle pro `cta_id` mit Klicks und CTR (Klicks / Visits).
+6. **Content Insights (B)** – Sektion-Views, FAQ-Opens, Portfolio-Klicks, Pricing-Paket-Interesse.
+7. **Einstellungen** – Toggle-Liste aus `analytics_settings`.
 
-| Quelle | Stärken | Übernehmen | Vermeiden |
-|---|---|---|---|
-| **fischerAppelt** | Case-First Hero, große editorial Typo, mutige Kategorisierung | Featured-Case-Slot oben, Kategorie-Filter im Portfolio | Konzern-Komplexität, Mega-Menu |
-| **Digital Masters** | Saubere Service-Cluster, Strategie/Marketing/Tech-Buckets | Services als 3 Cluster (Produktion / Performance / Content), klarere Hierarchie | KI-Hype-Wording |
-| **rockandstars** | Mutige Visuals, Personality | Hover-Microinteractions auf Cards, Editorial-Tone | "Wir sind KI-Agentur"-Claim — passt nicht zu Soul Cinema |
-| **Monsoon** | Premium-Wirkung, viel Whitespace, Case-Detailseiten | Case-Detail-Template, internationaler Tonfall, große Hero-Typo | Englisch-only Tonalität |
-| **SUMAX** | Kennzahlen, Trust-Signale, Kontakt-CTA-System | Trust-Zeile (Antwortzeit, Lieferzeit, Iterations-Garantie), CTA-Block am Sektionsende | Fake-Zahlen, Riesen-Logo-Wall |
+Zeitraumfilter: Heute / 7T / 30T / 90T (default 7T). Lade- und Leerzustände, Mobile-fähig. Charts: leichtgewichtig (z. B. `recharts`, ist im shadcn-Stack bereits üblich). **Kein** CSV-Export im MVP.
 
-### Übernahme-Tabelle
+## 9. Conversion Funnel
 
-| Feature | Quelle | Nutzen | Passt? | Prio | Idee |
-|---|---|---|---|---|---|
-| Featured-Case-Slot im Hero-Footer | fApp/Monsoon | Trust + Direkt-Beispiel | Ja (sobald 1 echter Case) | P2 | Schmaler Strip unter Hero mit 1 Video-Loop |
-| Service-Cluster (3 Buckets) | DM | Klarere Story | Ja | P1 | DB-Migration `service_cluster` Feld |
-| Hover-Video-Preview Portfolio | Monsoon | Premium-Wirkung | Ja | P2 | `<video>` on hover, mute, autoplay |
-| Trust-Zeile Antwortzeit/Lieferzeit | SUMAX | Conversion | Ja | P1 | im Hero/Contact, keine Fake-Zahlen |
-| Case-Detail-Seiten | Monsoon | SEO + Tiefe | Ja, später | P3 | `/work/:slug` Route |
-| Kategorie-Filter Portfolio | fApp | UX | Ja | P2 | Tag-Chips |
-| Sticky-Bottom-CTA Mobile | DM/SUMAX | Conversion | Ja | P1 | Neue Komponente |
-| Light/Dark Toggle | (allgemein) | Modern, Accessibility | Ja | P1 | siehe §5 |
-| Editorial-Großtypo Sektionen | Monsoon | Premium | Ja | P2 | Section-Header-Komponente |
+Schritte aus den MVP-Events:
 
-## 7. Soul Cinema sollte übernehmen
+```text
+Visits (unique_visitor_hash, page_view)
+  → CTA Click (cta_click ∪ pricing_cta_click)
+  → Contact View (contact_view)
+  → Contact Start (contact_start)
+  → Contact Submit (contact_submit_success)
+  → Lead gespeichert (contact_leads count im Zeitraum)
+```
 
-- Klare 3-Cluster-Service-Struktur.
-- Trust-Mikrozeile (Antwortzeit, Iterationen inklusive, etc. — nur was echt einhaltbar ist).
-- Sticky Mobile-CTA.
-- Light/Dark Toggle.
-- Editorial Section-Header.
-- Hover-Video-Preview Portfolio (für echte Cases).
-- Mobile Hero-Diet (Variante A+).
+Anzeige: Zahl pro Schritt + Übergangs-% + Drop-off. Hinweis im UI: Werte sind Näherung ohne Cookies; bei < 200 Besuchern pro Zeitraum nur als „Trend“ kennzeichnen.
 
-## 8. Soul Cinema sollte NICHT übernehmen
+## 10. Lead Dashboard / Mini-CRM (Phase C, **nicht MVP**)
 
-- Fake-Kundenlogos.
-- Erfundene Zahlen ("40+ Marken", "200 % ROAS").
-- KI-Agentur-Wording.
-- Komplexe Mega-Menüs.
-- Riesige englischsprachige Internationalitäts-Pose.
-- Auto-Invert Light Mode.
+Erweiterung `contact_leads`:
+- `utm_source/medium/campaign` (text, nullable) – beim Insert aus aktueller Session übernehmen.
+- `referrer_domain`, `interest_package` (text).
+- `follow_up_at` (timestamptz), `notes` (text).
+- Neue Tabelle `lead_status_history(lead_id, old_status, new_status, changed_by, changed_at)` mit Trigger.
 
-## 9. Konkretes Optimierungskonzept
+UI: Lead-Detail-Drawer mit Status-Pipeline, Notizen, Quelle. Bewusst klein halten; kein Kanban-Board im MVP.
 
-**Mobile Hero (Variante A+):** Overlay reduzieren, Texte kürzen, Bullets auf 2, Sticky CTA, `min-h-[100svh]`, optionale Mobile-Settings.
+## 11. Analytics Settings im Admin
 
-**Theme:** ThemeProvider, Toggle in Nav, CSS-Variablen pro `.dark` / Root, Admin-kompatibel.
+Eigene Sub-Sektion in `AdminSettings` oder Tab in der neuen Analytics-Seite (empfohlen: **dort**, weil thematisch näher). Felder = Spalten aus `analytics_settings`. Defaults wie vorgeschlagen, mit zwei Ausnahmen:
 
-**Admin:** Sidebar-Gruppen ("Inhalte", "Marketing", "System"), Settings in 4 Routen splitten, Dashboard-Checkliste, Empty States, Live-Preview-Iframe in Hero-Settings, OG-Image-Mockup.
+- `track_section_views`: **false** im MVP (rauscht, viele Events).
+- `retention_days`: 180 ist ok; UI-Tooltip „älter wird automatisch gelöscht“.
 
-**Trust:** Microzeile (Antwortzeit, Konzept-Call kostenlos, Erste Iteration inklusive) — pflegbar in Settings.
+Wenn `analytics_enabled=false`: Client-Hook sendet sofort nichts, Function lehnt ab. Ein Banner im Admin („Analytics ist deaktiviert“) wird angezeigt.
 
-**Portfolio:** Beispiel-Formate-Logik bleibt; Hover-Preview vorbereiten (DB-Feld `preview_video_url`).
+## 12. Datenschutz-Update (To-do, keine Rechtsberatung)
 
-**Services:** DB-Feld `cluster` (`produktion` / `performance` / `content`), Frontend rendert 3 Spalten/Reihen mit Cluster-Header.
+In `Datenschutz.tsx` neuen Abschnitt „Eigene Website-Analyse (First-Party Analytics)“ ergänzen:
 
-**Kontakt:** Trust-Block über dem Formular auf Mobile; WhatsApp-Quick-Button wenn Setting gepflegt.
+- Welche Events, welche Felder, was **nicht** gespeichert wird.
+- Keine Cookies, kein Cross-Site-Tracking, keine Drittanbieter.
+- Visitor-Hash (täglich rotierender Salt), keine Roh-IP.
+- Zwecke: Reichweitenmessung, Conversion-Optimierung, technische Verbesserung.
+- Rechtsgrundlage (typisch berechtigtes Interesse) – **Hinweis im Plan**: anwaltlich prüfen lassen.
+- Aufbewahrung: 180 Tage Events, Aggregate länger.
+- Widerspruch: Browser-DNT wird respektiert; optionaler Opt-out-Link kann später ergänzt werden.
 
-**SEO:** Schema.org `LocalBusiness` + `Service` JSON-LD; späte Landingpages `/produktvideos`, `/social-ads`, `/saas-videos` (P3).
+## 13. Priorisierte Roadmap
 
-## 10. Priorisierte Roadmap
+| Phase | Inhalt | Aufwand | Risiko | Nutzen | DB | Edge | Admin UI | Datenschutz |
+|---|---|---|---|---|---|---|---|---|
+| A – MVP | page_view, cta_click, pricing_cta_click, contact_*, external_link, KPI-Übersicht, Traffic-, Geräte-Tabellen, Funnel, Settings | M | niedrig | hoch | 3 Tabellen | 1 Function | neue Seite + 4 KPIs im Dashboard | Datenschutz-Abschnitt ergänzen |
+| B – Insights | section_view, faq_open, portfolio_interaction, theme_change, Content-Tab | S | niedrig | mittel | – | Allowlist erweitern | neuer Tab | klein |
+| C – Mini-CRM | Lead UTM, Notes, Follow-up, Status-History | M | mittel | mittel | `contact_leads` + neue Tabelle + Trigger | – | Lead-Drawer | klein |
+| D – Reports | Monatsreport, CSV-Export, Vergleichszeitraum, Empfehlungen | M-L | mittel | mittel | optional `analytics_daily` + Cron | optional Cron | Reports-Tab | – |
 
-### Phase 1 — Mobile Hero Sofort-Fixes (P1, ~2h, Risiko: niedrig)
-- `Hero.tsx`: Overlay reduzieren, Mobile-Texte kürzen, Bullets begrenzen, `100svh`.
-- Neue `StickyMobileCta.tsx` (auf Landing eingebunden, blendet aus wenn Kontakt sichtbar).
-- DB-Migration: `hero_subline_mobile`, `hero_poster_mobile_url`, `contact_response_time_text` als optionale Settings.
-- Admin: 3 neue Felder in `AdminSettings`.
-- **Effekt:** Video wieder sichtbar, mobile Conversion höher.
+## 14. MVP-Umfang (Phase A, konkret)
 
-### Phase 2 — Admin UX Quick Wins (P1, ~3h, Risiko: niedrig)
-- Sidebar in `Admin.tsx` gruppieren (3 Sektionen mit Headern).
-- `AdminSettings.tsx` splitten in 4 Routen (Branding/Hero, SEO/Social, Kontakt/Integrationen, System).
-- Dashboard: Setup-Checkliste mit Progress-Bar.
-- Empty States für leere Listen.
-- Mobile-Tabellen → Card-Layout in `AdminLeads`.
-- **Effekt:** Nicht-Techniker findet sich schneller zurecht.
+1. Migration: `analytics_events`, `analytics_settings` (+ Defaults-Insert). `analytics_daily` **nicht** im MVP. GRANTs + RLS wie §5.
+2. Edge Function `track-analytics-event` mit Zod-Validierung, Salt-basiertem Hash, Bot-Filter, Rate-Limit.
+3. Client: kleiner Hook `useTrack()` + `<AnalyticsProvider>` der DNT/Settings respektiert; Instrumentierung von `Hero`-CTA, `StickyMobileCta`, `Pricing`-CTAs, `Contact` (view/start/success/error), WhatsApp/Calendly-Links, `page_view` in `Landing`.
+4. Admin: neue Route `/admin/analytics` mit Übersicht, Traffic, Geräte, Funnel, Settings. 4 KPI-Cards zusätzlich oben im bestehenden `AdminDashboard`.
+5. Datenschutz-Abschnitt ergänzen + To-do-Hinweis im Admin-Dashboard-Checklist.
 
-### Phase 3 — Light/Dark Theme System (P1, ~3h, Risiko: mittel)
-- `ThemeProvider.tsx` (Context, localStorage, prefers-color-scheme).
-- `index.css` umbauen: `.dark` Block mit aktuellen Werten, `:root` mit Light-Werten (oder umgekehrt, abhängig vom Default).
-- Toggle-Button in Nav (Hero) + in Admin-Header.
-- Komponenten-Audit: `bg-[#0A0A0A]`, `text-[#F4F0E8]` hardcoded Werte → Tokens.
-- Hero behält dunkles Video-Bett auch im Light Mode.
-- **Effekt:** Modern, Accessibility, optional für Nutzer.
+## 15. Was bewusst NICHT gebaut wird
 
-### Phase 4 — Trust / Cases / Portfolio (P2, ~3h, Risiko: niedrig)
-- Trust-Microzeile-Komponente, Settings-Felder.
-- Service-Cluster (DB-Feld + Frontend).
-- Portfolio Hover-Video-Preview (DB-Feld `preview_video_url`, `Portfolio.tsx`).
-- Kategorie-Filter Portfolio.
-- **Effekt:** Premium-Wirkung, bessere Story.
+- Kein Google Analytics, Meta Pixel, Plausible, Matomo, PostHog Cloud, Hotjar, Clarity.
+- Keine Heatmaps, kein Session Recording, keine Mausbewegungen, kein Scroll-Pixel.
+- Kein Fingerprinting (Canvas/Fonts/WebGL).
+- Keine Tracking-Cookies, kein persistenter Visitor-Identifier im Client.
+- Kein öffentlicher Besucherzähler auf der Website.
+- Kein BI-Builder, keine Custom-Query-UI, kein Drag-&-Drop-Dashboard.
+- Keine personenbezogenen Felder in Events.
 
-### Phase 5 — Conversion / Kontakt / Services (P2, ~2h, Risiko: niedrig)
-- Trust-Block über Kontaktformular auf Mobile.
-- WhatsApp-Quick-Button.
-- Service-Wording schärfen (Seeds).
-- Editorial Section-Header.
-- **Effekt:** Conversion + Brand.
+## 16. Risiken & Gegenmaßnahmen
 
-### Phase 6 — Nice-to-have (P3, je 3–6h)
-- Medienbibliothek (`media_assets` Tabelle, Storage-Bucket, Picker im Admin).
-- Live-Preview-Iframe in Hero-Settings.
-- Rollen `editor` / `viewer`.
-- Audit-Log.
-- Case-Detail-Pages `/work/:slug`.
-- SEO-Landingpages.
+- **Unterzählung** ohne Cookies → ehrlich kommunizieren („Näherungswerte“), Funnel als Trend.
+- **Bot-Traffic** verzerrt KPIs → UA-Allowlist + Rate-Limit; Toggle `bot_filter_enabled`.
+- **Tabellenwachstum** → Retention-Job; ab Phase D Aggregat-Tabelle.
+- **Edge-Function-Latenz** → fire-and-forget `navigator.sendBeacon`/`keepalive: true`, Events nie blockierend.
+- **Datenschutz** → klare Allowlist, Code-Review vor Go-Live, juristische Prüfung als To-do.
+- **Admin-Komplexität** → nur 1 neue Route + 4 KPIs im Dashboard; keine BI-Suite.
 
-## 11. Betroffene Dateien
+## 17. Empfehlung für ersten Sprint
 
-| Phase | Dateien |
-|---|---|
-| 1 | `src/components/Hero.tsx`, neue `src/components/StickyMobileCta.tsx`, `src/pages/Landing.tsx`, `src/pages/admin/AdminSettings.tsx`, neue Migration |
-| 2 | `src/pages/admin/Admin.tsx`, `AdminSettings.tsx` (split in 4 neue Files), `AdminDashboard.tsx`, `AdminLeads.tsx`, `_EntityCrud.tsx` |
-| 3 | neue `src/components/ThemeProvider.tsx` + `ThemeToggle.tsx`, `src/index.css`, `src/main.tsx`, Komponenten mit Hardcodes (`Hero`, `About`, `Footer`, `Contact`, …) |
-| 4 | `src/components/Portfolio.tsx`, `Services.tsx`, neue `TrustBar.tsx`, Migration für `services.cluster`, `portfolio_items.preview_video_url` |
-| 5 | `Contact.tsx`, `Services.tsx`, neue `SectionHeader.tsx`, DB-Seeds |
-| 6 | neue Tabellen + Storage, `MediaPicker.tsx`, neue Admin-Routen |
+**Phase A: Analytics MVP** umsetzen (Migration + Edge Function + Client-Hook + neue Admin-Seite + Datenschutz-Ergänzung).
 
-## 12. Risiko & Aufwand
-
-| Phase | Aufwand | Risiko | Begründung |
-|---|---|---|---|
-| 1 | 2h | niedrig | Lokale Hero-Änderungen + 3 DB-Felder |
-| 2 | 3h | niedrig | Reines Admin-Refactor, kein User-Impact |
-| 3 | 3h | **mittel** | Berührt viele Komponenten mit hardcoded Farben — Regression-Gefahr |
-| 4 | 3h | niedrig | Additive Features |
-| 5 | 2h | niedrig | Copy + kleine Layout-Änderungen |
-| 6 | je 3–6h | mittel | Neue Tabellen, Storage, Rollenlogik |
-
-## 13. Empfehlung erster Sprint
-
-**Sprint 1 = Phase 1 + Phase 2** (Mobile Hero Fix + Admin UX Quick Wins). Zusammen ca. 5h, niedriges Risiko, sofort spürbarer Effekt für Endnutzer (Mobile) und Inhaber (Admin). Phase 3 (Theme) bewusst als eigener Sprint, weil sie viele Komponenten anfasst und gründliches QA braucht.
-
----
-
-**Soll ich mit Phase 1 (Mobile Hero Sofort-Fixes) starten — oder direkt Phase 1 + 2 als Sprint 1 umsetzen?**
+Soll ich mit **Phase A: Analytics MVP** starten?
