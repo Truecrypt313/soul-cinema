@@ -9,6 +9,7 @@ import { FAQ } from '@/components/FAQ'
 import { Contact } from '@/components/Contact'
 import { Footer } from '@/components/Footer'
 import { Seo } from '@/components/Seo'
+import { StickyMobileCta } from '@/components/StickyMobileCta'
 import { useSettings, setting } from '@/hooks/useCms'
 
 const FAQS = [
@@ -84,6 +85,7 @@ export default function Landing() {
         <section id="contact" aria-label="Kontakt"><Contact /></section>
       </main>
       <Footer />
+      <StickyMobileCta />
     </div>
   )
 }

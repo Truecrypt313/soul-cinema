@@ -21,9 +21,11 @@ export function Hero() {
   const s = useSettings()
   const videoUrl = setting<string>(s, 'hero_video_url', FALLBACK_VIDEO)
   const posterUrl = setting<string>(s, 'hero_poster_url', '')
+  const posterMobile = setting<string>(s, 'hero_poster_mobile_url', '')
   const badge = setting<string>(s, 'hero_badge', 'Ad Studio für Produktvideos & Social Ads')
   const headline = setting<string>(s, 'hero_headline', 'Dein Produkt. Kinoreif in Szene gesetzt.')
-  const subline = setting<string>(s, 'hero_subline', 'Sende uns Produktbilder, vorhandenes Material oder einen Produktlink. Wir entwickeln daraus hochwertige Produktvideos und Social Ads für Shops, Landingpages und Kampagnen.')
+  const sublineDesktop = setting<string>(s, 'hero_subline', 'Sende uns Produktbilder, vorhandenes Material oder einen Produktlink. Wir entwickeln daraus hochwertige Produktvideos und Social Ads für Shops, Landingpages und Kampagnen.')
+  const sublineMobile = setting<string>(s, 'hero_subline_mobile', 'Produktbilder, Material oder ein Produktlink reichen. Wir machen daraus Videos und Social Ads für Shop, Landingpage und Kampagnen.')
   const secondary = setting<string>(s, 'hero_secondary_line', 'Für Marken, Shops, digitale Produkte und Unternehmen, die online sichtbar werden wollen.')
   const bullets = setting<string[]>(s, 'hero_bullets', [
     'Produktbilder oder Produktlink reichen aus',
@@ -31,8 +33,19 @@ export function Hero() {
     'Formate für Meta, TikTok, YouTube & Shop',
     'Konzept, Produktion & Lieferung aus einer Hand',
   ])
+  const mobileBullets = bullets.slice(0, 2)
   const primaryCta = setting<string>(s, 'primary_cta_label', 'Projekt anfragen')
   const secondaryCta = setting<string>(s, 'secondary_cta_label', 'Portfolio ansehen')
+
+  const [isMobile, setIsMobile] = useState(false)
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 639px)')
+    const onChange = () => setIsMobile(mq.matches)
+    onChange()
+    mq.addEventListener('change', onChange)
+    return () => mq.removeEventListener('change', onChange)
+  }, [])
+  const effectivePoster = (isMobile ? (posterMobile || posterUrl) : posterUrl) || undefined
 
   const [isMuted, setIsMuted] = useState(true)
   const [isScrolled, setIsScrolled] = useState(false)
@@ -74,21 +87,22 @@ export function Hero() {
   }
 
   return (
-    <div className="relative h-screen w-full overflow-hidden bg-black film-grain">
+    <div className="relative min-h-[100svh] w-full overflow-hidden bg-black film-grain">
       <video
         ref={videoRef}
         key={videoUrl}
         className="absolute inset-0 w-full h-full object-cover scale-110"
         autoPlay muted loop playsInline preload="metadata"
-        poster={posterUrl || undefined}
+        poster={effectivePoster}
         aria-label="Hintergrundvideo: kinoreife Produktaufnahmen"
       >
         <source src={videoUrl} />
       </video>
 
-      <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/55 to-black/95 sm:from-black/70 sm:via-black/50 sm:to-black/90 pointer-events-none" />
-      <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent sm:from-black/60 sm:via-transparent pointer-events-none" />
-      <div className="absolute inset-0 bg-black/25 sm:bg-transparent pointer-events-none" />
+      {/* Mobile: einzelner, dezenter Gradient. Desktop: cinematic Multi-Layer. */}
+      <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-black/55 via-black/15 to-black/85 sm:hidden" />
+      <div className="absolute inset-0 hidden sm:block pointer-events-none bg-gradient-to-b from-black/70 via-black/50 to-black/90" />
+      <div className="absolute inset-0 hidden sm:block pointer-events-none bg-gradient-to-r from-black/60 via-transparent to-transparent" />
 
       <motion.nav
         initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
@@ -148,15 +162,15 @@ export function Hero() {
         </div>
       </motion.div>
 
-      <div className="relative z-20 h-full flex flex-col justify-center px-6 sm:px-8 lg:px-12 max-w-5xl">
+      <div className="relative z-20 min-h-[100svh] flex flex-col justify-center py-24 sm:py-0 px-6 sm:px-8 lg:px-12 max-w-5xl">
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.3 }}
-          className="inline-flex items-center gap-2 self-start glass-effect rounded-full px-4 py-2 mb-6">
+          className="inline-flex items-center gap-2 self-start glass-effect rounded-full px-4 py-2 mb-5 sm:mb-6">
           <span className="w-1.5 h-1.5 bg-[#C9963B] rounded-full" />
           <span className="text-[#F4F0E8]/90 text-xs sm:text-sm font-medium tracking-wide">{badge}</span>
         </motion.div>
 
         <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.5 }}
-          className="font-brand text-[2.5rem] leading-[1.1] sm:text-5xl sm:leading-[1.05] lg:text-7xl text-[#F4F0E8] tracking-tight mb-6 max-w-4xl">
+          className="font-brand text-[2rem] leading-[1.1] sm:text-5xl sm:leading-[1.05] lg:text-7xl text-[#F4F0E8] tracking-tight mb-5 sm:mb-6 max-w-4xl">
           {headline.split(/(Produkt|Kinoreif)/g).map((part, i) =>
             (part === 'Produkt' || part === 'Kinoreif')
               ? <span key={i} className="text-highlight">{part}</span>
@@ -164,17 +178,34 @@ export function Hero() {
           )}
         </motion.h1>
 
+        {/* Mobile: kürzere Subline */}
         <motion.p initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.75 }}
-          className="text-base sm:text-lg lg:text-xl text-[#F4F0E8]/85 max-w-2xl mb-3 leading-relaxed">
-          {renderHighlighted(subline)}
+          className="sm:hidden text-base text-[#F4F0E8]/85 mb-6 leading-relaxed">
+          {renderHighlighted(sublineMobile)}
+        </motion.p>
+        {/* Desktop: volle Subline + Secondary Line */}
+        <motion.p initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.75 }}
+          className="hidden sm:block text-lg lg:text-xl text-[#F4F0E8]/85 max-w-2xl mb-3 leading-relaxed">
+          {renderHighlighted(sublineDesktop)}
         </motion.p>
         <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.9, delay: 0.9 }}
-          className="text-sm sm:text-base text-[#A8A29E] max-w-2xl mb-8">
+          className="hidden sm:block text-sm sm:text-base text-[#A8A29E] max-w-2xl mb-8">
           {secondary}
         </motion.p>
 
+        {/* Mobile: max 2 Bullets */}
         <motion.ul initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.9, delay: 1.05 }}
-          className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-[#F4F0E8]/85 text-sm mb-8 max-w-2xl">
+          className="sm:hidden flex flex-col gap-2 text-[#F4F0E8]/85 text-sm mb-6">
+          {mobileBullets.map(b => (
+            <li key={b} className="flex items-start gap-2">
+              <Check className="w-4 h-4 text-[#C9963B] mt-0.5 shrink-0" />
+              <span>{b}</span>
+            </li>
+          ))}
+        </motion.ul>
+        {/* Desktop: alle Bullets */}
+        <motion.ul initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.9, delay: 1.05 }}
+          className="hidden sm:grid grid-cols-2 gap-x-6 gap-y-2 text-[#F4F0E8]/85 text-sm mb-8 max-w-2xl">
           {bullets.map(b => (
             <li key={b} className="flex items-start gap-2">
               <Check className="w-4 h-4 text-[#C9963B] mt-0.5 shrink-0" />
