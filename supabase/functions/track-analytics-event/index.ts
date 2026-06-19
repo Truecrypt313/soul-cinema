@@ -173,6 +173,9 @@ Deno.serve(async (req) => {
   }
 
   const { error } = await supabase.from('analytics_events').insert(row)
-  if (error) return new Response(JSON.stringify({ error: 'insert' }), { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+  if (error) {
+    console.error('insert error', error.message, ev)
+    return new Response(JSON.stringify({ error: error.message }), { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+  }
   return new Response(null, { status: 204, headers: corsHeaders })
 })
