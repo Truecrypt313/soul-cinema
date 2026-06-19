@@ -5,6 +5,7 @@ import { supabase } from '@/integrations/supabase/client'
 import { useToast } from '@/hooks/use-toast'
 import { Modal, inp, FieldRow } from './_EntityCrud'
 import { Trash2, Plus, Upload } from 'lucide-react'
+import { resolvePortfolioMediaUrl, resolveMany } from '@/lib/portfolioMedia'
 
 type Item = {
   id: string; title: string; category: string | null; description: string | null
@@ -19,12 +20,16 @@ const VIDEO_TYPES = ['video/mp4', 'video/webm']
 const MAX_IMAGE = 5 * 1024 * 1024
 const MAX_VIDEO = 80 * 1024 * 1024
 
-// Signed-URL cache for previews (private bucket)
-async function signedFor(path: string | null): Promise<string | null> {
-  if (!path) return null
-  if (/^https?:\/\//.test(path)) return path
-  const { data } = await supabase.storage.from('portfolio-media').createSignedUrl(path, 60 * 60 * 24 * 365)
-  return data?.signedUrl ?? null
+function useResolvedUrl(value: string | null | undefined) {
+  const [url, setUrl] = useState<string | null>(null)
+  useEffect(() => {
+    let active = true
+    setUrl(null)
+    if (!value) return
+    resolvePortfolioMediaUrl(value).then(u => { if (active) setUrl(u) })
+    return () => { active = false }
+  }, [value])
+  return url
 }
 
 export default function AdminPortfolio() {
@@ -32,19 +37,17 @@ export default function AdminPortfolio() {
   const [items, setItems] = useState<Item[]>([])
   const [editing, setEditing] = useState<any>(null)
   const [uploading, setUploading] = useState<'thumb' | 'video' | null>(null)
-  const [previews, setPreviews] = useState<Record<string, string>>({})
+  const [previews, setPreviews] = useState<Record<string, string | null>>({})
 
   const load = async () => {
     const { data, error } = await supabase.from('portfolio_items').select('*').order('sort_order', { ascending: true })
     if (error) return toast({ title: 'Fehler', description: error.message, variant: 'destructive' })
     const list = (data as Item[]) ?? []
     setItems(list)
-    const p: Record<string, string> = {}
-    for (const it of list) {
-      const u = await signedFor(it.thumbnail_url)
-      if (u) p[it.id] = u
-    }
-    setPreviews(p)
+    const map = await resolveMany(list.map(i => i.thumbnail_url))
+    const byId: Record<string, string | null> = {}
+    for (const it of list) byId[it.id] = it.thumbnail_url ? map[it.thumbnail_url] ?? null : null
+    setPreviews(byId)
   }
   useEffect(() => { load() }, [])
 
@@ -91,7 +94,7 @@ export default function AdminPortfolio() {
       <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
         <div>
           <h1 className="text-3xl font-black">Portfolio</h1>
-          <p className="text-sm text-muted-foreground mt-1 max-w-2xl">URL oder Datei-Upload (privater Bucket, signierte URLs).</p>
+          <p className="text-sm text-muted-foreground mt-1 max-w-2xl">URL oder Datei-Upload. Storage-Pfade (z. B. <code>videos/…</code>), externe HTTPS-URLs und relative Pfade wie <code>/media/…</code> werden auf der Website automatisch korrekt aufgelöst.</p>
         </div>
         <button onClick={() => setEditing({ ...empty })} className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-foreground text-background font-semibold">
           <Plus className="w-4 h-4" /> Neu
@@ -107,7 +110,7 @@ export default function AdminPortfolio() {
           <div key={it.id} className="bg-card clean-border rounded-xl overflow-hidden">
             <div className="aspect-video bg-background flex items-center justify-center">
               {previews[it.id]
-                ? <img src={previews[it.id]} alt={it.title} className="w-full h-full object-cover" />
+                ? <img src={previews[it.id] as string} alt={it.title} className="w-full h-full object-cover" />
                 : <span className="text-xs text-muted-foreground">Kein Thumbnail</span>}
             </div>
             <div className="p-4">
@@ -142,71 +145,105 @@ export default function AdminPortfolio() {
 
       {editing && (
         <Modal onClose={() => setEditing(null)} title={editing.id ? 'Bearbeiten' : 'Neu'}>
-          <div className="space-y-3 text-sm">
-            <FieldRow field={{ key: 'title', label: 'Titel' }} value={editing.title} onChange={v => setEditing({ ...editing, title: v })} />
-            <FieldRow field={{ key: 'category', label: 'Kategorie' }} value={editing.category} onChange={v => setEditing({ ...editing, category: v })} />
-            <FieldRow field={{ key: 'description', label: 'Beschreibung', type: 'textarea' }} value={editing.description} onChange={v => setEditing({ ...editing, description: v })} />
-            <FieldRow field={{ key: 'format_badge', label: 'Format Badge', placeholder: '9:16 / 1:1 / 16:9' }} value={editing.format_badge} onChange={v => setEditing({ ...editing, format_badge: v })} />
-
-            <div>
-              <label className="block text-xs uppercase text-muted-foreground mb-1">Thumbnail (JPG, PNG, WebP · max. 5 MB)</label>
-              <div className="flex items-center gap-2">
-                <input value={editing.thumbnail_url ?? ''} onChange={e => setEditing({ ...editing, thumbnail_url: e.target.value })} className={inp} placeholder="URL oder Storage-Pfad" />
-                <label className="px-3 py-2 rounded-md border border-border cursor-pointer hover:bg-foreground/5 inline-flex items-center gap-1.5 text-xs whitespace-nowrap">
-                  <Upload className="w-3.5 h-3.5" /> {uploading === 'thumb' ? 'Lädt…' : 'Upload'}
-                  <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden" disabled={!!uploading} onChange={async e => {
-                    const f = e.target.files?.[0]; e.target.value = ''; if (!f) return
-                    const path = await uploadFile(f, 'thumb')
-                    if (path) setEditing({ ...editing, thumbnail_url: path })
-                  }} />
-                </label>
-              </div>
-              {editing.thumbnail_url && /^https?:\/\//.test(editing.thumbnail_url) && (
-                <img src={editing.thumbnail_url} alt="" className="mt-2 max-h-40 rounded border border-border" />
-              )}
-            </div>
-
-            <div>
-              <label className="block text-xs uppercase text-muted-foreground mb-1">Video (MP4, WebM · max. 80 MB)</label>
-              <div className="flex items-center gap-2">
-                <input value={editing.video_url ?? ''} onChange={e => setEditing({ ...editing, video_url: e.target.value })} className={inp} placeholder="URL oder Storage-Pfad" />
-                <label className="px-3 py-2 rounded-md border border-border cursor-pointer hover:bg-foreground/5 inline-flex items-center gap-1.5 text-xs whitespace-nowrap">
-                  <Upload className="w-3.5 h-3.5" /> {uploading === 'video' ? 'Lädt…' : 'Upload'}
-                  <input type="file" accept="video/mp4,video/webm" className="hidden" disabled={!!uploading} onChange={async e => {
-                    const f = e.target.files?.[0]; e.target.value = ''; if (!f) return
-                    const path = await uploadFile(f, 'video')
-                    if (path) setEditing({ ...editing, video_url: path })
-                  }} />
-                </label>
-              </div>
-              {editing.video_url && /^https?:\/\//.test(editing.video_url) && (
-                <video src={editing.video_url} controls className="mt-2 max-h-48 rounded border border-border" />
-              )}
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <FieldRow field={{ key: 'platform', label: 'Plattform', placeholder: 'Meta · TikTok · Shopify' }} value={editing.platform} onChange={v => setEditing({ ...editing, platform: v })} />
-              <FieldRow field={{ key: 'project_goal', label: 'Ziel / Use Case', placeholder: 'z. B. Sales, Launch' }} value={editing.project_goal} onChange={v => setEditing({ ...editing, project_goal: v })} />
-            </div>
-
-            <div className="grid grid-cols-3 gap-3">
-              <FieldRow field={{ key: 'sort_order', label: 'Reihenfolge', type: 'number' }} value={editing.sort_order} onChange={v => setEditing({ ...editing, sort_order: v })} />
-              <label className="flex items-end gap-2 pb-2">
-                <input type="checkbox" checked={!!editing.featured} onChange={e => setEditing({ ...editing, featured: e.target.checked })} />
-                <span>Als Featured markieren</span>
-              </label>
-              <label className="flex items-end gap-2 pb-2">
-                <input type="checkbox" checked={!!editing.published} onChange={e => setEditing({ ...editing, published: e.target.checked })} />
-                <span>Veröffentlicht</span>
-              </label>
-            </div>
-          </div>
-          <div className="flex justify-end gap-2 mt-6">
-            <button onClick={() => setEditing(null)} className="px-4 py-2 rounded-md border border-border">Abbrechen</button>
-            <button onClick={save} className="px-4 py-2 rounded-md bg-foreground text-background font-semibold">Speichern</button>
-          </div>
+          <EditForm
+            editing={editing}
+            setEditing={setEditing}
+            uploading={uploading}
+            uploadFile={uploadFile}
+            onCancel={() => setEditing(null)}
+            onSave={save}
+          />
         </Modal>
       )}
     </div>
+  )
+}
+
+function EditForm({
+  editing, setEditing, uploading, uploadFile, onCancel, onSave,
+}: {
+  editing: any
+  setEditing: (v: any) => void
+  uploading: 'thumb' | 'video' | null
+  uploadFile: (f: File, kind: 'thumb' | 'video') => Promise<string | null>
+  onCancel: () => void
+  onSave: () => void
+}) {
+  const resolvedThumb = useResolvedUrl(editing.thumbnail_url)
+  const resolvedVideo = useResolvedUrl(editing.video_url)
+
+  return (
+    <>
+      <div className="space-y-3 text-sm">
+        <div className="bg-[#C9963B]/8 border border-[#C9963B]/25 rounded-lg p-3 text-xs text-muted-foreground">
+          Portfolio-Medien sind öffentlich sichtbar. Für vertrauliche Kundendokumente später den privaten Dokumentenbereich verwenden.
+        </div>
+
+        <FieldRow field={{ key: 'title', label: 'Titel' }} value={editing.title} onChange={v => setEditing({ ...editing, title: v })} />
+        <FieldRow field={{ key: 'category', label: 'Kategorie' }} value={editing.category} onChange={v => setEditing({ ...editing, category: v })} />
+        <FieldRow field={{ key: 'description', label: 'Beschreibung', type: 'textarea' }} value={editing.description} onChange={v => setEditing({ ...editing, description: v })} />
+        <FieldRow field={{ key: 'format_badge', label: 'Format Badge', placeholder: '9:16 / 1:1 / 16:9' }} value={editing.format_badge} onChange={v => setEditing({ ...editing, format_badge: v })} />
+
+        <div>
+          <label className="block text-xs uppercase text-muted-foreground mb-1">Thumbnail (JPG, PNG, WebP · max. 5 MB)</label>
+          <div className="flex items-center gap-2">
+            <input value={editing.thumbnail_url ?? ''} onChange={e => setEditing({ ...editing, thumbnail_url: e.target.value })} className={inp} placeholder="URL, /media/… oder Storage-Pfad (z. B. thumbs/abc.webp)" />
+            <label className="px-3 py-2 rounded-md border border-border cursor-pointer hover:bg-foreground/5 inline-flex items-center gap-1.5 text-xs whitespace-nowrap">
+              <Upload className="w-3.5 h-3.5" /> {uploading === 'thumb' ? 'Lädt…' : 'Upload'}
+              <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden" disabled={!!uploading} onChange={async e => {
+                const f = e.target.files?.[0]; e.target.value = ''; if (!f) return
+                const path = await uploadFile(f, 'thumb')
+                if (path) setEditing({ ...editing, thumbnail_url: path })
+              }} />
+            </label>
+          </div>
+          {resolvedThumb && (
+            <img src={resolvedThumb} alt="" className="mt-2 max-h-40 rounded border border-border" />
+          )}
+        </div>
+
+        <div>
+          <label className="block text-xs uppercase text-muted-foreground mb-1">Video (MP4, WebM · max. 80 MB)</label>
+          <div className="flex items-center gap-2">
+            <input value={editing.video_url ?? ''} onChange={e => setEditing({ ...editing, video_url: e.target.value })} className={inp} placeholder="URL, /media/… oder Storage-Pfad (z. B. videos/abc.mp4)" />
+            <label className="px-3 py-2 rounded-md border border-border cursor-pointer hover:bg-foreground/5 inline-flex items-center gap-1.5 text-xs whitespace-nowrap">
+              <Upload className="w-3.5 h-3.5" /> {uploading === 'video' ? 'Lädt…' : 'Upload'}
+              <input type="file" accept="video/mp4,video/webm" className="hidden" disabled={!!uploading} onChange={async e => {
+                const f = e.target.files?.[0]; e.target.value = ''; if (!f) return
+                const path = await uploadFile(f, 'video')
+                if (path) setEditing({ ...editing, video_url: path })
+              }} />
+            </label>
+          </div>
+          <p className="text-[11px] text-muted-foreground mt-1.5">
+            Empfohlen: MP4 mit H.264 Video-Codec und AAC Audio. iPhone-/HEVC-Videos können im Browser nicht überall abgespielt werden.
+          </p>
+          {resolvedVideo && (
+            <video src={resolvedVideo} controls preload="metadata" playsInline className="mt-2 max-h-48 rounded border border-border" />
+          )}
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
+          <FieldRow field={{ key: 'platform', label: 'Plattform', placeholder: 'Meta · TikTok · Shopify' }} value={editing.platform} onChange={v => setEditing({ ...editing, platform: v })} />
+          <FieldRow field={{ key: 'project_goal', label: 'Ziel / Use Case', placeholder: 'z. B. Sales, Launch' }} value={editing.project_goal} onChange={v => setEditing({ ...editing, project_goal: v })} />
+        </div>
+
+        <div className="grid grid-cols-3 gap-3">
+          <FieldRow field={{ key: 'sort_order', label: 'Reihenfolge', type: 'number' }} value={editing.sort_order} onChange={v => setEditing({ ...editing, sort_order: v })} />
+          <label className="flex items-end gap-2 pb-2">
+            <input type="checkbox" checked={!!editing.featured} onChange={e => setEditing({ ...editing, featured: e.target.checked })} />
+            <span>Als Featured markieren</span>
+          </label>
+          <label className="flex items-end gap-2 pb-2">
+            <input type="checkbox" checked={!!editing.published} onChange={e => setEditing({ ...editing, published: e.target.checked })} />
+            <span>Veröffentlicht</span>
+          </label>
+        </div>
+      </div>
+      <div className="flex justify-end gap-2 mt-6">
+        <button onClick={onCancel} className="px-4 py-2 rounded-md border border-border">Abbrechen</button>
+        <button onClick={onSave} className="px-4 py-2 rounded-md bg-foreground text-background font-semibold">Speichern</button>
+      </div>
+    </>
   )
 }
