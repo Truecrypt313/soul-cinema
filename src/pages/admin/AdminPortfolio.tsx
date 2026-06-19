@@ -110,7 +110,7 @@ export default function AdminPortfolio() {
           <div key={it.id} className="bg-card clean-border rounded-xl overflow-hidden">
             <div className="aspect-video bg-background flex items-center justify-center">
               {previews[it.id]
-                ? <img src={previews[it.id]} alt={it.title} className="w-full h-full object-cover" />
+                ? <img src={previews[it.id] as string} alt={it.title} className="w-full h-full object-cover" />
                 : <span className="text-xs text-muted-foreground">Kein Thumbnail</span>}
             </div>
             <div className="p-4">
