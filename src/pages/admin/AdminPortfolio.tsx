@@ -88,14 +88,18 @@ export default function AdminPortfolio() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
         <div>
           <h1 className="text-3xl font-black">Portfolio</h1>
-          <p className="text-sm text-muted-foreground mt-1">URL oder Datei-Upload (privater Bucket, signierte URLs).</p>
+          <p className="text-sm text-muted-foreground mt-1 max-w-2xl">URL oder Datei-Upload (privater Bucket, signierte URLs).</p>
         </div>
         <button onClick={() => setEditing({ ...empty })} className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-foreground text-background font-semibold">
           <Plus className="w-4 h-4" /> Neu
         </button>
+      </div>
+
+      <div className="mb-4 bg-[#C9963B]/8 border border-[#C9963B]/25 rounded-lg p-3 text-xs text-muted-foreground">
+        <strong className="text-[#C9963B]">Hinweis:</strong> Veröffentliche nur echte Projekte. Solange weniger als 3 echte Projekte „Veröffentlicht“ sind, zeigt die Website automatisch Beispiel-Formate.
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -108,11 +112,15 @@ export default function AdminPortfolio() {
             </div>
             <div className="p-4">
               <div className="font-bold">{it.title}</div>
-              <div className="text-xs text-muted-foreground">{it.category} · Sort {it.sort_order}</div>
-              <div className="text-xs mt-2 mb-3">
+              <div className="text-xs text-muted-foreground">
+                {[it.category, it.platform, it.project_goal].filter(Boolean).join(' · ') || `Sort ${it.sort_order}`}
+              </div>
+              <div className="text-xs mt-2 mb-3 flex items-center gap-2 flex-wrap">
                 <span className={`px-2 py-0.5 rounded ${it.published ? 'bg-green-500/15 text-green-500' : 'bg-yellow-500/15 text-yellow-500'}`}>
                   {it.published ? 'Veröffentlicht' : 'Entwurf'}
                 </span>
+                {it.featured && <span className="px-2 py-0.5 rounded bg-[#C9963B]/15 text-[#C9963B]">Featured</span>}
+                {it.format_badge && <span className="px-2 py-0.5 rounded bg-foreground/10 text-muted-foreground">{it.format_badge}</span>}
               </div>
               <div className="flex gap-2">
                 <button onClick={() => setEditing(it)} className="px-3 py-1 rounded border border-border text-sm">Bearbeiten</button>
@@ -121,7 +129,15 @@ export default function AdminPortfolio() {
             </div>
           </div>
         ))}
-        {items.length === 0 && <div className="text-muted-foreground">Noch keine Einträge.</div>}
+        {items.length === 0 && (
+          <div className="md:col-span-2 lg:col-span-3 bg-card clean-border rounded-xl p-8 text-center">
+            <div className="font-semibold mb-1">Noch keine Projekte veröffentlicht</div>
+            <p className="text-sm text-muted-foreground max-w-md mx-auto mb-4">Bis echte Arbeiten vorhanden sind, zeigt die Website Beispiel-Formate.</p>
+            <button onClick={() => setEditing({ ...empty })} className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-[#C9963B] text-[#0A0A0A] font-semibold">
+              <Plus className="w-4 h-4" /> Erstes Projekt anlegen
+            </button>
+          </div>
+        )}
       </div>
 
       {editing && (
