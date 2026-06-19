@@ -1,12 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { z } from 'zod'
 import { useToast } from '@/hooks/use-toast'
 import { supabase } from '@/integrations/supabase/client'
 import { Mail, Send, CheckCircle2, MessageCircle, Calendar } from 'lucide-react'
 import { FadeUp } from './FadeUp'
 import { useSettings, setting } from '@/hooks/useCms'
+import { track } from '@/lib/analytics'
 
 const schema = z.object({
   name: z.string().trim().min(1, 'Bitte Namen angeben').max(200),
@@ -38,8 +39,21 @@ export function Contact() {
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [busy, setBusy] = useState(false)
   const [sent, setSent] = useState<{ name: string; email: string } | null>(null)
+  const startedRef = useRef(false)
+  const sectionRef = useRef<HTMLElement | null>(null)
+
+  useEffect(() => {
+    const el = sectionRef.current
+    if (!el) return
+    const obs = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) { track({ event_name: 'contact_view' }); obs.disconnect() }
+    }, { threshold: 0.25 })
+    obs.observe(el)
+    return () => obs.disconnect()
+  }, [])
 
   const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    if (!startedRef.current && k !== 'website') { startedRef.current = true; track({ event_name: 'contact_start' }) }
     setForm(prev => ({ ...prev, [k]: e.target.value }))
     setErrors(prev => ({ ...prev, [k]: '' }))
   }
@@ -51,10 +65,10 @@ export function Contact() {
       const errs: Record<string, string> = {}
       for (const issue of parsed.error.issues) errs[issue.path[0] as string] = issue.message
       setErrors(errs)
+      track({ event_name: 'contact_submit_error', metadata: { error_code: 'validation' } })
       return
     }
     if (form.website) {
-      // Spam: silently discard, reset form, no thank-you card
       setForm(empty)
       return
     }
@@ -73,9 +87,11 @@ export function Contact() {
     })
     setBusy(false)
     if (error) {
+      track({ event_name: 'contact_submit_error', metadata: { error_code: 'insert' } })
       toast({ title: 'Anfrage konnte nicht gesendet werden', description: `Bitte erneut versuchen oder an ${email} schreiben.`, variant: 'destructive' })
       return
     }
+    track({ event_name: 'contact_submit_success' })
     setSent({ name: parsed.data.name, email: parsed.data.email })
     setForm(empty)
   }
@@ -84,7 +100,7 @@ export function Contact() {
   const errCls = 'text-xs text-red-400 mt-1'
 
   return (
-    <section className="relative py-28 sm:py-32 bg-background border-t border-white/[0.04]">
+    <section ref={sectionRef} className="relative py-28 sm:py-32 bg-background border-t border-white/[0.04]">
       <div className="container mx-auto px-6 sm:px-8 lg:px-12">
         <div className="grid lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
           <FadeUp>
