@@ -11,36 +11,37 @@
 :root {
   --font-size: 16px;
 
-  /* Brand semantic */
-  --color-bg: #F7F4ED;
+  /* Brand semantic — Light (warm editorial) */
+  --color-bg: #F5F1E8;
   --color-surface: #FFFFFF;
-  --color-surface-soft: #EFEAE0;
-  --color-text: #1A1612;
-  --color-muted: #5C544A;
-  --color-accent: #A87826;
-  --color-accent-soft: rgba(168, 120, 38, 0.10);
+  --color-surface-soft: #ECE6D8;
+  --color-text: #14110D;
+  --color-muted: #4A433A;
+  --color-accent: #8A5A1F;
+  --color-accent-soft: rgba(138, 90, 31, 0.10);
 
   /* shadcn tokens (Light) */
-  --background: #F7F4ED;
-  --foreground: #1A1612;
+  --background: #F5F1E8;
+  --foreground: #14110D;
   --card: #FFFFFF;
-  --card-foreground: #1A1612;
+  --card-foreground: #14110D;
   --popover: #FFFFFF;
-  --popover-foreground: #1A1612;
-  --primary: #A87826;
+  --popover-foreground: #14110D;
+  --primary: #8A5A1F;
   --primary-foreground: #FFFFFF;
-  --secondary: #EFEAE0;
-  --secondary-foreground: #1A1612;
-  --muted: #EFEAE0;
-  --muted-foreground: #5C544A;
-  --accent: #A87826;
+  --secondary: #ECE6D8;
+  --secondary-foreground: #14110D;
+  --muted: #ECE6D8;
+  --muted-foreground: #4A433A;
+  --accent: #8A5A1F;
   --accent-foreground: #FFFFFF;
   --destructive: #b91c1c;
   --destructive-foreground: #FFFFFF;
-  --border: rgba(26, 22, 18, 0.10);
+  --border: rgba(20, 17, 13, 0.16);
   --input: #FFFFFF;
   --input-background: #FFFFFF;
-  --ring: #A87826;
+  --ring: #8A5A1F;
+
 
   /* Legacy aliases */
   --accent-blue: var(--color-accent);
