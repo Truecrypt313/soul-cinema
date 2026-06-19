@@ -96,6 +96,12 @@ function rateLimit(key: string, max: number, windowMs: number): boolean {
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders })
+  if (req.method === 'GET') {
+    const saltSet = !!Deno.env.get('ANALYTICS_SALT')
+    return new Response(JSON.stringify({ ok: true, salt_configured: saltSet }), {
+      status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    })
+  }
   if (req.method !== 'POST') return new Response('Method not allowed', { status: 405, headers: corsHeaders })
 
   let body: unknown
