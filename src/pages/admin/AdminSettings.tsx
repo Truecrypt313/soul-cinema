@@ -129,7 +129,7 @@ export default function AdminSettings() {
                           <a href={v} target="_blank" rel="noopener" className="block text-[11px] text-muted-foreground mt-1 truncate hover:text-foreground">{v}</a>
                         </div>
                       )}
-                      {(f.key === 'og_image_url' || f.key === 'hero_poster_url') && typeof v === 'string' && /^https?:\/\//.test(v) && (
+                      {(f.key === 'og_image_url' || f.key === 'hero_poster_url' || f.key === 'hero_poster_mobile_url') && typeof v === 'string' && /^https?:\/\//.test(v) && (
                         <div className="mt-2">
                           <img src={v} alt="" loading="lazy" className="max-h-32 rounded border border-border" />
                         </div>
