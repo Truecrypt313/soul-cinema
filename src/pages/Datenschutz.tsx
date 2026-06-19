@@ -137,6 +137,24 @@ export default function Datenschutz() {
           </section>
 
           <section>
+            <h2 className="text-foreground text-2xl font-bold mb-4">10. Eigene Website-Analyse (First-Party Analytics)</h2>
+            <p className="mb-3">Wir nutzen eine eigene, datensparsame Reichweitenmessung. Es kommen <strong className="text-foreground">keine Drittanbieter-Analyse-Tools</strong> (z. B. Google Analytics, Meta Pixel, Plausible, Matomo) zum Einsatz. Es werden <strong className="text-foreground">keine Cookies</strong> und kein dauerhafter Identifier in Ihrem Browser gesetzt. Lediglich eine zufällige, technisch erforderliche Sitzungs-ID kann pro Browser-Tab im flüchtigen Session-Speicher abgelegt werden; sie wird beim Schließen des Tabs gelöscht.</p>
+            <p className="mb-3">Erfasst werden ausschließlich aggregierte, nicht direkt personenbezogene Ereignisse:</p>
+            <ul className="list-disc pl-6 space-y-1 mb-3">
+              <li>Seitenaufrufe (Pfad, Referrer-Domain, ggf. UTM-Parameter)</li>
+              <li>Klicks auf zentrale Schaltflächen (z. B. Kontakt-CTA, Pricing-CTA, WhatsApp, Calendly)</li>
+              <li>Sichtbarkeit und Nutzung des Kontaktformulars (gesehen, gestartet, gesendet, Fehler) – ohne Inhalte der Formularfelder</li>
+              <li>Grobe Geräteklasse (Mobile/Desktop/Tablet) sowie Browser- und Betriebssystem-Familie</li>
+              <li>Aktives Theme (Dark/Light)</li>
+            </ul>
+            <p className="mb-3">Ausdrücklich <strong className="text-foreground">nicht</strong> erfasst werden: Roh-IP-Adressen, vollständige User-Agent-Strings, Mausbewegungen, Tastatureingaben, Bildschirmaufnahmen, Heatmaps, Geräte-Fingerprints sowie der Inhalt von Formularfeldern (Name, E-Mail, Nachricht usw.). Inhalte von Kontaktanfragen werden ausschließlich im Rahmen des Kontaktformulars (Punkt 6) verarbeitet, nicht in der Analytics.</p>
+            <p className="mb-3">Zur Erkennung wiederkehrender Besucher innerhalb eines Tages bildet ein serverseitiger Vorgang einen tageweise wechselnden Hashwert aus IP-Adresse und Geräteinformationen. Die IP-Adresse selbst wird dabei <strong className="text-foreground">nicht gespeichert</strong>. Eine Re-Identifizierung über den Tageswechsel hinaus ist dadurch ausgeschlossen.</p>
+            <p className="mb-3">Zwecke: Reichweitenmessung, Optimierung der Conversion-Strecke, technische und gestalterische Verbesserung der Website. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an einer datensparsamen Erfolgsmessung und Verbesserung des Angebots). Die Browser-Einstellung „Do Not Track" (DNT) wird respektiert; ist sie aktiv, werden keine Analytics-Ereignisse an uns übermittelt.</p>
+            <p className="mb-3">Speicherdauer: Einzelne Ereignisse werden standardmäßig nach <strong className="text-foreground">180 Tagen</strong> gelöscht; aggregierte Kennzahlen ohne Personenbezug können darüber hinaus aufbewahrt werden.</p>
+            <p className="text-sm italic">Hinweis: Diese Darstellung gibt den aktuell technisch umgesetzten Stand wieder und ersetzt keine rechtliche Beratung. Vor produktivem Einsatz sollte sie individuell juristisch geprüft werden.</p>
+          </section>
+
+          <section>
             <h2 className="text-foreground text-2xl font-bold mb-4">10. Externe Links und Drittanbieter</h2>
             <p>Diese Website kann Links zu externen Diensten und Plattformen enthalten. Eine Datenübermittlung an die jeweiligen Anbieter findet erst dann statt, wenn Sie aktiv auf einen entsprechenden Link klicken. Für die Datenverarbeitung durch die jeweiligen Anbieter gelten deren eigene Datenschutzbestimmungen.</p>
           </section>
