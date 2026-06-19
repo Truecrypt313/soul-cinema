@@ -165,47 +165,83 @@ export type Database = {
         Row: {
           budget: string | null
           company: string | null
+          conversion_page: string | null
           created_at: string
+          device_type: string | null
           email: string
+          follow_up_at: string | null
           id: string
+          interest_package: string | null
           internal_notes: string | null
+          landing_page: string | null
+          lead_priority: string | null
           message: string
           name: string
           phone: string | null
           product_type: string | null
           product_url: string | null
           project_goal: string | null
+          referrer_domain: string | null
           status: string
+          utm_campaign: string | null
+          utm_content: string | null
+          utm_medium: string | null
+          utm_source: string | null
+          utm_term: string | null
         }
         Insert: {
           budget?: string | null
           company?: string | null
+          conversion_page?: string | null
           created_at?: string
+          device_type?: string | null
           email: string
+          follow_up_at?: string | null
           id?: string
+          interest_package?: string | null
           internal_notes?: string | null
+          landing_page?: string | null
+          lead_priority?: string | null
           message: string
           name: string
           phone?: string | null
           product_type?: string | null
           product_url?: string | null
           project_goal?: string | null
+          referrer_domain?: string | null
           status?: string
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
         }
         Update: {
           budget?: string | null
           company?: string | null
+          conversion_page?: string | null
           created_at?: string
+          device_type?: string | null
           email?: string
+          follow_up_at?: string | null
           id?: string
+          interest_package?: string | null
           internal_notes?: string | null
+          landing_page?: string | null
+          lead_priority?: string | null
           message?: string
           name?: string
           phone?: string | null
           product_type?: string | null
           product_url?: string | null
           project_goal?: string | null
+          referrer_domain?: string | null
           status?: string
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
         }
         Relationships: []
       }
@@ -238,6 +274,41 @@ export type Database = {
           visible?: boolean
         }
         Relationships: []
+      }
+      lead_status_history: {
+        Row: {
+          changed_at: string
+          changed_by: string | null
+          id: string
+          lead_id: string
+          new_status: string
+          old_status: string | null
+        }
+        Insert: {
+          changed_at?: string
+          changed_by?: string | null
+          id?: string
+          lead_id: string
+          new_status: string
+          old_status?: string | null
+        }
+        Update: {
+          changed_at?: string
+          changed_by?: string | null
+          id?: string
+          lead_id?: string
+          new_status?: string
+          old_status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_status_history_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "contact_leads"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       portfolio_items: {
         Row: {
