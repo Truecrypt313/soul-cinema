@@ -244,6 +244,15 @@ function SystemNotes({ values }: { values: Record<string, any> }) {
   )
 }
 
+function EmailNotes() {
+  return (
+    <div className="mb-6 bg-card clean-border rounded-xl p-4 text-sm text-muted-foreground space-y-2">
+      <div><strong className="text-foreground">E-Mail-Versand über STRATO SMTP.</strong> Bei jeder neuen Kontaktanfrage wird automatisch eine interne Benachrichtigung an die Empfänger-E-Mail gesendet.</div>
+      <div>SMTP-Zugangsdaten (Host, Port, Benutzer, Passwort) werden ausschließlich als sichere Edge-Function-Secrets gespeichert – niemals im Admin-Panel oder im Code.</div>
+      <div className="text-[11px]">Standard: <code>smtp.strato.de</code> · Port <code>465</code> (SSL/TLS) · Fallback Port <code>587</code> (STARTTLS).</div>
+    </div>
+  )
+
 function ListEditor({ value, onChange }: { value: string[]; onChange: (v: string[]) => void }) {
   const inp = 'w-full px-3 py-2 rounded-md bg-background border border-border'
   return (
