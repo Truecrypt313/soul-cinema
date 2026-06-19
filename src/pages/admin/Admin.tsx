@@ -124,8 +124,11 @@ export default function Admin() {
       {/* Sidebar */}
       <aside className={`fixed lg:sticky top-0 left-0 h-screen w-64 bg-card border-r border-border z-40 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'} transition-transform overflow-y-auto`}>
         <div className="p-5 border-b border-border flex items-center justify-between">
-          <Link to="/" className="font-brand text-xl text-[#F4F0E8]">Soul Cinema</Link>
-          <button onClick={() => setSidebarOpen(false)} className="lg:hidden text-muted-foreground"><X className="w-5 h-5" /></button>
+          <Link to="/" className="font-brand text-xl text-foreground">Soul Cinema</Link>
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <button onClick={() => setSidebarOpen(false)} className="lg:hidden text-muted-foreground"><X className="w-5 h-5" /></button>
+          </div>
         </div>
         <nav className="p-3 space-y-4">
           {NAV_GROUPS.map(group => (
