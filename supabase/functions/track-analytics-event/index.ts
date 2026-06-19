@@ -126,13 +126,13 @@ Deno.serve(async (req) => {
 
   // per-event toggles
   const ev = p.event_name
-  if (ev === 'page_view' && !settings.track_page_views) { console.log('drop:pv-off'); return new Response(null, { status: 204, headers: corsHeaders }) }
-  if ((ev === 'cta_click' || ev === 'pricing_cta_click' || ev === 'external_link_click') && !settings.track_cta_clicks) { console.log('drop:cta-off'); return new Response(null, { status: 204, headers: corsHeaders }) }
-  if ((ev === 'contact_view' || ev === 'contact_start' || ev === 'contact_submit_success' || ev === 'contact_submit_error') && !settings.track_form_events) { console.log('drop:form-off'); return new Response(null, { status: 204, headers: corsHeaders }) }
-  if ((ev === 'section_view' || ev === 'faq_open') && !settings.track_section_views) { console.log('drop:section-off', settings.track_section_views); return new Response(null, { status: 204, headers: corsHeaders }) }
+  if (ev === 'page_view' && !settings.track_page_views) return new Response(null, { status: 204, headers: corsHeaders })
+  if ((ev === 'cta_click' || ev === 'pricing_cta_click' || ev === 'external_link_click') && !settings.track_cta_clicks) return new Response(null, { status: 204, headers: corsHeaders })
+  if ((ev === 'contact_view' || ev === 'contact_start' || ev === 'contact_submit_success' || ev === 'contact_submit_error') && !settings.track_form_events) return new Response(null, { status: 204, headers: corsHeaders })
+  if ((ev === 'section_view' || ev === 'faq_open') && !settings.track_section_views) return new Response(null, { status: 204, headers: corsHeaders })
 
   const ua = p.ua ?? req.headers.get('user-agent') ?? ''
-  if (settings.bot_filter_enabled && BOT_UA.test(ua)) { console.log('drop:bot', ua.slice(0,80)); return new Response(null, { status: 204, headers: corsHeaders }) }
+  if (settings.bot_filter_enabled && BOT_UA.test(ua)) return new Response(null, { status: 204, headers: corsHeaders })
 
   const ip = (req.headers.get('x-forwarded-for') ?? '').split(',')[0].trim() || 'na'
   const today = new Date().toISOString().slice(0, 10)
@@ -140,7 +140,7 @@ Deno.serve(async (req) => {
   const visitor_hash = await sha256(`${salt}|${today}|${ip}|${ua}`)
 
   if (!rateLimit(visitor_hash, 60, 60_000) || !rateLimit(`h:${visitor_hash}`, 600, 3_600_000)) {
-    console.log('drop:rate'); return new Response(null, { status: 204, headers: corsHeaders })
+    return new Response(null, { status: 204, headers: corsHeaders })
   }
 
   // whitelist metadata
