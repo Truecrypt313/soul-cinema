@@ -329,11 +329,17 @@ export default function AdminLeads() {
 function FilterBtn({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
   return <button onClick={onClick} className={`px-3 py-1.5 rounded-md text-sm font-medium ${active ? 'bg-foreground text-background' : 'bg-card border border-border text-muted-foreground hover:text-foreground'}`}>{children}</button>
 }
+function normalizeHref(value: string): string {
+  const v = value.trim()
+  if (/^(https?:)?\/\//i.test(v)) return v.startsWith('//') ? `https:${v}` : v
+  if (/^(mailto:|tel:)/i.test(v)) return v
+  return `https://${v.replace(/^\/+/, '')}`
+}
 function Detail({ label, value, link }: { label: string; value: string | null; link?: boolean }) {
   if (!value) return null
   return <div>
     <div className="text-xs uppercase text-muted-foreground">{label}</div>
-    {link ? <a href={value} target="_blank" rel="noopener" className="text-sm underline break-all inline-flex items-center gap-1">{value}<ExternalLink className="w-3 h-3" /></a>
+    {link ? <a href={normalizeHref(value)} target="_blank" rel="noopener noreferrer" className="text-sm underline break-all inline-flex items-center gap-1">{value}<ExternalLink className="w-3 h-3" /></a>
           : <div className="text-sm break-words">{value}</div>}
   </div>
 }
