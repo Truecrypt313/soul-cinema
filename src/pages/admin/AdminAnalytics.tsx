@@ -8,6 +8,7 @@ type Ev = {
   event_name: string
   page_path: string | null
   cta_id: string | null
+  section_key: string | null
   visitor_hash: string | null
   device_type: string | null
   browser_name: string | null
@@ -112,6 +113,26 @@ export default function AdminAnalytics() {
     }
     const ctaList = Array.from(ctas.entries()).sort((a, b) => b[1] - a[1])
 
+    // Content insights (Phase B)
+    const sections = new Map<string, number>()
+    for (const e of events) {
+      if (e.event_name !== 'section_view') continue
+      const key = e.section_key ?? '—'
+      sections.set(key, (sections.get(key) ?? 0) + 1)
+    }
+    const sectionList = Array.from(sections.entries()).sort((a, b) => b[1] - a[1])
+
+    const faqs = new Map<string, number>()
+    for (const e of events) {
+      if (e.event_name !== 'faq_open') continue
+      const id = e.metadata?.faq_id ?? '—'
+      faqs.set(String(id), (faqs.get(String(id)) ?? 0) + 1)
+    }
+    const faqList = Array.from(faqs.entries()).sort((a, b) => b[1] - a[1])
+
+    const sectionViews = events.filter(e => e.event_name === 'section_view').length
+    const faqOpens = events.filter(e => e.event_name === 'faq_open').length
+
     return {
       uniqVisitors, pageViews, ctaClicks, contactViews, contactStarts, contactSubs, contactErrs, conversion,
       referrers: groupBy('referrer_domain').slice(0, 10),
@@ -120,6 +141,10 @@ export default function AdminAnalytics() {
       os: groupBy('os_name').slice(0, 8),
       devices,
       ctaList,
+      sectionList,
+      faqList,
+      sectionViews,
+      faqOpens,
     }
   }, [events, leadsCount])
 
@@ -239,6 +264,27 @@ export default function AdminAnalytics() {
         <h2 className="text-lg font-bold mb-3">CTA-Performance</h2>
         <Table rows={k.ctaList} emptyText="Noch keine CTA-Klicks." labelCol="CTA" />
       </section>
+
+      {/* Content Insights (Phase B) */}
+      <div className="grid lg:grid-cols-2 gap-6 mb-6">
+        <section className="bg-card clean-border rounded-xl p-5">
+          <h2 className="text-lg font-bold mb-1">Section-Engagement</h2>
+          <p className="text-xs text-muted-foreground mb-3">
+            Anonyme Section-Views ({k.sectionViews}) — ≥ 50 % sichtbar für ≥ 1 s, max. 1× pro Session.
+            {settings && !settings.track_section_views && <span className="text-orange-500"> Aktuell deaktiviert.</span>}
+          </p>
+          <Table rows={k.sectionList} emptyText="Noch keine Section-Views erfasst." labelCol="Sektion" />
+        </section>
+
+        <section className="bg-card clean-border rounded-xl p-5">
+          <h2 className="text-lg font-bold mb-1">FAQ-Performance</h2>
+          <p className="text-xs text-muted-foreground mb-3">
+            FAQ-Aufklappungen ({k.faqOpens}). Zeigt, welche Fragen Nutzer:innen wirklich interessieren.
+            {settings && !settings.track_section_views && <span className="text-orange-500"> Aktuell deaktiviert.</span>}
+          </p>
+          <Table rows={k.faqList} emptyText="Noch keine FAQ-Öffnungen." labelCol="FAQ-ID" />
+        </section>
+      </div>
 
       {/* Settings */}
       {settings && (

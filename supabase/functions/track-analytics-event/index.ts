@@ -1,4 +1,4 @@
-// Soul Cinema – First-party Analytics Ingest
+// Soul Cinema – First-party Analytics Ingest (v2 Phase B)
 // Privacy: no raw IP stored, no form contents, no fingerprinting.
 import { createClient } from 'npm:@supabase/supabase-js@2'
 import { z } from 'npm:zod@3'
@@ -18,10 +18,12 @@ const ALLOWED_EVENTS = new Set([
   'contact_submit_success',
   'contact_submit_error',
   'external_link_click',
+  'section_view',
+  'faq_open',
 ])
 
 const META_KEY_ALLOW = new Set([
-  'package_slug', 'package_tier', 'target', 'error_code', 'cta_label',
+  'package_slug', 'package_tier', 'target', 'error_code', 'cta_label', 'faq_id', 'faq_index',
 ])
 
 const BOT_UA = /(bot|crawl|spider|slurp|bingpreview|facebookexternalhit|embedly|quora link preview|outbrain|pinterest|whatsapp|telegrambot|skypeuripreview|nuzzel|discordbot|google|yandex|baiduspider|duckduck|semrush|ahrefs|mj12|petal|headless|phantomjs|puppeteer|lighthouse|preview)/i
@@ -127,6 +129,7 @@ Deno.serve(async (req) => {
   if (ev === 'page_view' && !settings.track_page_views) return new Response(null, { status: 204, headers: corsHeaders })
   if ((ev === 'cta_click' || ev === 'pricing_cta_click' || ev === 'external_link_click') && !settings.track_cta_clicks) return new Response(null, { status: 204, headers: corsHeaders })
   if ((ev === 'contact_view' || ev === 'contact_start' || ev === 'contact_submit_success' || ev === 'contact_submit_error') && !settings.track_form_events) return new Response(null, { status: 204, headers: corsHeaders })
+  if ((ev === 'section_view' || ev === 'faq_open') && !settings.track_section_views) return new Response(null, { status: 204, headers: corsHeaders })
 
   const ua = p.ua ?? req.headers.get('user-agent') ?? ''
   if (settings.bot_filter_enabled && BOT_UA.test(ua)) return new Response(null, { status: 204, headers: corsHeaders })
@@ -170,6 +173,9 @@ Deno.serve(async (req) => {
   }
 
   const { error } = await supabase.from('analytics_events').insert(row)
-  if (error) return new Response(JSON.stringify({ error: 'insert' }), { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+  if (error) {
+    console.error('insert error', error.message, ev)
+    return new Response(JSON.stringify({ error: error.message }), { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+  }
   return new Response(null, { status: 204, headers: corsHeaders })
 })

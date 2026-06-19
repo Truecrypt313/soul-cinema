@@ -144,6 +144,7 @@ export default function Datenschutz() {
               <li>Seitenaufrufe (Pfad, Referrer-Domain, ggf. UTM-Parameter)</li>
               <li>Klicks auf zentrale Schaltflächen (z. B. Kontakt-CTA, Pricing-CTA, WhatsApp, Calendly)</li>
               <li>Sichtbarkeit und Nutzung des Kontaktformulars (gesehen, gestartet, gesendet, Fehler) – ohne Inhalte der Formularfelder</li>
+              <li>Anonyme Section-Aufrufe (welche Abschnitte der Seite tatsächlich gelesen werden) sowie anonyme FAQ-Aufklappungen (welche Fragen geöffnet werden) – jeweils ohne Bezug zur Person</li>
               <li>Grobe Geräteklasse (Mobile/Desktop/Tablet) sowie Browser- und Betriebssystem-Familie</li>
               <li>Aktives Theme (Dark/Light)</li>
             </ul>
