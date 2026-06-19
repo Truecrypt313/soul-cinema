@@ -21,18 +21,33 @@ import AdminSettings from './AdminSettings'
 
 type AuthState = 'loading' | 'guest' | 'authenticated'
 
-const NAV = [
-  { to: '/admin', icon: LayoutDashboard, label: 'Dashboard', end: true },
-  { to: '/admin/anfragen', icon: Inbox, label: 'Anfragen' },
-  { to: '/admin/portfolio', icon: Briefcase, label: 'Portfolio' },
-  { to: '/admin/leistungen', icon: Sparkles, label: 'Leistungen' },
-  { to: '/admin/prozess', icon: ListOrdered, label: 'Prozess' },
-  { to: '/admin/warum', icon: Heart, label: 'Warum Soul Cinema' },
-  { to: '/admin/zielgruppen', icon: Users, label: 'Zielgruppen' },
-  { to: '/admin/preise', icon: Tag, label: 'Preise' },
-  { to: '/admin/faq', icon: HelpCircle, label: 'FAQ' },
-  { to: '/admin/testimonials', icon: Star, label: 'Testimonials' },
-  { to: '/admin/einstellungen', icon: FileText, label: 'Einstellungen' },
+const NAV_GROUPS: { label: string; items: { to: string; icon: any; label: string; end?: boolean }[] }[] = [
+  {
+    label: 'Übersicht',
+    items: [
+      { to: '/admin', icon: LayoutDashboard, label: 'Dashboard', end: true },
+      { to: '/admin/anfragen', icon: Inbox, label: 'Anfragen' },
+    ],
+  },
+  {
+    label: 'Website-Inhalte',
+    items: [
+      { to: '/admin/portfolio', icon: Briefcase, label: 'Portfolio' },
+      { to: '/admin/leistungen', icon: Sparkles, label: 'Leistungen' },
+      { to: '/admin/prozess', icon: ListOrdered, label: 'Prozess' },
+      { to: '/admin/warum', icon: Heart, label: 'Warum Soul Cinema' },
+      { to: '/admin/zielgruppen', icon: Users, label: 'Zielgruppen' },
+      { to: '/admin/preise', icon: Tag, label: 'Preise' },
+      { to: '/admin/faq', icon: HelpCircle, label: 'FAQ' },
+      { to: '/admin/testimonials', icon: Star, label: 'Testimonials' },
+    ],
+  },
+  {
+    label: 'Website & System',
+    items: [
+      { to: '/admin/einstellungen', icon: FileText, label: 'Einstellungen' },
+    ],
+  },
 ]
 
 export default function Admin() {
@@ -111,14 +126,21 @@ export default function Admin() {
           <Link to="/" className="font-brand text-xl text-[#F4F0E8]">Soul Cinema</Link>
           <button onClick={() => setSidebarOpen(false)} className="lg:hidden text-muted-foreground"><X className="w-5 h-5" /></button>
         </div>
-        <nav className="p-3 space-y-0.5">
-          {NAV.map(n => (
-            <NavLink key={n.to} to={n.to} end={n.end} onClick={() => setSidebarOpen(false)}
-              className={({ isActive }) => `flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium gentle-animation ${
-                isActive ? 'bg-[#C9963B]/15 text-[#C9963B]' : 'text-muted-foreground hover:text-foreground hover:bg-foreground/5'
-              }`}>
-              <n.icon className="w-4 h-4" /> {n.label}
-            </NavLink>
+        <nav className="p-3 space-y-4">
+          {NAV_GROUPS.map(group => (
+            <div key={group.label}>
+              <div className="px-3 mb-1 text-[10px] uppercase tracking-wider text-muted-foreground/70 font-semibold">{group.label}</div>
+              <div className="space-y-0.5">
+                {group.items.map(n => (
+                  <NavLink key={n.to} to={n.to} end={n.end} onClick={() => setSidebarOpen(false)}
+                    className={({ isActive }) => `flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium gentle-animation ${
+                      isActive ? 'bg-[#C9963B]/15 text-[#C9963B]' : 'text-muted-foreground hover:text-foreground hover:bg-foreground/5'
+                    }`}>
+                    <n.icon className="w-4 h-4" /> {n.label}
+                  </NavLink>
+                ))}
+              </div>
+            </div>
           ))}
         </nav>
         <div className="p-3 mt-2 border-t border-border">
