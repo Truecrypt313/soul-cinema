@@ -5,7 +5,7 @@ import { Link, Route, Routes, Navigate, useNavigate, NavLink } from 'react-route
 import { supabase } from '@/integrations/supabase/client'
 import type { Session, User } from '@supabase/supabase-js'
 import { useToast } from '@/hooks/use-toast'
-import { LayoutDashboard, Inbox, Briefcase, Sparkles, ListOrdered, Heart, Users, Tag, HelpCircle, Star, FileText, LogOut, Menu, X } from 'lucide-react'
+import { LayoutDashboard, Inbox, Briefcase, Sparkles, ListOrdered, Heart, Users, Tag, HelpCircle, Star, FileText, LogOut, Menu, X, BarChart3 } from 'lucide-react'
 import { ThemeToggle } from '@/components/theme/ThemeToggle'
 
 import AdminDashboard from './AdminDashboard'
@@ -19,6 +19,7 @@ import AdminPricing from './AdminPricing'
 import AdminFAQ from './AdminFAQ'
 import AdminTestimonials from './AdminTestimonials'
 import AdminSettings from './AdminSettings'
+import AdminAnalytics from './AdminAnalytics'
 
 type AuthState = 'loading' | 'guest' | 'authenticated'
 
@@ -27,6 +28,7 @@ const NAV_GROUPS: { label: string; items: { to: string; icon: any; label: string
     label: 'Übersicht',
     items: [
       { to: '/admin', icon: LayoutDashboard, label: 'Dashboard', end: true },
+      { to: '/admin/analytics', icon: BarChart3, label: 'Analytics' },
       { to: '/admin/anfragen', icon: Inbox, label: 'Anfragen' },
     ],
   },
@@ -167,6 +169,7 @@ export default function Admin() {
           <Routes>
             <Route index element={<AdminDashboard />} />
             <Route path="anfragen" element={<AdminLeads />} />
+            <Route path="analytics" element={<AdminAnalytics />} />
             <Route path="portfolio" element={<AdminPortfolio />} />
             <Route path="leistungen" element={<AdminServices />} />
             <Route path="prozess" element={<AdminProcess />} />
