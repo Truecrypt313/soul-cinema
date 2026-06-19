@@ -112,6 +112,26 @@ export default function AdminAnalytics() {
     }
     const ctaList = Array.from(ctas.entries()).sort((a, b) => b[1] - a[1])
 
+    // Content insights (Phase B)
+    const sections = new Map<string, number>()
+    for (const e of events) {
+      if (e.event_name !== 'section_view') continue
+      const key = (e as any).section_key ?? '—'
+      sections.set(key, (sections.get(key) ?? 0) + 1)
+    }
+    const sectionList = Array.from(sections.entries()).sort((a, b) => b[1] - a[1])
+
+    const faqs = new Map<string, number>()
+    for (const e of events) {
+      if (e.event_name !== 'faq_open') continue
+      const id = e.metadata?.faq_id ?? '—'
+      faqs.set(String(id), (faqs.get(String(id)) ?? 0) + 1)
+    }
+    const faqList = Array.from(faqs.entries()).sort((a, b) => b[1] - a[1])
+
+    const sectionViews = events.filter(e => e.event_name === 'section_view').length
+    const faqOpens = events.filter(e => e.event_name === 'faq_open').length
+
     return {
       uniqVisitors, pageViews, ctaClicks, contactViews, contactStarts, contactSubs, contactErrs, conversion,
       referrers: groupBy('referrer_domain').slice(0, 10),
@@ -120,6 +140,10 @@ export default function AdminAnalytics() {
       os: groupBy('os_name').slice(0, 8),
       devices,
       ctaList,
+      sectionList,
+      faqList,
+      sectionViews,
+      faqOpens,
     }
   }, [events, leadsCount])
 
