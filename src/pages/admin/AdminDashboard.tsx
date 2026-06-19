@@ -20,7 +20,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     (async () => {
       const { data } = await supabase.from('contact_leads' as any).select('id,name,email,status,created_at,message,utm_source,follow_up_at').order('created_at', { ascending: false })
-      const l = (data as Lead[]) ?? []
+      const l = ((data as unknown) as Lead[]) ?? []
       setLeads(l)
       const c: Record<string, number> = {}
       for (const x of l) c[x.status] = (c[x.status] ?? 0) + 1
