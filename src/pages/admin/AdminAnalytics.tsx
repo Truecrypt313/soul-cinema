@@ -8,6 +8,7 @@ type Ev = {
   event_name: string
   page_path: string | null
   cta_id: string | null
+  section_key: string | null
   visitor_hash: string | null
   device_type: string | null
   browser_name: string | null
