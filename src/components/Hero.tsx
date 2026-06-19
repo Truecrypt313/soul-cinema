@@ -5,6 +5,7 @@ import { Volume2, VolumeX, Menu, X, Check } from 'lucide-react'
 import { ThemeToggle } from './theme/ThemeToggle'
 import { useState, useRef, useEffect } from 'react'
 import { useSettings, setting } from '@/hooks/useCms'
+import { track } from '@/lib/analytics'
 
 const NAV = [
   { href: '#services', label: 'Leistungen' },
@@ -72,6 +73,7 @@ export function Hero() {
   }, [isMobileMenuOpen])
 
   const goContact = () => {
+    track({ event_name: 'cta_click', cta_id: 'hero_primary' })
     document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
     setIsMobileMenuOpen(false)
   }
@@ -220,7 +222,7 @@ export function Hero() {
           <button onClick={goContact} className="w-full sm:w-auto bg-[#C9963B] text-[#0A0A0A] font-semibold px-7 py-4 sm:py-3.5 rounded-md hover:bg-[#d9a64b] gentle-animation min-h-12">
             {primaryCta}
           </button>
-          <a href="#portfolio" className="w-full sm:w-auto text-center text-[#F4F0E8]/85 sm:glass-effect sm:text-[#F4F0E8] font-medium sm:font-semibold px-7 py-3 sm:py-3.5 rounded-md hover:text-[#C9963B] gentle-animation min-h-12 flex items-center justify-center underline-offset-4 underline sm:no-underline">
+          <a href="#portfolio" onClick={() => track({ event_name: 'cta_click', cta_id: 'hero_secondary_portfolio' })} className="w-full sm:w-auto text-center text-[#F4F0E8]/85 sm:glass-effect sm:text-[#F4F0E8] font-medium sm:font-semibold px-7 py-3 sm:py-3.5 rounded-md hover:text-[#C9963B] gentle-animation min-h-12 flex items-center justify-center underline-offset-4 underline sm:no-underline">
             {secondaryCta}
           </a>
         </motion.div>

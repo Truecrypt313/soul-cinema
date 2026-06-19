@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { MessageCircle } from 'lucide-react'
 import { useSettings, setting } from '@/hooks/useCms'
+import { track } from '@/lib/analytics'
 
 export function StickyMobileCta() {
   const s = useSettings()
@@ -26,7 +27,10 @@ export function StickyMobileCta() {
     return () => { heroObs.disconnect(); contactObs.disconnect() }
   }, [])
 
-  const goContact = () => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
+  const goContact = () => {
+    track({ event_name: 'cta_click', cta_id: 'sticky_mobile_primary' })
+    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
+  }
 
   return (
     <div
