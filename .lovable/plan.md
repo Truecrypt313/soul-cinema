@@ -1,291 +1,271 @@
-# Soul Cinema – Strategischer Audit & Verbesserungsplan
-
-> Reiner Plan. Keine Umsetzung vor Freigabe. Hero-Video & Logo bleiben.
-
----
+# Soul Cinema · Optimierungsplan (PLAN-Modus, keine Umsetzung)
 
 ## 1. Executive Summary
 
-**Gesamtbild:** Solides cinematic Dark-Theme, funktionale Supabase-Anbindung mit CMS-Hooks, vollständiger Admin-Bereich für die meisten Inhalte. Die Seite wirkt aber stellenweise noch *template-nah* statt *Premium-Ad-Studio*: zu viele gleichwertige Sektionen, generisches Wording, Preise zu früh sichtbar, Portfolio mit Platzhaltern ohne Kennzeichnung, kein klarer Social-Proof-Block für später, Adminbereich teils zu technisch.
+Soul Cinema steht inhaltlich und visuell bereits solide: cinematic Dark Theme, Cormorant Garamond/Inter, CMS-gestützte Sektionen, sauberes Admin Panel. Drei Bereiche bremsen die Premium-Wirkung aktuell am stärksten:
 
-**Stärken**
-- Cleaner Tech-Stack (Vite/React/TS, Tailwind, Helmet, Supabase RLS).
-- CMS-Hooks (`useCms`, `useSettings`) + Fallbacks → Seite läuft auch ohne DB.
-- SEO-Komponente, JSON-LD, robots.txt, sitemap.xml, llms.txt vorhanden.
-- Admin mit Setup-Code, Rollen-Tabelle, separater `user_roles`.
+1. **Mobile Hero** ist überladen — Badge + H1 + Subline + zweite Zeile + 4 Bullets + 2 CTAs konkurrieren mit dem Video. Auf 375–412 px verschwindet das Video optisch hinter Text und Overlay.
+2. **Kein Theme-Toggle / kein bewusst gestalteter Light Mode.** Aktuell nur ein Mode.
+3. **Admin Panel** funktioniert, ist aber zu flach: 11 Sidebar-Punkte ohne Gruppen, Settings als Endlos-Formular, Vorschauen rudimentär, kein Draft/Published-Konzept, Mobile-Tauglichkeit OK aber nicht poliert.
 
-**Schwächen**
-- Hero-Copy & CTA zu allgemein, Nutzen "Produktlink reicht" nicht prominent.
-- Wording streckenweise austauschbar; Positionierung "Ad Studio" nicht spitz.
-- Portfolio-Fallbacks wirken wie echte Cases (keine "Beispiel"-Kennzeichnung).
-- Preise stehen vor Vertrauen → Conversion-Bremse.
-- Admin-Settings teils Key/Value-Listen statt Formularen mit Vorschau.
-- Kein Draft/Published-Status, keine Medienbibliothek, kein Live-Preview.
-- Mobile Hero-Lesbarkeit & CTA-Hierarchie nicht final.
+Sekundär: Trust-Bausteine fehlen (echte Cases, Logo-Wall sauber als "demnächst"/Beispiel), Service-Cluster wirken noch generisch im Vergleich zu Referenzseiten.
 
-**Produktionsreife:** ~65 %. Launch-fähig nach Phase 1+2.
+## 2. Wichtigste Probleme (priorisiert)
 
-**Scores (1–10)**
-| Bereich | Score |
+| # | Problem | Schwere | Wo |
+|---|---------|---------|----|
+| 1 | Mobile Hero textlastig, Video kaum sichtbar | hoch | `Hero.tsx` |
+| 2 | Kein Light/Dark Toggle, kein Theme-System | mittel | `index.css`, neuer `ThemeProvider` |
+| 3 | Admin Sidebar nicht gruppiert, Settings unübersichtlich | mittel | `Admin.tsx`, `AdminSettings.tsx` |
+| 4 | Kein Draft/Published-Status für Inhalte | mittel | DB + Admin-Pages |
+| 5 | Portfolio-Fallbacks könnten klarer als Beispiel-Formate kommuniziert sein | niedrig | `Portfolio.tsx` (bereits teilweise umgesetzt) |
+| 6 | Services/Why wirken im Vergleich zu Monsoon/Digital Masters generisch | mittel | DB-Seeds + `Services.tsx` |
+| 7 | Kein Sticky Mobile CTA → Conversion-Verlust auf Scroll | mittel | neue Komponente |
+| 8 | Keine Vorschau für OG-Image als Social-Card-Mockup | niedrig | `AdminSettings.tsx` |
+
+## 3. Mobile / Handy Analyse
+
+**Aktueller Hero (375 px):** `h-screen` (100 vh) wird komplett befüllt mit Badge-Pille, H1 (2.5rem), Subline (16 px), zweite Zeile (14 px, muted), 4 Bullets in 1 Spalte, 2 CTAs gestapelt. Drei Overlay-Layer (`from-black/80 via-black/55 to-black/95` + horizontal + flat `bg-black/25`) verdunkeln das Video zusätzlich. Effekt: Video wirkt wie statisches dunkles Bild.
+
+**Empfohlene Variante: A+ (reduzierter Fullscreen mit Sticky CTA)**
+
+- Badge bleibt.
+- H1 bleibt, aber kleiner (2rem) und auf 2 Zeilen begrenzt.
+- Subline: gekürzte Mobile-Variante (1 Satz, max 90 Zeichen) — pflegbar als optionales `hero_subline_mobile` Setting; Fallback = Desktop-Subline auf 2 Zeilen geclamped (`line-clamp-2`).
+- Zweite Zeile (`hero_secondary_line`): auf Mobile `hidden`.
+- Bullets: auf Mobile auf max. 2 reduzieren (CSS `:nth-child(n+3){display:none}` unter `sm`), oder als horizontale Pillen-Reihe darstellen.
+- Overlay reduzieren: nur ein vertikaler Gradient `from-black/55 via-black/15 to-black/85`, keine Flat-Layer. Video wird sichtbar.
+- CTA-Block: primärer CTA bleibt im Flow, sekundärer CTA wandert in Sticky-Bottom-Bar (auf Mobile fixiert: "Projekt anfragen" + kleiner "WhatsApp"-Button wenn gepflegt). Sticky-Bar verschwindet sobald Kontakt-Sektion im Viewport ist (IntersectionObserver).
+- `min-h-[100svh]` statt `h-screen` (Safari-Adressleisten-Problem lösen).
+- Mobile-Poster-Variante: optional `hero_poster_mobile_url` Setting für ein dezenteres Standbild, falls Autoplay zu unruhig.
+
+Variante B (Split-Layout Video oben/Text unten) wurde verworfen, weil sie cinematic Wirkung schwächt. Variante D (Poster statt Video) als Fallback empfohlen, falls Performance auf Low-End Android leidet.
+
+**Weitere Mobile-Befunde:**
+- Navigation OK, Mobile-Menu Drawer sauber.
+- Services/Pricing-Cards: Höhe prüfen, ggf. `text-base` statt `text-lg` für Mobile.
+- Kontaktformular: Felder ok, aber Trust-Block sollte über dem Formular stehen, nicht erst nach Scroll.
+- Footer auf Mobile recht lang — Spalten zu Accordion umbauen (optional).
+- Horizontal Scroll: in `Awards`/`Pricing` 4-Spalten-Grid prüfen.
+
+## 4. Admin Panel Analyse
+
+**A) Gut:** Klare URL-Struktur, NavLink-Highlighting, Dashboard mit Stats + Empfehlungen, Settings nach Gruppen, Auth + Setup-Code-Flow, RLS via `user_roles`.
+
+**B) Verwirrend für Nicht-Techniker:**
+- 11 Sidebar-Einträge ohne Gruppen — Inhalte vs. System nicht erkennbar.
+- `AdminSettings` ist eine sehr lange Seite mit allen Themen (Hero, Kontakt, SEO, Footer, Sicherheit).
+- "Sichtbar" vs. "Veröffentlicht" wird inkonsistent gehandhabt (Portfolio hat `published`, andere `visible`).
+- JSON-Editor sichtbar — sollte nur für Devs.
+
+**C) Fehlende Felder:**
+- `hero_subline_mobile`, `hero_poster_mobile_url` (siehe Mobile).
+- `social_instagram`, `social_tiktok`, `social_linkedin` (Footer/Trust).
+- `contact_response_time_text` (z.B. "Antwort < 24h").
+- `theme_default` (light/dark).
+
+**D) Fehlende Vorschauen:**
+- OG-Image als Twitter/LinkedIn/Facebook-Card-Mockup (1200×630 Rahmen mit Title/Description Overlay).
+- Hero-Live-Preview (iframe der Landing in der Settings-Sektion oder Mini-Preview-Box).
+- Portfolio: Karten-Preview wie sie auf Landing erscheint.
+
+**E) Zusammenlegen:**
+- Process + Reasons + Audience in einen "Inhalte/Sektionen"-Bereich mit Tabs (weniger Sidebar-Lärm).
+- FAQ + Testimonials in "Vertrauen & Inhalte".
+
+**F) Trennen:**
+- `AdminSettings` splitten in `Branding & Hero`, `SEO & Social`, `Kontakt & Integrationen`, `System & Sicherheit` (eigene Routen statt eine Seite).
+
+**G) Dashboard-Warnungen (bereits teils da, ausbauen):**
+- "Portfolio < 3 Einträge → Landing zeigt Beispiel-Formate" (Hinweis-Karte).
+- "OG-Image fehlt → Social-Shares wirken leer".
+- "Hero-Video nutzt Mojli-Platzhalter".
+- "WhatsApp/Calendly leer".
+- "Admin-Setup-Code noch aktiv → bitte leeren".
+- To-do-Checkliste mit Fortschritts-Balken ("Setup zu 70 % komplett").
+
+**H) UX-Verbesserungen:**
+- Globaler "Auf Live ansehen"-Link je Sektion (Deep-Link zur Landing mit Hash).
+- Sticky "Speichern"-Bar pro Seite statt mehrere kleine Buttons.
+- Toaster-Hinweis nach Save: "Live in ~5 Sek sichtbar".
+- Empty States mit Illustration + CTA ("Noch kein Eintrag · Beispiel anlegen").
+- Mobile-Adminbereich: Sidebar-Drawer existiert, aber Tabellen (`AdminLeads`) brauchen Card-Layout auf < 640 px.
+
+**I) Sicherheit:**
+- `admin_setup_code` automatisch invalidieren, sobald erster Admin existiert (DB-Trigger oder Edge Function).
+- Audit-Log-Tabelle `admin_actions` (wer hat was geändert) — Nice-to-have.
+- Rate-Limiting auf `contact_leads`-Insert (Edge Function + IP-Hash).
+
+**J) Nice-to-have:**
+- Rollen `editor` (alles außer Settings + Sicherheit), `viewer` (read-only).
+- Medienbibliothek (`media_assets` Tabelle + Storage-Bucket; Drag&Drop, Wiederverwendung).
+- Versionierung pro Sektion (vorherige Texte zurückrollen).
+
+## 5. Light / Dark Mode Konzept
+
+**Status:** Nur Dark. Tailwind hat `darkMode: ["class"]`, aber keine `.dark`-Variante in CSS — alle Tokens hängen direkt an `:root`.
+
+**Konzept:**
+- Default bleibt **Dark** (Brand-DNA).
+- Toggle in Navigation (Sun/Moon Icon, neben Mute-Button).
+- `prefers-color-scheme` als initialer Hint, `localStorage` overridet.
+- `ThemeProvider` setzt `class="dark"` auf `<html>`.
+
+**Token-Mapping:**
+
+| Token | Dark (aktuell) | Light (neu, editorial off-white) |
+|---|---|---|
+| `--background` | `#0A0A0A` | `#F7F4ED` (warmes off-white) |
+| `--foreground` | `#F4F0E8` | `#1A1612` (warmes off-black) |
+| `--card` | `#141414` | `#FFFFFF` |
+| `--muted` | `#1C1C1C` | `#EFEAE0` |
+| `--muted-foreground` | `#B8B2AA` | `#5C544A` |
+| `--border` | rgba(244,240,232,0.10) | rgba(26,22,18,0.10) |
+| `--primary` | `#C9963B` | `#A87826` (etwas dunkler für Kontrast auf hellem BG) |
+| `--input` | `#1C1C1C` | `#FFFFFF` |
+
+**Komponenten mit Sonderlogik:**
+- **Hero:** Light Mode behält dunkles Video-Bett (Video selbst ist filmisch dunkel) — Overlay-Gradient bleibt `black/…`, Headline-Farbe wird per Override hell gehalten. Nur Nav-Bar wechselt Farben beim Scroll.
+- **Glass-Effect:** zwei Varianten (`.glass-effect` für Dark, `.glass-effect-light` mit `rgba(0,0,0,0.04)`).
+- **Film Grain:** auf Light dezenter (`opacity: 0.15`).
+- **Admin Panel:** vollständig theme-fähig, Default = Dark (Studio-Tool).
+
+**Verworfen:** Auto-Invert oder reines Whiteboard-Look — würde Brand zerstören.
+
+## 6. Inspirationsseiten-Vergleich
+
+| Quelle | Stärken | Übernehmen | Vermeiden |
+|---|---|---|---|
+| **fischerAppelt** | Case-First Hero, große editorial Typo, mutige Kategorisierung | Featured-Case-Slot oben, Kategorie-Filter im Portfolio | Konzern-Komplexität, Mega-Menu |
+| **Digital Masters** | Saubere Service-Cluster, Strategie/Marketing/Tech-Buckets | Services als 3 Cluster (Produktion / Performance / Content), klarere Hierarchie | KI-Hype-Wording |
+| **rockandstars** | Mutige Visuals, Personality | Hover-Microinteractions auf Cards, Editorial-Tone | "Wir sind KI-Agentur"-Claim — passt nicht zu Soul Cinema |
+| **Monsoon** | Premium-Wirkung, viel Whitespace, Case-Detailseiten | Case-Detail-Template, internationaler Tonfall, große Hero-Typo | Englisch-only Tonalität |
+| **SUMAX** | Kennzahlen, Trust-Signale, Kontakt-CTA-System | Trust-Zeile (Antwortzeit, Lieferzeit, Iterations-Garantie), CTA-Block am Sektionsende | Fake-Zahlen, Riesen-Logo-Wall |
+
+### Übernahme-Tabelle
+
+| Feature | Quelle | Nutzen | Passt? | Prio | Idee |
+|---|---|---|---|---|---|
+| Featured-Case-Slot im Hero-Footer | fApp/Monsoon | Trust + Direkt-Beispiel | Ja (sobald 1 echter Case) | P2 | Schmaler Strip unter Hero mit 1 Video-Loop |
+| Service-Cluster (3 Buckets) | DM | Klarere Story | Ja | P1 | DB-Migration `service_cluster` Feld |
+| Hover-Video-Preview Portfolio | Monsoon | Premium-Wirkung | Ja | P2 | `<video>` on hover, mute, autoplay |
+| Trust-Zeile Antwortzeit/Lieferzeit | SUMAX | Conversion | Ja | P1 | im Hero/Contact, keine Fake-Zahlen |
+| Case-Detail-Seiten | Monsoon | SEO + Tiefe | Ja, später | P3 | `/work/:slug` Route |
+| Kategorie-Filter Portfolio | fApp | UX | Ja | P2 | Tag-Chips |
+| Sticky-Bottom-CTA Mobile | DM/SUMAX | Conversion | Ja | P1 | Neue Komponente |
+| Light/Dark Toggle | (allgemein) | Modern, Accessibility | Ja | P1 | siehe §5 |
+| Editorial-Großtypo Sektionen | Monsoon | Premium | Ja | P2 | Section-Header-Komponente |
+
+## 7. Soul Cinema sollte übernehmen
+
+- Klare 3-Cluster-Service-Struktur.
+- Trust-Mikrozeile (Antwortzeit, Iterationen inklusive, etc. — nur was echt einhaltbar ist).
+- Sticky Mobile-CTA.
+- Light/Dark Toggle.
+- Editorial Section-Header.
+- Hover-Video-Preview Portfolio (für echte Cases).
+- Mobile Hero-Diet (Variante A+).
+
+## 8. Soul Cinema sollte NICHT übernehmen
+
+- Fake-Kundenlogos.
+- Erfundene Zahlen ("40+ Marken", "200 % ROAS").
+- KI-Agentur-Wording.
+- Komplexe Mega-Menüs.
+- Riesige englischsprachige Internationalitäts-Pose.
+- Auto-Invert Light Mode.
+
+## 9. Konkretes Optimierungskonzept
+
+**Mobile Hero (Variante A+):** Overlay reduzieren, Texte kürzen, Bullets auf 2, Sticky CTA, `min-h-[100svh]`, optionale Mobile-Settings.
+
+**Theme:** ThemeProvider, Toggle in Nav, CSS-Variablen pro `.dark` / Root, Admin-kompatibel.
+
+**Admin:** Sidebar-Gruppen ("Inhalte", "Marketing", "System"), Settings in 4 Routen splitten, Dashboard-Checkliste, Empty States, Live-Preview-Iframe in Hero-Settings, OG-Image-Mockup.
+
+**Trust:** Microzeile (Antwortzeit, Konzept-Call kostenlos, Erste Iteration inklusive) — pflegbar in Settings.
+
+**Portfolio:** Beispiel-Formate-Logik bleibt; Hover-Preview vorbereiten (DB-Feld `preview_video_url`).
+
+**Services:** DB-Feld `cluster` (`produktion` / `performance` / `content`), Frontend rendert 3 Spalten/Reihen mit Cluster-Header.
+
+**Kontakt:** Trust-Block über dem Formular auf Mobile; WhatsApp-Quick-Button wenn Setting gepflegt.
+
+**SEO:** Schema.org `LocalBusiness` + `Service` JSON-LD; späte Landingpages `/produktvideos`, `/social-ads`, `/saas-videos` (P3).
+
+## 10. Priorisierte Roadmap
+
+### Phase 1 — Mobile Hero Sofort-Fixes (P1, ~2h, Risiko: niedrig)
+- `Hero.tsx`: Overlay reduzieren, Mobile-Texte kürzen, Bullets begrenzen, `100svh`.
+- Neue `StickyMobileCta.tsx` (auf Landing eingebunden, blendet aus wenn Kontakt sichtbar).
+- DB-Migration: `hero_subline_mobile`, `hero_poster_mobile_url`, `contact_response_time_text` als optionale Settings.
+- Admin: 3 neue Felder in `AdminSettings`.
+- **Effekt:** Video wieder sichtbar, mobile Conversion höher.
+
+### Phase 2 — Admin UX Quick Wins (P1, ~3h, Risiko: niedrig)
+- Sidebar in `Admin.tsx` gruppieren (3 Sektionen mit Headern).
+- `AdminSettings.tsx` splitten in 4 Routen (Branding/Hero, SEO/Social, Kontakt/Integrationen, System).
+- Dashboard: Setup-Checkliste mit Progress-Bar.
+- Empty States für leere Listen.
+- Mobile-Tabellen → Card-Layout in `AdminLeads`.
+- **Effekt:** Nicht-Techniker findet sich schneller zurecht.
+
+### Phase 3 — Light/Dark Theme System (P1, ~3h, Risiko: mittel)
+- `ThemeProvider.tsx` (Context, localStorage, prefers-color-scheme).
+- `index.css` umbauen: `.dark` Block mit aktuellen Werten, `:root` mit Light-Werten (oder umgekehrt, abhängig vom Default).
+- Toggle-Button in Nav (Hero) + in Admin-Header.
+- Komponenten-Audit: `bg-[#0A0A0A]`, `text-[#F4F0E8]` hardcoded Werte → Tokens.
+- Hero behält dunkles Video-Bett auch im Light Mode.
+- **Effekt:** Modern, Accessibility, optional für Nutzer.
+
+### Phase 4 — Trust / Cases / Portfolio (P2, ~3h, Risiko: niedrig)
+- Trust-Microzeile-Komponente, Settings-Felder.
+- Service-Cluster (DB-Feld + Frontend).
+- Portfolio Hover-Video-Preview (DB-Feld `preview_video_url`, `Portfolio.tsx`).
+- Kategorie-Filter Portfolio.
+- **Effekt:** Premium-Wirkung, bessere Story.
+
+### Phase 5 — Conversion / Kontakt / Services (P2, ~2h, Risiko: niedrig)
+- Trust-Block über Kontaktformular auf Mobile.
+- WhatsApp-Quick-Button.
+- Service-Wording schärfen (Seeds).
+- Editorial Section-Header.
+- **Effekt:** Conversion + Brand.
+
+### Phase 6 — Nice-to-have (P3, je 3–6h)
+- Medienbibliothek (`media_assets` Tabelle, Storage-Bucket, Picker im Admin).
+- Live-Preview-Iframe in Hero-Settings.
+- Rollen `editor` / `viewer`.
+- Audit-Log.
+- Case-Detail-Pages `/work/:slug`.
+- SEO-Landingpages.
+
+## 11. Betroffene Dateien
+
+| Phase | Dateien |
 |---|---|
-| Visual Design | 7 |
-| UX / Flow | 6 |
-| Copy / Positionierung | 5 |
-| Code-Qualität | 7.5 |
-| Admin / CMS | 6 |
-| SEO | 7.5 |
-| Performance | 6.5 |
-| Sicherheit | 7 |
-| Conversion | 5.5 |
+| 1 | `src/components/Hero.tsx`, neue `src/components/StickyMobileCta.tsx`, `src/pages/Landing.tsx`, `src/pages/admin/AdminSettings.tsx`, neue Migration |
+| 2 | `src/pages/admin/Admin.tsx`, `AdminSettings.tsx` (split in 4 neue Files), `AdminDashboard.tsx`, `AdminLeads.tsx`, `_EntityCrud.tsx` |
+| 3 | neue `src/components/ThemeProvider.tsx` + `ThemeToggle.tsx`, `src/index.css`, `src/main.tsx`, Komponenten mit Hardcodes (`Hero`, `About`, `Footer`, `Contact`, …) |
+| 4 | `src/components/Portfolio.tsx`, `Services.tsx`, neue `TrustBar.tsx`, Migration für `services.cluster`, `portfolio_items.preview_video_url` |
+| 5 | `Contact.tsx`, `Services.tsx`, neue `SectionHeader.tsx`, DB-Seeds |
+| 6 | neue Tabellen + Storage, `MediaPicker.tsx`, neue Admin-Routen |
+
+## 12. Risiko & Aufwand
+
+| Phase | Aufwand | Risiko | Begründung |
+|---|---|---|---|
+| 1 | 2h | niedrig | Lokale Hero-Änderungen + 3 DB-Felder |
+| 2 | 3h | niedrig | Reines Admin-Refactor, kein User-Impact |
+| 3 | 3h | **mittel** | Berührt viele Komponenten mit hardcoded Farben — Regression-Gefahr |
+| 4 | 3h | niedrig | Additive Features |
+| 5 | 2h | niedrig | Copy + kleine Layout-Änderungen |
+| 6 | je 3–6h | mittel | Neue Tabellen, Storage, Rollenlogik |
+
+## 13. Empfehlung erster Sprint
+
+**Sprint 1 = Phase 1 + Phase 2** (Mobile Hero Fix + Admin UX Quick Wins). Zusammen ca. 5h, niedriges Risiko, sofort spürbarer Effekt für Endnutzer (Mobile) und Inhaber (Admin). Phase 3 (Theme) bewusst als eigener Sprint, weil sie viele Komponenten anfasst und gründliches QA braucht.
 
 ---
 
-## 2. Sektions-Analyse
-
-### Navigation
-- **Problem:** Sticky-Verhalten & aktiver Section-Highlight unklar; CTA "Projekt anfragen" verschmilzt visuell.
-- **Fix:** Glas-Bar mit Scroll-Shrink, aktive Section unterstrichen, CTA als amber Solid-Button. Mobile: Hamburger mit Full-Screen-Overlay, CTA pinned unten.
-- **Priorität:** Hoch.
-
-### Hero
-- **Problem:** Headline zu poetisch, kein konkretes Outcome; CTA-Pair zu gleichwertig; "Produktlink reicht" fehlt.
-- **Fix:** Klare Nutzen-Headline + sekundärer Trust-Satz + 1 Primär-CTA + 1 sekundärer Link. Mute/Sound-Toggle behalten. Badge spitzer formulieren.
-- **Texte:** siehe §3.
-- **Priorität:** Kritisch.
-
-### Leistungen
-- **Problem:** 6 Karten zu flach, Beschreibungen austauschbar. Keine Differenzierung "Produktvideo vs. Social Ad vs. Launch".
-- **Fix:** 3 Hero-Leistungen (Produktvideo, Social Ad, Launch-Kampagne) groß, darunter 3 ergänzende (SaaS/App, E-Commerce Reels, Content Pakete) kleiner. Jede Karte: Outcome, Format, typische Lieferzeit.
-- **Priorität:** Hoch.
-
-### Portfolio
-- **Problem:** Fallback-Cards wirken wie echte Cases. Keine Plattform-/Ziel-/Format-Badges in der Tiefe genutzt.
-- **Fix:** Solange < 3 echte Cases → Section umlabeln zu *„Formate & Beispiel-Setups"* mit klarem Hinweis „Beispielhafte Format-Vorlagen". Sobald echte Videos vorhanden: Grid 3-Spalten, Video-Hover-Autoplay (muted), Badges Plattform/Format/Ziel, Featured-Pin oben.
-- **Datenfelder Case:** title, client (optional), category, platform, goal, format, duration, thumbnail, video_url, featured, sort_order, published, year.
-- **Priorität:** Hoch.
-
-### Prozess
-- **Problem:** Schritte ok, Kunden-Input vs. Studio-Leistung unklar.
-- **Fix:** Pro Schritt zwei Mini-Zeilen: *„Du lieferst:"* / *„Wir machen:"*. Schritt 1 explizit: „Produktlink oder Bilder reichen".
-- **Priorität:** Mittel.
-
-### Warum Soul Cinema
-- **Problem:** Vorteile generisch.
-- **Fix:** 4 Reasons mit messbaren Versprechen (Lieferzeit, Iterationen, Hooks pro Spot, Plattform-Anpassung).
-- **Priorität:** Mittel.
-
-### Preise
-- **Problem:** Zu früh in der Journey, kann abschrecken; Pakete wirken starr.
-- **Fix:** Section weiter nach unten (vor FAQ), "Ab"-Preise visuell, Hinweis "Einstiegspreise" amber Badge, "Individuelles Angebot" als 4. Karte/CTA.
-- **Priorität:** Hoch.
-
-### Testimonials
-- **Problem:** Aktuell sichtbar ohne echte Stimmen → Risiko Fake-Wirkung.
-- **Fix:** Section nur rendern, wenn `testimonials.visible=true` Count ≥ 2. Sonst komplett ausblenden. Admin sieht Hinweis im Dashboard.
-- **Priorität:** Kritisch (gegen Fake-Eindruck).
-
-### FAQ
-- **Problem:** 5 Fragen, decken Kern-Einwände nicht voll ab.
-- **Fix:** Auf 8–10 erweitern (siehe §3).
-- **Priorität:** Mittel.
-
-### Kontakt
-- **Problem:** Form ok, aber Wert vor Formular schwach; kein WhatsApp/Calendly-optional.
-- **Fix:** Trust-Block links (Antwortzeit, Was passiert nach Absenden, NDA möglich), Form rechts. Pflicht nur: Name, E-Mail, Nachricht. Rest optional. Optional: WhatsApp-Quick-Link + Calendly-Embed/Link, beide admin-toggle.
-- **Priorität:** Hoch.
-
-### Footer
-- **Problem:** Standard.
-- **Fix:** 4 Spalten: Brand+Claim / Leistungen / Rechtliches / Kontakt + Social (admin-pflegbar, leer = ausblenden).
-- **Priorität:** Niedrig.
-
-### Mobile
-- **Problem:** Hero-Text zu groß, CTA-Stack zu hoch; Sticky-CTA fehlt.
-- **Fix:** Hero clamp-Typo, ein Primary-CTA, Sticky-Bottom-CTA „Projekt anfragen" ab Scroll > Hero.
-- **Priorität:** Hoch.
-
----
-
-## 3. Wording-Vorschläge
-
-**Hero**
-- Badge: `Ad Studio für Produktvideos & Social Ads`
-- Headline: `Produktvideos, die verkaufen. Cinematic produziert.`
-- Subline: `Wir entwickeln Werbevideos und Social Ads für digitale und physische Produkte — von Konzept bis Lieferung. Ein Produktlink oder bestehende Bilder reichen, um zu starten.`
-- Bullets: `Konzept · Produktion · Lieferung aus einer Hand` / `Formate für Meta, TikTok, YouTube & Shop` / `Erste Cuts in 7–14 Tagen`
-- Primary CTA: `Projekt anfragen` · Secondary: `Leistungen ansehen`
-
-**Leistungen (Karten-Tagline + Beschreibung)**
-- *Produktvideos* — „Dein Produkt, kinoreif inszeniert." Für Shop, Landingpage und Markenauftritt.
-- *Social Ads* — „Hook-getriebene Ads, die scrollen stoppen." Meta, TikTok, YouTube Shorts.
-- *Launch-Kampagnen* — „Mehrere Hooks, ein Ziel: Verkaufen." Varianten für A/B-Tests.
-- *SaaS & App* — „Komplexes Produkt, klare Story." Erklär-/Promo-Videos.
-- *E-Commerce Reels* — „Short-Form, das in den Feed passt." Für Marken & Shops.
-- *Content Pakete* — „Laufender Output statt Einmalproduktion." Monatliche Pakete.
-
-**Prozess**
-1. *Anfrage* — Du sendest Produktlink, Bilder oder Material. / Wir prüfen Eignung & Format.
-2. *Briefing* — Du beantwortest 5 kurze Fragen. / Wir definieren Hook, Ziel, Plattform.
-3. *Konzept* — Du gibst Feedback. / Wir liefern Storyboard & Shotlist.
-4. *Produktion* — Du lehnst dich zurück. / Wir produzieren, schneiden, vertonen.
-5. *Lieferung* — Du erhältst fertige Cuts in allen Formaten. / Wir übergeben + 1 Revisionsrunde.
-
-**Preise (Headline)**
-- `Transparente Einstiegspreise. Finaler Preis nach Briefing.`
-
-**FAQ-Ergänzungen**
-- Brauche ich fertiges Videomaterial? *Nein. Produktbilder oder ein Produktlink reichen für den Start.*
-- Welche Formate erhalte ich? *9:16, 1:1, 4:5, 16:9 — je nach Plattform.*
-- Können mehrere Varianten/Hooks erstellt werden? *Ja, ab Professional standardmäßig 3 Hooks pro Spot.*
-- Wie läuft die Zusammenarbeit? *Asynchron über Briefing-Dokument, Feedback-Runden per Mail/Loom.*
-- Bietet ihr NDA an? *Ja, auf Anfrage.*
-
-**Kontakt-Lead-Text**
-- `Ein kurzer Satz zu deinem Produkt genügt. Wir melden uns innerhalb von 24h mit Einschätzung & nächstem Schritt.`
-
-**Footer-Claim**
-- `Soul Cinema — Ad Studio aus Birmingham für Produktvideos, Werbevideos und Social Ads.`
-
----
-
-## 4. Admin / CMS-Analyse
-
-**Aktuell gut**
-- Auth + Setup-Code, `has_role()`, RLS auf allen Tabellen.
-- CRUD für services, process, reasons, audience, faq, testimonials, pricing.
-- Leads mit Filter, CSV-Export, Status.
-- Portfolio-Uploads in privaten Bucket, signed URLs.
-
-**Schwachstellen**
-- `AdminSettings` teils flach – keine Vorschauen pro Block (Hero-Preview fehlt).
-- Kein **Draft/Published**-Status (nur `visible`).
-- Keine Medienbibliothek (Uploads nur pro Portfolio-Item).
-- Kein **Live-Preview** der Landingpage aus Admin.
-- Keine **Audit-Logs** (wer hat was geändert).
-- Rollen vorbereitet (`admin`, `editor`, `viewer`), aber nicht UI-seitig durchgesetzt.
-- Setup-Code-Rotation manuell.
-
-**Empfohlene Erweiterungen**
-- `published` boolean + `status` enum (`draft`/`scheduled`/`published`) auf inhaltsführenden Tabellen.
-- Tabelle `media_assets` (id, path, mime, size, alt, tags, uploader, created_at) + Admin-Seite *Medien*.
-- Tabelle `audit_logs` (entity, entity_id, action, actor, diff_json, created_at).
-- Admin-Seite *Vorschau* (iframe auf `/?preview=token`).
-- Admin-Seite *Branding* (Logo, Farben, Akzent-Token – schreibt CSS-Variablen via `site_settings`).
-- Admin-Seite *SEO* getrennt von allg. Settings (Title, Desc, OG, Twitter, JSON-LD-Toggle).
-- Rollen-UI: Editor darf Inhalte, nicht Settings/Users; Viewer nur Leads.
-
-**Sicherheit**
-- Setup-Code in `site_settings` ablegen + Force-Rotate-Workflow.
-- Rate-Limit auf `claim_admin` & Login (per Edge-Function-Proxy).
-- Signed-URL-Expiry auf 24h statt 1 Jahr.
-- File-Validation serverseitig in Edge Function (nicht nur Client).
-
----
-
-## 5. Technische Analyse
-
-**Sauber**
-- Komponenten-Trennung, Tailwind-Tokens, Helmet-Per-Route, `useCms` Pattern.
-- RLS + GRANTs + `has_role` Security-Definer.
-
-**Verbesserung**
-- `Hero.tsx` (196 Zeilen) → in `HeroMedia`, `HeroCopy`, `HeroCTA` splitten.
-- `Contact.tsx` (223 Z.) → Form-Schema in eigene Datei, `useContactForm` Hook.
-- Fehlende Loading-Skeletons in Sections (aktuell Fallback sofort).
-- `useCms` kein Cache → React Query empfohlen.
-- Bilder/Videos ohne `loading="lazy"` / `preload="none"` durchgängig.
-- Kein Error-Boundary auf Landing.
-- `AdminPortfolio` Validation client-only → Edge-Function.
-- Keine E2E-Tests; nur Visual-QA Workflow.
-
-**SEO**
-- Dynamische OG-Tags ok, aber kein `Article`/`Organization`-JSON-LD im Footer/global.
-- `sitemap.xml` statisch – sollte per Build aus DB-Routen generiert werden, sobald Cases einzelne URLs erhalten.
-
-**Performance**
-- Hero-Video WebM gut, aber kein `poster` fallback wenn `hero_poster_url` leer → schwarzer Frame.
-- Fonts: prüfen ob `font-display: swap` + Preload.
-- LCP-Ziel: Hero-Headline.
-
-**Accessibility**
-- Kontrast `text-[#A8A29E]` auf `#0A0A0A` grenzwertig (AA bei kleiner Schrift knapp). Auf `#B8B2AA` heben.
-- Video braucht Untertitel-Spur oder `aria-label`.
-- Form-Errors brauchen `aria-describedby`.
-
----
-
-## 6. Priorisierte Roadmap
-
-### Phase 1 — Kritische Sofort-Fixes (1–2 Tage)
-- Hero-Copy, CTA-Hierarchie, "Produktlink reicht"-Hinweis (`Hero.tsx`, `site_settings`).
-- Testimonials nur bei ≥ 2 echten Stimmen rendern (`Testimonials.tsx`, `Landing.tsx`).
-- Portfolio-Fallbacks als „Beispiel-Format" labeln (`Portfolio.tsx`).
-- Mobile Hero-Typo + Sticky-Bottom-CTA (`Hero.tsx`, neue `MobileCta.tsx`).
-- Kontrast-Token `--muted-foreground` anheben (`index.css`).
-- **Risiko:** niedrig · **Effekt:** hoch (Vertrauen + Conversion).
-
-### Phase 2 — Conversion & Wording (2–3 Tage)
-- Alle Texte gem. §3 in DB seeden (Migration).
-- Section-Reihenfolge: Hero → Leistungen → Prozess → Warum → Portfolio → Preise → FAQ → Kontakt.
-- Kontakt-Trust-Block + optionale WhatsApp/Calendly-Toggles (`Contact.tsx`, `site_settings`).
-- Preise: "Ab"-Badge + 4. Karte "Individuell" (`Pricing.tsx`).
-- FAQ-Erweiterung (Migration + `FAQ.tsx`).
-- **Effekt:** hoch · **Risiko:** niedrig.
-
-### Phase 3 — Admin/CMS professionalisieren (3–5 Tage)
-- `status`-Enum + Draft/Published auf services/portfolio/faq/pricing.
-- `AdminSettings` in Bereiche splitten (Hero / SEO / Kontakt / Branding / Security) mit Live-Vorschau-Cards.
-- Rollen-UI (`editor`, `viewer`) durchsetzen in Routes-Guard.
-- `audit_logs`-Tabelle + Einträge bei jedem Update.
-- Live-Preview-Iframe in Admin.
-- **Effekt:** mittel-hoch · **Risiko:** mittel (Migrationen).
-
-### Phase 4 — Medien & Portfolio (2–4 Tage)
-- `media_assets`-Tabelle + Admin-Seite *Medien* (Upload, Alt, Tags, Wiederverwendung).
-- Portfolio-Editor mit Multi-Asset, Featured-Toggle, Video-Hover-Preview im Frontend.
-- Signed-URL-TTL reduzieren, Refresh-Logik im Hook.
-- **Effekt:** hoch (sobald echte Cases da) · **Risiko:** mittel.
-
-### Phase 5 — SEO / Performance / Sicherheit (1–3 Tage)
-- `Organization` + `WebSite` JSON-LD global.
-- Sitemap-Build aus DB; Canonicals pro künftiger Case-Seite.
-- Hero `poster`-Fallback erzwingen, Video `preload="metadata"`.
-- Font-Preload + `font-display: swap`.
-- Edge-Function für Server-Side File-Validation + Rate-Limit `contact_leads`.
-- Setup-Code-Rotation-Flow.
-- **Effekt:** mittel · **Risiko:** niedrig.
-
-### Phase 6 — Nice-to-have
-- Case-Detail-Seiten `/work/[slug]`.
-- Blog/Insights mit MDX aus Supabase.
-- A/B-Test-Framework für Hero-Headlines.
-- Mehrsprachigkeit (DE/EN).
-- Analytics-Dashboard im Admin (Plausible/Umami).
-
----
-
-## 7. Umsetzungsempfehlung
-
-**Zuerst (jetzt):** Phase 1 + 2 zusammen in einem Sprint — größter Hebel auf Vertrauen & Conversion, niedriges Risiko, keine Datenbank-Strukturbrüche.
-
-**Danach:** Phase 3 (Admin-Professionalisierung), damit du Inhalte ohne Entwickler pflegen kannst, bevor echte Kunden-Cases kommen.
-
-**Sobald echte Medien existieren:** Phase 4.
-
-**Vor Marketing-Launch:** Phase 5.
-
-**Bewusst NICHT umsetzen jetzt:**
-- Hero-Video ersetzen (bleibt, nur editierbar machen).
-- Logo redesign.
-- Fake-Testimonials oder Fake-Logos einbauen.
-- „40+ Marken"-Claim.
-- Mehrsprachigkeit / Blog (Phase 6, später).
-
-**Optional, Entscheidung offen:**
-- Calendly-Einbettung (vs. nur Link).
-- WhatsApp-Quick-Action (DSGVO-Hinweis nötig).
-- Audit-Logs (Phase 3, kann verschoben werden, wenn nur 1 Admin).
-
----
-
-**Bitte gib Freigabe oder markiere, welche Phasen/Punkte du anders priorisierst — danach starte ich mit der Umsetzung.**
+**Soll ich mit Phase 1 (Mobile Hero Sofort-Fixes) starten — oder direkt Phase 1 + 2 als Sprint 1 umsetzen?**
