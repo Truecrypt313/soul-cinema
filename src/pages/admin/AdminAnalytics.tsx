@@ -45,7 +45,17 @@ export default function AdminAnalytics() {
   const [events, setEvents] = useState<Ev[]>([])
   const [leadsCount, setLeadsCount] = useState(0)
   const [settings, setSettings] = useState<Settings | null>(null)
+  const [saltConfigured, setSaltConfigured] = useState<boolean | null>(null)
   const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const pid = (import.meta as any).env?.VITE_SUPABASE_PROJECT_ID
+    if (!pid) return
+    fetch(`https://${pid}.supabase.co/functions/v1/track-analytics-event`, { method: 'GET' })
+      .then(r => r.ok ? r.json() : null)
+      .then(d => { if (d) setSaltConfigured(!!d.salt_configured) })
+      .catch(() => {})
+  }, [])
 
   useEffect(() => {
     let active = true
@@ -158,6 +168,16 @@ export default function AdminAnalytics() {
         <div className="mb-6 flex items-start gap-3 bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4 text-sm">
           <AlertTriangle className="w-4 h-4 text-yellow-500 mt-0.5" />
           <div>Analytics ist aktuell <strong>deaktiviert</strong>. Es werden keine neuen Events erfasst.</div>
+        </div>
+      )}
+
+      {saltConfigured === false && (
+        <div className="mb-6 flex items-start gap-3 bg-orange-500/10 border border-orange-500/30 rounded-xl p-4 text-sm">
+          <AlertTriangle className="w-4 h-4 text-orange-500 mt-0.5" />
+          <div>
+            <strong>ANALYTICS_SALT ist nicht gesetzt.</strong> Es wird ein unsicherer Default-Salt verwendet.
+            Bitte in den Edge-Function-Secrets <code className="px-1 bg-background rounded">ANALYTICS_SALT</code> auf einen langen Zufallswert (≥ 32 Zeichen) setzen, damit Visitor-Hashes nicht erraten werden können.
+          </div>
         </div>
       )}
 
