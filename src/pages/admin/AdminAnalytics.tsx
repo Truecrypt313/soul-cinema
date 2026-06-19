@@ -265,6 +265,27 @@ export default function AdminAnalytics() {
         <Table rows={k.ctaList} emptyText="Noch keine CTA-Klicks." labelCol="CTA" />
       </section>
 
+      {/* Content Insights (Phase B) */}
+      <div className="grid lg:grid-cols-2 gap-6 mb-6">
+        <section className="bg-card clean-border rounded-xl p-5">
+          <h2 className="text-lg font-bold mb-1">Section-Engagement</h2>
+          <p className="text-xs text-muted-foreground mb-3">
+            Anonyme Section-Views ({k.sectionViews}) — ≥ 50 % sichtbar für ≥ 1 s, max. 1× pro Session.
+            {settings && !settings.track_section_views && <span className="text-orange-500"> Aktuell deaktiviert.</span>}
+          </p>
+          <Table rows={k.sectionList} emptyText="Noch keine Section-Views erfasst." labelCol="Sektion" />
+        </section>
+
+        <section className="bg-card clean-border rounded-xl p-5">
+          <h2 className="text-lg font-bold mb-1">FAQ-Performance</h2>
+          <p className="text-xs text-muted-foreground mb-3">
+            FAQ-Aufklappungen ({k.faqOpens}). Zeigt, welche Fragen Nutzer:innen wirklich interessieren.
+            {settings && !settings.track_section_views && <span className="text-orange-500"> Aktuell deaktiviert.</span>}
+          </p>
+          <Table rows={k.faqList} emptyText="Noch keine FAQ-Öffnungen." labelCol="FAQ-ID" />
+        </section>
+      </div>
+
       {/* Settings */}
       {settings && (
         <section className="bg-card clean-border rounded-xl p-5">
