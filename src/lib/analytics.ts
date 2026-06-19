@@ -141,8 +141,9 @@ let bootstrapped = false
 function bootstrap() {
   if (bootstrapped) return
   bootstrapped = true
-  // capture utm on first load
+  // capture utm + attribution on first load (per tab/session)
   try { readUtmFromUrl() } catch {}
+  try { captureAttribution() } catch {}
 }
 
 export function track(input: TrackInput): void {
