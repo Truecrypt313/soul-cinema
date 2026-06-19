@@ -169,11 +169,6 @@ export function Hero() {
       </motion.div>
 
       <div className="relative z-20 min-h-[100svh] flex flex-col justify-center py-24 sm:py-0 px-6 sm:px-8 lg:px-12 max-w-5xl">
-        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.3 }}
-          className="inline-flex items-center gap-2 self-start glass-effect rounded-full px-4 py-2 mb-5 sm:mb-6">
-          <span className="w-1.5 h-1.5 bg-[#C9963B] rounded-full" />
-          <span className="text-[#F4F0E8]/90 text-xs sm:text-sm font-medium tracking-wide">{badge}</span>
-        </motion.div>
 
         <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.5 }}
           className="font-brand text-[2rem] leading-[1.1] sm:text-5xl sm:leading-[1.05] lg:text-7xl text-[#F4F0E8] tracking-tight mb-5 sm:mb-6 max-w-4xl">
