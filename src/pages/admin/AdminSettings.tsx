@@ -43,11 +43,17 @@ const FIELDS: Setting[] = [
   { key: 'social_linkedin', label: 'LinkedIn URL', type: 'url', group: 'Footer & Social', placeholder: 'https://linkedin.com/company/…' },
   { key: 'social_youtube', label: 'YouTube URL (optional)', type: 'url', group: 'Footer & Social', placeholder: 'https://youtube.com/@…' },
 
+  // ─── E-Mail-Benachrichtigungen ────────────────────────
+  { key: 'lead_email_notifications_enabled', label: 'E-Mail-Benachrichtigung bei neuer Anfrage', type: 'text', group: 'E-Mail', hint: 'true = aktiviert, false = deaktiviert. Standard: aktiviert.' },
+  { key: 'lead_notification_email', label: 'Empfänger-E-Mail', type: 'email', group: 'E-Mail', placeholder: 'hallo@soulcinema.de' },
+  { key: 'smtp_from_name', label: 'Absender-Name', group: 'E-Mail', placeholder: 'Soul Cinema' },
+  { key: 'smtp_from_email', label: 'Absender-E-Mail', type: 'email', group: 'E-Mail', placeholder: 'hallo@soulcinema.de', hint: 'Muss zur STRATO-Mailbox passen, deren Zugangsdaten als Secret hinterlegt sind.' },
+
   // ─── System ───────────────────────────────────────────
   { key: 'admin_setup_code', label: 'Admin-Setup-Code', group: 'System', hint: 'Nach Aktivierung des ersten Admins bitte leeren – sonst kann jeder mit dem Code ein weiteres Admin-Konto beanspruchen.' },
 ]
 
-const GROUPS = ['Hero', 'Kontakt', 'SEO & Social', 'Footer & Social', 'System'] as const
+const GROUPS = ['Hero', 'Kontakt', 'SEO & Social', 'Footer & Social', 'E-Mail', 'System'] as const
 
 export default function AdminSettings() {
   const { toast } = useToast()
