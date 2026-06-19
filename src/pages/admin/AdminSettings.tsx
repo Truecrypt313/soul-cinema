@@ -193,8 +193,8 @@ function HeroPreview({ values }: { values: Record<string, any> }) {
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
         <div className="relative z-10 max-w-xl">
           <div className="inline-block text-[10px] uppercase tracking-wider text-[#C9963B] bg-[#C9963B]/15 px-2 py-1 rounded mb-3">{badge}</div>
-          <h3 className="font-brand text-2xl sm:text-3xl text-[#F4F0E8] leading-tight mb-2 line-clamp-2">{headline}</h3>
-          <p className="text-sm text-[#F4F0E8]/80 line-clamp-2 mb-3">{subline}</p>
+          <h3 className="font-brand text-2xl sm:text-3xl text-foreground leading-tight mb-2 line-clamp-2">{headline}</h3>
+          <p className="text-sm text-foreground/80 line-clamp-2 mb-3">{subline}</p>
           <span className="inline-block bg-[#C9963B] text-[#0A0A0A] font-semibold text-xs px-3 py-1.5 rounded">{cta}</span>
         </div>
       </div>

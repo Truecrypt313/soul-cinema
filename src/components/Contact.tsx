@@ -80,11 +80,11 @@ export function Contact() {
     setForm(empty)
   }
 
-  const inputCls = 'w-full px-4 py-3 rounded-lg bg-[#1C1C1C] border border-white/[0.08] text-[#F4F0E8] placeholder:text-[#A8A29E]/60 focus:outline-none focus:border-[#C9963B]/60 focus:ring-1 focus:ring-[#C9963B]/40 gentle-animation'
+  const inputCls = 'w-full px-4 py-3 rounded-lg bg-muted border border-white/[0.08] text-foreground placeholder:text-[#A8A29E]/60 focus:outline-none focus:border-[#C9963B]/60 focus:ring-1 focus:ring-[#C9963B]/40 gentle-animation'
   const errCls = 'text-xs text-red-400 mt-1'
 
   return (
-    <section className="relative py-28 sm:py-32 bg-[#0A0A0A] border-t border-white/[0.04]">
+    <section className="relative py-28 sm:py-32 bg-background border-t border-white/[0.04]">
       <div className="container mx-auto px-6 sm:px-8 lg:px-12">
         <div className="grid lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
           <FadeUp>
@@ -92,10 +92,10 @@ export function Contact() {
               <span className="h-px w-8 bg-[#C9963B]" />
               <span className="text-xs font-semibold tracking-[0.2em] uppercase text-[#C9963B]">Kontakt</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#F4F0E8] leading-tight tracking-tight mb-5">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground leading-tight tracking-tight mb-5">
               Bereit, dein <span className="text-highlight">Produkt sichtbar</span> zu machen?
             </h2>
-            <p className="text-base sm:text-lg text-[#B8B2AA] leading-relaxed mb-8">
+            <p className="text-base sm:text-lg text-muted-foreground leading-relaxed mb-8">
               Ein kurzer Satz zu deinem Produkt genügt. Wir melden uns mit einer Einschätzung, welcher <span className="text-highlight">Videoansatz</span> sinnvoll ist.
             </p>
 
@@ -106,7 +106,7 @@ export function Contact() {
                 'Persönliche Einschätzung vor Projektstart',
                 'Produktlink oder Bilder reichen aus',
               ].map(t => (
-                <li key={t} className="flex items-start gap-2.5 text-sm text-[#F4F0E8]/90">
+                <li key={t} className="flex items-start gap-2.5 text-sm text-foreground/90">
                   <CheckCircle2 className="w-4 h-4 text-[#C9963B] mt-0.5 shrink-0" aria-hidden="true" />
                   <span>{t}</span>
                 </li>
@@ -114,20 +114,20 @@ export function Contact() {
             </ul>
 
             <div className="space-y-4">
-              <a href={`mailto:${email}`} className="flex items-center gap-3 text-[#F4F0E8] hover:text-[#C9963B] gentle-animation">
+              <a href={`mailto:${email}`} className="flex items-center gap-3 text-foreground hover:text-[#C9963B] gentle-animation">
                 <div className="w-10 h-10 rounded-lg bg-accent-soft flex items-center justify-center">
                   <Mail className="w-4 h-4 text-[#C9963B]" />
                 </div>
                 <span className="font-medium">{email}</span>
               </a>
               {whatsapp && (
-                <a href={`https://wa.me/${whatsapp.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener" className="flex items-center gap-3 text-[#F4F0E8] hover:text-[#C9963B] gentle-animation">
+                <a href={`https://wa.me/${whatsapp.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener" className="flex items-center gap-3 text-foreground hover:text-[#C9963B] gentle-animation">
                   <div className="w-10 h-10 rounded-lg bg-accent-soft flex items-center justify-center"><MessageCircle className="w-4 h-4 text-[#C9963B]" /></div>
                   <span className="font-medium">WhatsApp: {whatsapp}</span>
                 </a>
               )}
               {calendly && (
-                <a href={calendly} target="_blank" rel="noopener" className="flex items-center gap-3 text-[#F4F0E8] hover:text-[#C9963B] gentle-animation">
+                <a href={calendly} target="_blank" rel="noopener" className="flex items-center gap-3 text-foreground hover:text-[#C9963B] gentle-animation">
                   <div className="w-10 h-10 rounded-lg bg-accent-soft flex items-center justify-center"><Calendar className="w-4 h-4 text-[#C9963B]" /></div>
                   <span className="font-medium">Termin buchen</span>
                 </a>
@@ -137,30 +137,30 @@ export function Contact() {
 
           <FadeUp delay={0.1}>
             {sent ? (
-              <div className="bg-[#141414] border border-[#C9963B]/40 rounded-2xl p-10 text-center">
+              <div className="bg-card border border-[#C9963B]/40 rounded-2xl p-10 text-center">
                 <div className="w-14 h-14 mx-auto rounded-full bg-accent-soft flex items-center justify-center mb-5">
                   <CheckCircle2 className="w-7 h-7 text-[#C9963B]" />
                 </div>
-                <h3 className="text-2xl font-bold text-[#F4F0E8] mb-3">Danke, {sent.name}!</h3>
+                <h3 className="text-2xl font-bold text-foreground mb-3">Danke, {sent.name}!</h3>
                 <p className="text-[#A8A29E] mb-2">Wir haben deine Anfrage erhalten und melden uns in der Regel innerhalb von <span className="text-highlight font-semibold">24 Stunden</span>.</p>
-                <p className="text-sm text-[#A8A29E]/80">Wir melden uns per E-Mail an <span className="text-[#F4F0E8] font-medium">{sent.email}</span>.</p>
+                <p className="text-sm text-[#A8A29E]/80">Wir melden uns per E-Mail an <span className="text-foreground font-medium">{sent.email}</span>.</p>
                 <button onClick={() => setSent(null)} className="mt-6 text-sm text-[#C9963B] hover:underline">Weitere Anfrage senden</button>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="bg-[#141414] border border-white/[0.06] rounded-2xl p-7 sm:p-8 space-y-5" noValidate>
+              <form onSubmit={handleSubmit} className="bg-card border border-white/[0.06] rounded-2xl p-7 sm:p-8 space-y-5" noValidate>
                 {/* honeypot */}
                 <input type="text" name="website" tabIndex={-1} autoComplete="off" value={form.website} onChange={set('website')}
                   className="absolute left-[-9999px] w-px h-px opacity-0" aria-hidden="true" />
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="name" className="block text-xs font-semibold text-[#F4F0E8] mb-2 uppercase tracking-wider">Name *</label>
+                    <label htmlFor="name" className="block text-xs font-semibold text-foreground mb-2 uppercase tracking-wider">Name *</label>
                     <input id="name" required value={form.name} onChange={set('name')} className={inputCls} maxLength={200}
                       aria-invalid={!!errors.name} aria-describedby={errors.name ? 'name-err' : undefined} />
                     {errors.name && <p id="name-err" className={errCls}>{errors.name}</p>}
                   </div>
                   <div>
-                    <label htmlFor="email" className="block text-xs font-semibold text-[#F4F0E8] mb-2 uppercase tracking-wider">E-Mail *</label>
+                    <label htmlFor="email" className="block text-xs font-semibold text-foreground mb-2 uppercase tracking-wider">E-Mail *</label>
                     <input id="email" type="email" required value={form.email} onChange={set('email')} className={inputCls} maxLength={255}
                       aria-invalid={!!errors.email} aria-describedby={errors.email ? 'email-err' : undefined} />
                     {errors.email && <p id="email-err" className={errCls}>{errors.email}</p>}
@@ -169,31 +169,31 @@ export function Contact() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="company" className="block text-xs font-semibold text-[#F4F0E8] mb-2 uppercase tracking-wider">Unternehmen</label>
+                    <label htmlFor="company" className="block text-xs font-semibold text-foreground mb-2 uppercase tracking-wider">Unternehmen</label>
                     <input id="company" value={form.company} onChange={set('company')} className={inputCls} maxLength={200} />
                   </div>
                   <div>
-                    <label htmlFor="phone" className="block text-xs font-semibold text-[#F4F0E8] mb-2 uppercase tracking-wider">Telefon</label>
+                    <label htmlFor="phone" className="block text-xs font-semibold text-foreground mb-2 uppercase tracking-wider">Telefon</label>
                     <input id="phone" type="tel" value={form.phone} onChange={set('phone')} className={inputCls} maxLength={60} />
                   </div>
                 </div>
 
                 <div>
-                  <label htmlFor="product_url" className="block text-xs font-semibold text-[#F4F0E8] mb-2 uppercase tracking-wider">Website oder Produktlink</label>
+                  <label htmlFor="product_url" className="block text-xs font-semibold text-foreground mb-2 uppercase tracking-wider">Website oder Produktlink</label>
                   <input id="product_url" type="url" value={form.product_url} onChange={set('product_url')} className={inputCls} placeholder="https://…" maxLength={500} />
                   <p className="text-xs mt-1.5"><span className="text-highlight font-semibold">Ein Shop-, Amazon-, App- oder Landingpage-Link reicht aus.</span></p>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="product_type" className="block text-xs font-semibold text-[#F4F0E8] mb-2 uppercase tracking-wider">Produkttyp</label>
+                    <label htmlFor="product_type" className="block text-xs font-semibold text-foreground mb-2 uppercase tracking-wider">Produkttyp</label>
                     <select id="product_type" value={form.product_type} onChange={set('product_type')} className={inputCls}>
                       <option value="">Bitte wählen</option>
                       {PRODUCT_TYPES.map(b => <option key={b}>{b}</option>)}
                     </select>
                   </div>
                   <div>
-                    <label htmlFor="project_goal" className="block text-xs font-semibold text-[#F4F0E8] mb-2 uppercase tracking-wider">Gewünschtes Ziel</label>
+                    <label htmlFor="project_goal" className="block text-xs font-semibold text-foreground mb-2 uppercase tracking-wider">Gewünschtes Ziel</label>
                     <select id="project_goal" value={form.project_goal} onChange={set('project_goal')} className={inputCls}>
                       <option value="">Bitte wählen</option>
                       {GOALS.map(b => <option key={b}>{b}</option>)}
@@ -202,7 +202,7 @@ export function Contact() {
                 </div>
 
                 <div>
-                  <label htmlFor="budget" className="block text-xs font-semibold text-[#F4F0E8] mb-2 uppercase tracking-wider">Budget</label>
+                  <label htmlFor="budget" className="block text-xs font-semibold text-foreground mb-2 uppercase tracking-wider">Budget</label>
                   <select id="budget" value={form.budget} onChange={set('budget')} className={inputCls}>
                     <option value="">Bitte wählen</option>
                     {BUDGETS.map(b => <option key={b}>{b}</option>)}
@@ -210,7 +210,7 @@ export function Contact() {
                 </div>
 
                 <div>
-                  <label htmlFor="message" className="block text-xs font-semibold text-[#F4F0E8] mb-2 uppercase tracking-wider">Projektbeschreibung *</label>
+                  <label htmlFor="message" className="block text-xs font-semibold text-foreground mb-2 uppercase tracking-wider">Projektbeschreibung *</label>
                   <textarea id="message" required rows={5} maxLength={4000} value={form.message} onChange={set('message')}
                     className={`${inputCls} resize-none`}
                     aria-invalid={!!errors.message} aria-describedby={errors.message ? 'message-err' : undefined}

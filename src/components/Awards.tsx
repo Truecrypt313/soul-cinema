@@ -28,14 +28,14 @@ export function Awards() {
   const reasons = useCmsList<Reason>('reasons', REASONS_FB)
   const audience = useCmsList<Audience>('audience_items', AUDIENCE_FB)
   return (
-    <section className="relative py-28 sm:py-32 bg-[#0A0A0A] border-t border-white/[0.04]">
+    <section className="relative py-28 sm:py-32 bg-background border-t border-white/[0.04]">
       <div className="container mx-auto px-6 sm:px-8 lg:px-12">
         <FadeUp className="max-w-3xl mb-16">
           <div className="flex items-center gap-3 mb-5">
             <span className="h-px w-8 bg-[#C9963B]" />
             <span className="text-xs font-semibold tracking-[0.2em] uppercase text-[#C9963B]">Warum Soul Cinema</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#F4F0E8] leading-tight tracking-tight mb-5">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground leading-tight tracking-tight mb-5">
             Warum Soul Cinema?
           </h2>
           <p className="text-base sm:text-lg text-[#A8A29E] leading-relaxed">
@@ -46,11 +46,11 @@ export function Awards() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-7xl mb-20">
           {reasons.map((r, i) => (
             <FadeUp key={r.id} delay={i * 0.05}>
-              <div className="group h-full bg-[#141414] border border-white/[0.06] rounded-2xl p-7 hover:border-[#C9963B]/40 gentle-animation hover:-translate-y-1">
+              <div className="group h-full bg-card border border-white/[0.06] rounded-2xl p-7 hover:border-[#C9963B]/40 gentle-animation hover:-translate-y-1">
                 <div className="w-11 h-11 rounded-lg bg-accent-soft flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
                   <Icon name={r.icon_name} className="w-5 h-5 text-[#C9963B]" />
                 </div>
-                <h3 className="text-lg font-bold text-[#F4F0E8] mb-2">{r.title}</h3>
+                <h3 className="text-lg font-bold text-foreground mb-2">{r.title}</h3>
                 {r.description && <p className="text-[#A8A29E] text-sm leading-relaxed">{r.description}</p>}
               </div>
             </FadeUp>
@@ -58,14 +58,14 @@ export function Awards() {
         </div>
 
         <FadeUp className="max-w-3xl mb-8">
-          <h3 className="text-2xl sm:text-3xl font-bold text-[#F4F0E8] mb-3">Für wen ist Soul Cinema geeignet?</h3>
+          <h3 className="text-2xl sm:text-3xl font-bold text-foreground mb-3">Für wen ist Soul Cinema geeignet?</h3>
           <p className="text-[#A8A29E]">Wir arbeiten mit Brands, Shops und Teams, die ihre Produkte online sichtbar machen wollen.</p>
         </FadeUp>
         <FadeUp className="flex flex-wrap gap-3 max-w-5xl">
           {audience.map(a => (
-            <div key={a.id} className="inline-flex items-center gap-2 bg-[#141414] border border-white/[0.06] hover:border-[#C9963B]/40 rounded-full px-4 py-2.5 gentle-animation">
+            <div key={a.id} className="inline-flex items-center gap-2 bg-card border border-white/[0.06] hover:border-[#C9963B]/40 rounded-full px-4 py-2.5 gentle-animation">
               <Icon name={a.icon_name} className="w-4 h-4 text-[#C9963B]" />
-              <span className="text-sm text-[#F4F0E8]/90">{a.title}</span>
+              <span className="text-sm text-foreground/90">{a.title}</span>
             </div>
           ))}
         </FadeUp>

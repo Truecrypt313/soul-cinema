@@ -49,17 +49,17 @@ export function Portfolio() {
 
   const hasRealCases = liveCount >= 3
   return (
-    <section className="relative py-28 sm:py-32 bg-[#0A0A0A] border-t border-white/[0.04]">
+    <section className="relative py-28 sm:py-32 bg-background border-t border-white/[0.04]">
       <div className="container mx-auto px-6 sm:px-8 lg:px-12">
         <div className="max-w-3xl mb-16">
           <div className="flex items-center gap-3 mb-5">
             <span className="h-px w-8 bg-[#C9963B]" />
             <span className="text-xs font-semibold tracking-[0.2em] uppercase text-[#C9963B]">{hasRealCases ? 'Portfolio' : 'Beispiel-Formate'}</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#F4F0E8] leading-tight tracking-tight mb-5">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground leading-tight tracking-tight mb-5">
             {hasRealCases ? 'Ausgewählte Arbeiten.' : 'Beispiel-Formate für dein Produkt.'}
           </h2>
-          <p className="text-base sm:text-lg text-[#B8B2AA] leading-relaxed">
+          <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
             {hasRealCases
               ? <><span className="text-highlight">Produktvideos</span>, <span className="text-highlight">Social Ads</span> und Performance Creatives für <span className="text-highlight">Marken, Shops und digitale Produkte</span>.</>
               : 'Noch keine finalen Referenzen veröffentlicht. Diese Formate zeigen, welche Arten von Creatives Soul Cinema produzieren kann.'}
@@ -70,7 +70,7 @@ export function Portfolio() {
           {items.map(item => (
             <article
               key={item.id}
-              className="group bg-[#141414] border border-white/[0.06] rounded-2xl overflow-hidden hover:border-[#C9963B]/40 gentle-animation"
+              className="group bg-card border border-white/[0.06] rounded-2xl overflow-hidden hover:border-[#C9963B]/40 gentle-animation"
             >
               <div className="relative aspect-[4/5] bg-gradient-to-br from-[#1a1a1a] via-[#141414] to-black overflow-hidden">
                 {item.video_url ? (
@@ -93,7 +93,7 @@ export function Portfolio() {
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 gentle-animation" />
                 {item.format_badge && (
-                  <span className="absolute top-4 right-4 glass-effect text-[#F4F0E8] text-[10px] font-semibold px-2.5 py-1 rounded-full tracking-wider">
+                  <span className="absolute top-4 right-4 glass-effect text-foreground text-[10px] font-semibold px-2.5 py-1 rounded-full tracking-wider">
                     {item.format_badge}
                   </span>
                 )}
@@ -112,14 +112,14 @@ export function Portfolio() {
                     <span className="text-[10px] font-semibold text-[#0A0A0A] bg-[#C9963B] uppercase tracking-wider px-1.5 py-0.5 rounded">Featured</span>
                   )}
                 </div>
-                <h3 className="text-lg font-bold text-[#F4F0E8] mt-2 mb-2">{item.title}</h3>
+                <h3 className="text-lg font-bold text-foreground mt-2 mb-2">{item.title}</h3>
                 {item.description && (
                   <p className="text-[#A8A29E] text-sm leading-relaxed mb-3">{item.description}</p>
                 )}
                 {(item.platform || item.project_goal) && (
                   <div className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-[#A8A29E] border-t border-white/[0.05] pt-3">
-                    {item.platform && <span><span className="text-[#A8A29E]/60">Plattform · </span><span className="text-[#F4F0E8]">{item.platform}</span></span>}
-                    {item.project_goal && <span><span className="text-[#A8A29E]/60">Ziel · </span><span className="text-[#F4F0E8]">{item.project_goal}</span></span>}
+                    {item.platform && <span><span className="text-[#A8A29E]/60">Plattform · </span><span className="text-foreground">{item.platform}</span></span>}
+                    {item.project_goal && <span><span className="text-[#A8A29E]/60">Ziel · </span><span className="text-foreground">{item.project_goal}</span></span>}
                   </div>
                 )}
               </div>
@@ -128,7 +128,7 @@ export function Portfolio() {
         </div>
 
         <div className="mt-12 text-center">
-          <a href="#contact" className="inline-flex items-center gap-2 text-[#C9963B] font-semibold hover:text-[#F4F0E8] gentle-animation">
+          <a href="#contact" className="inline-flex items-center gap-2 text-[#C9963B] font-semibold hover:text-foreground gentle-animation">
             Projekt anfragen →
           </a>
         </div>
