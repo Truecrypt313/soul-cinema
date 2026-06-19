@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Hero } from '@/components/Hero'
 import { Services } from '@/components/Services'
 import { Portfolio } from '@/components/Portfolio'
@@ -11,6 +12,7 @@ import { Footer } from '@/components/Footer'
 import { Seo } from '@/components/Seo'
 import { StickyMobileCta } from '@/components/StickyMobileCta'
 import { useSettings, setting } from '@/hooks/useCms'
+import { trackPageView } from '@/lib/analytics'
 
 const FAQS = [
   { q: 'Was brauche ich für ein Projekt?', a: 'Produktbilder, vorhandenes Material oder ein Produktlink reichen für eine erste Einschätzung. Alles weitere klären wir gemeinsam.' },
@@ -62,6 +64,7 @@ export default function Landing() {
   const ogTitle = setting<string>(s, 'og_title', title)
   const ogDescription = setting<string>(s, 'og_description', description)
   const ogImage = setting<string>(s, 'og_image_url', 'https://soulcinema.de/og-image.jpg')
+  useEffect(() => { trackPageView() }, [])
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Seo

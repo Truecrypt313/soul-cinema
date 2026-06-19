@@ -14,6 +14,120 @@ export type Database = {
   }
   public: {
     Tables: {
+      analytics_events: {
+        Row: {
+          browser_name: string | null
+          created_at: string
+          cta_id: string | null
+          device_type: string | null
+          event_name: string
+          id: string
+          metadata: Json
+          os_name: string | null
+          page_path: string | null
+          referrer_domain: string | null
+          section_key: string | null
+          session_hash: string | null
+          theme: string | null
+          utm_campaign: string | null
+          utm_content: string | null
+          utm_medium: string | null
+          utm_source: string | null
+          utm_term: string | null
+          viewport_bucket: string | null
+          visitor_hash: string | null
+        }
+        Insert: {
+          browser_name?: string | null
+          created_at?: string
+          cta_id?: string | null
+          device_type?: string | null
+          event_name: string
+          id?: string
+          metadata?: Json
+          os_name?: string | null
+          page_path?: string | null
+          referrer_domain?: string | null
+          section_key?: string | null
+          session_hash?: string | null
+          theme?: string | null
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
+          viewport_bucket?: string | null
+          visitor_hash?: string | null
+        }
+        Update: {
+          browser_name?: string | null
+          created_at?: string
+          cta_id?: string | null
+          device_type?: string | null
+          event_name?: string
+          id?: string
+          metadata?: Json
+          os_name?: string | null
+          page_path?: string | null
+          referrer_domain?: string | null
+          section_key?: string | null
+          session_hash?: string | null
+          theme?: string | null
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
+          viewport_bucket?: string | null
+          visitor_hash?: string | null
+        }
+        Relationships: []
+      }
+      analytics_settings: {
+        Row: {
+          analytics_enabled: boolean
+          bot_filter_enabled: boolean
+          id: number
+          retention_days: number
+          track_cta_clicks: boolean
+          track_device: boolean
+          track_form_events: boolean
+          track_page_views: boolean
+          track_referrers: boolean
+          track_section_views: boolean
+          track_theme: boolean
+          updated_at: string
+        }
+        Insert: {
+          analytics_enabled?: boolean
+          bot_filter_enabled?: boolean
+          id?: number
+          retention_days?: number
+          track_cta_clicks?: boolean
+          track_device?: boolean
+          track_form_events?: boolean
+          track_page_views?: boolean
+          track_referrers?: boolean
+          track_section_views?: boolean
+          track_theme?: boolean
+          updated_at?: string
+        }
+        Update: {
+          analytics_enabled?: boolean
+          bot_filter_enabled?: boolean
+          id?: number
+          retention_days?: number
+          track_cta_clicks?: boolean
+          track_device?: boolean
+          track_form_events?: boolean
+          track_page_views?: boolean
+          track_referrers?: boolean
+          track_section_views?: boolean
+          track_theme?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
       audience_items: {
         Row: {
           created_at: string

@@ -2,6 +2,7 @@
 import { Check } from 'lucide-react'
 import { FadeUp } from './FadeUp'
 import { useCmsList } from '@/hooks/useCms'
+import { track } from '@/lib/analytics'
 
 type Row = { id: string; name: string; price_label: string; description: string | null; features: string[]; cta_label: string | null; highlighted: boolean }
 
@@ -53,7 +54,9 @@ export function Pricing() {
                       </li>
                     ))}
                   </ul>
-                  <a href="#contact" className={`block text-center mt-auto w-full font-semibold py-3 rounded-md gentle-animation ${
+                  <a href="#contact"
+                    onClick={() => track({ event_name: 'pricing_cta_click', cta_id: 'pricing_card', metadata: { package_slug: p.name, package_tier: p.highlighted ? 'highlighted' : 'standard' } })}
+                    className={`block text-center mt-auto w-full font-semibold py-3 rounded-md gentle-animation ${
                     p.highlighted ? 'bg-[#C9963B] text-[#0A0A0A] hover:bg-[#d9a64b]' : 'border border-[#C9963B]/40 text-foreground hover:bg-[#C9963B]/10 hover:text-[#C9963B]'
                   }`}>
                     {p.cta_label || 'Projekt anfragen'}

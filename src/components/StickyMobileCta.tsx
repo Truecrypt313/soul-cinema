@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { MessageCircle } from 'lucide-react'
 import { useSettings, setting } from '@/hooks/useCms'
+import { track } from '@/lib/analytics'
 
 export function StickyMobileCta() {
   const s = useSettings()
@@ -26,7 +27,10 @@ export function StickyMobileCta() {
     return () => { heroObs.disconnect(); contactObs.disconnect() }
   }, [])
 
-  const goContact = () => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
+  const goContact = () => {
+    track({ event_name: 'cta_click', cta_id: 'sticky_mobile_primary' })
+    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
+  }
 
   return (
     <div
@@ -46,6 +50,7 @@ export function StickyMobileCta() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="WhatsApp"
+            onClick={() => track({ event_name: 'external_link_click', cta_id: 'sticky_whatsapp', metadata: { target: 'whatsapp' } })}
             className="shrink-0 bg-[#1C1C1C] border border-white/10 text-[#F4F0E8] p-3 rounded-md flex items-center justify-center shadow-lg shadow-black/40"
           >
             <MessageCircle className="w-5 h-5" />
