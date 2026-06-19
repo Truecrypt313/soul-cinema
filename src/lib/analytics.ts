@@ -63,7 +63,7 @@ function getUtm(): Utm | undefined {
 }
 
 function getTheme(): 'dark' | 'light' {
-  return document.documentElement.classList.contains('light') ? 'light' : 'dark'
+  return document.documentElement.classList.contains('dark') ? 'dark' : 'light'
 }
 
 export type TrackInput = {
