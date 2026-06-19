@@ -93,15 +93,16 @@ export function Hero() {
         key={videoUrl}
         className="absolute inset-0 w-full h-full object-cover scale-110"
         autoPlay muted loop playsInline preload="metadata"
-        poster={posterUrl || undefined}
+        poster={effectivePoster}
         aria-label="Hintergrundvideo: kinoreife Produktaufnahmen"
       >
         <source src={videoUrl} />
       </video>
 
-      <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/55 to-black/95 sm:from-black/70 sm:via-black/50 sm:to-black/90 pointer-events-none" />
-      <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent sm:from-black/60 sm:via-transparent pointer-events-none" />
-      <div className="absolute inset-0 bg-black/25 sm:bg-transparent pointer-events-none" />
+      {/* Mobile: einzelner, dezenter Gradient. Desktop: cinematic Multi-Layer. */}
+      <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-black/55 via-black/15 to-black/85 sm:hidden" />
+      <div className="absolute inset-0 hidden sm:block pointer-events-none bg-gradient-to-b from-black/70 via-black/50 to-black/90" />
+      <div className="absolute inset-0 hidden sm:block pointer-events-none bg-gradient-to-r from-black/60 via-transparent to-transparent" />
 
       <motion.nav
         initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
