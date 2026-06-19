@@ -88,20 +88,35 @@ export default function AdminLeads() {
         <div className="grid lg:grid-cols-[1fr_400px] gap-6">
           <div className="space-y-3">
             {filtered.map(l => (
-              <button key={l.id} onClick={() => setActive(l)}
-                className={`w-full text-left bg-card clean-border rounded-xl p-4 hover:border-[#C9963B]/40 transition ${active?.id === l.id ? 'border-[#C9963B]/60' : ''}`}>
-                <div className="flex items-start justify-between gap-3 mb-1">
-                  <div className="min-w-0">
-                    <div className="font-bold truncate">{l.name} {l.company && <span className="text-muted-foreground font-normal">· {l.company}</span>}</div>
-                    <div className="text-xs text-muted-foreground truncate">{l.email} {l.phone && `· ${l.phone}`}</div>
+              <div key={l.id}
+                className={`bg-card clean-border rounded-xl p-4 hover:border-[#C9963B]/40 transition ${active?.id === l.id ? 'border-[#C9963B]/60' : ''}`}>
+                <button onClick={() => setActive(l)} className="w-full text-left">
+                  <div className="flex items-start justify-between gap-3 mb-1">
+                    <div className="min-w-0">
+                      <div className="font-bold truncate">{l.name} {l.company && <span className="text-muted-foreground font-normal">· {l.company}</span>}</div>
+                      <div className="text-xs text-muted-foreground truncate">{l.email} {l.phone && `· ${l.phone}`}</div>
+                    </div>
+                    <span className="text-xs px-2 py-1 rounded bg-foreground/10 font-medium whitespace-nowrap">{STATUS[l.status] ?? l.status}</span>
                   </div>
-                  <span className="text-xs px-2 py-1 rounded bg-foreground/10 font-medium whitespace-nowrap">{STATUS[l.status] ?? l.status}</span>
+                  <div className="text-sm text-muted-foreground line-clamp-2">{l.message}</div>
+                  <div className="text-xs text-muted-foreground mt-2">{new Date(l.created_at).toLocaleString('de-DE')}</div>
+                </button>
+                <div className="flex gap-2 mt-3 pt-3 border-t border-border/50">
+                  <button onClick={() => setActive(l)} className="flex-1 px-3 py-1.5 rounded-md border border-border text-xs hover:bg-foreground/5">Details</button>
+                  {l.email && (
+                    <a href={`mailto:${l.email}`} className="flex-1 px-3 py-1.5 rounded-md bg-foreground/5 border border-border text-xs text-center hover:bg-foreground/10 inline-flex items-center justify-center gap-1.5">
+                      <Mail className="w-3 h-3" /> E-Mail
+                    </a>
+                  )}
                 </div>
-                <div className="text-sm text-muted-foreground line-clamp-2">{l.message}</div>
-                <div className="text-xs text-muted-foreground mt-2">{new Date(l.created_at).toLocaleString('de-DE')}</div>
-              </button>
+              </div>
             ))}
-            {filtered.length === 0 && <div className="text-muted-foreground text-sm">Keine Anfragen.</div>}
+            {filtered.length === 0 && (
+              <div className="bg-card clean-border rounded-xl p-8 text-center">
+                <div className="font-semibold mb-1">{leads.length === 0 ? 'Noch keine Anfragen eingegangen' : 'Keine Anfragen passen zum Filter'}</div>
+                <p className="text-sm text-muted-foreground">{leads.length === 0 ? 'Sobald Besucher das Kontaktformular ausfüllen, erscheinen die Anfragen hier.' : 'Filter oder Suche anpassen, um andere Anfragen zu sehen.'}</p>
+              </div>
+            )}
           </div>
 
           <aside className="lg:sticky lg:top-24 h-fit">

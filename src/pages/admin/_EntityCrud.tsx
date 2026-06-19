@@ -17,7 +17,7 @@ export type FieldDef = {
 type Row = Record<string, any> & { id: string; sort_order: number; visible: boolean }
 
 export function EntityCrud({
-  table, title, intro, fields, defaults, previewLabel,
+  table, title, intro, fields, defaults, previewLabel, emptyHint, addLabel = 'Neuer Eintrag',
 }: {
   table: string
   title: string
@@ -25,6 +25,8 @@ export function EntityCrud({
   fields: FieldDef[]
   defaults: Record<string, any>
   previewLabel?: (row: Row) => string
+  emptyHint?: string
+  addLabel?: string
 }) {
   const { toast } = useToast()
   const [rows, setRows] = useState<Row[]>([])
@@ -121,7 +123,16 @@ export function EntityCrud({
               <button onClick={() => remove(r.id)} className="p-2 text-red-500 hover:bg-red-500/10 rounded"><Trash2 className="w-4 h-4" /></button>
             </div>
           ))}
-          {rows.length === 0 && <div className="text-muted-foreground text-sm">Noch keine Einträge.</div>}
+          {rows.length === 0 && (
+            <div className="bg-card clean-border rounded-xl p-8 text-center">
+              <div className="text-foreground font-semibold mb-1">Noch keine Einträge</div>
+              {emptyHint && <p className="text-sm text-muted-foreground max-w-md mx-auto mb-4">{emptyHint}</p>}
+              <button onClick={() => setEditing({ ...defaults, sort_order: 10, visible: true })}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-[#C9963B] text-[#0A0A0A] font-semibold">
+                <Plus className="w-4 h-4" /> {addLabel}
+              </button>
+            </div>
+          )}
         </div>
       )}
 
@@ -132,11 +143,11 @@ export function EntityCrud({
               <FieldRow key={f.key} field={f} value={editing[f.key] ?? ''} onChange={v => setEditing({ ...editing, [f.key]: v })} />
             ))}
             <div className="grid grid-cols-2 gap-3">
-              <FieldRow field={{ key: 'sort_order', label: 'Sortierung', type: 'number' }}
+              <FieldRow field={{ key: 'sort_order', label: 'Reihenfolge', type: 'number', hint: 'Kleinere Zahl = weiter oben.' }}
                 value={editing.sort_order ?? 0} onChange={v => setEditing({ ...editing, sort_order: v })} />
               <label className="flex items-end gap-2 pb-2">
                 <input type="checkbox" checked={editing.visible !== false} onChange={e => setEditing({ ...editing, visible: e.target.checked })} />
-                <span className="text-sm">Sichtbar</span>
+                <span className="text-sm">Auf Website anzeigen</span>
               </label>
             </div>
           </div>

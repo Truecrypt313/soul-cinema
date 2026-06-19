@@ -35,14 +35,18 @@ export default function AdminTestimonials() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
         <div>
           <h1 className="text-3xl font-black">Testimonials</h1>
-          <p className="text-sm text-muted-foreground mt-1">Nur sichtbare Testimonials erscheinen auf der Website. Die Section wird ausgeblendet, wenn keine sichtbar sind.</p>
+          <p className="text-sm text-muted-foreground mt-1 max-w-2xl">Nur „Auf Website anzeigen“-Einträge erscheinen live. 0 sichtbar = Sektion ausgeblendet, 1 = einzelne Quote, 2+ = Grid.</p>
         </div>
         <button onClick={() => setEditing({ ...empty })} className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-foreground text-background font-semibold">
           <Plus className="w-4 h-4" /> Neu
         </button>
+      </div>
+
+      <div className="mb-4 bg-yellow-500/10 border border-yellow-500/25 rounded-lg p-3 text-xs text-muted-foreground">
+        <strong className="text-yellow-500">Hinweis:</strong> Bitte nur echte Kundenstimmen veröffentlichen. Keine Platzhalter oder erfundenen Bewertungen.
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -58,7 +62,9 @@ export default function AdminTestimonials() {
               </div>
               <div className="flex items-center gap-2">
                 <div className="flex gap-0.5">{Array.from({ length: t.rating }).map((_, i) => <Star key={i} className="w-3 h-3 text-[#C9963B] fill-[#C9963B]" />)}</div>
-                {t.visible ? <Eye className="w-4 h-4 text-green-500" /> : <EyeOff className="w-4 h-4 text-muted-foreground/50" />}
+                {t.visible
+                  ? <span className="text-[10px] text-green-500 inline-flex items-center gap-1"><Eye className="w-3 h-3" />live</span>
+                  : <span className="text-[10px] text-muted-foreground/60 inline-flex items-center gap-1"><EyeOff className="w-3 h-3" />verborgen</span>}
               </div>
             </div>
             <p className="text-sm text-muted-foreground italic mb-3">„{t.quote}"</p>
@@ -68,7 +74,15 @@ export default function AdminTestimonials() {
             </div>
           </div>
         ))}
-        {rows.length === 0 && <div className="text-muted-foreground text-sm">Noch keine Testimonials.</div>}
+        {rows.length === 0 && (
+          <div className="md:col-span-2 bg-card clean-border rounded-xl p-8 text-center">
+            <div className="font-semibold mb-1">Noch keine echten Kundenstimmen veröffentlicht</div>
+            <p className="text-sm text-muted-foreground max-w-md mx-auto mb-4">Die Testimonials-Sektion bleibt auf der Website ausgeblendet, bis mindestens ein sichtbares Testimonial vorhanden ist.</p>
+            <button onClick={() => setEditing({ ...empty })} className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-[#C9963B] text-[#0A0A0A] font-semibold">
+              <Plus className="w-4 h-4" /> Erstes Testimonial anlegen
+            </button>
+          </div>
+        )}
       </div>
 
       {editing && (
@@ -85,9 +99,9 @@ export default function AdminTestimonials() {
             <div className="grid grid-cols-2 gap-3">
               <label className="flex items-end gap-2 pb-2">
                 <input type="checkbox" checked={!!editing.visible} onChange={e => setEditing({ ...editing, visible: e.target.checked })} />
-                <span className="text-sm">Sichtbar</span>
+                <span className="text-sm">Auf Website anzeigen</span>
               </label>
-              <FieldRow field={{ key: 'sort_order', label: 'Sortierung', type: 'number' }} value={editing.sort_order} onChange={v => setEditing({ ...editing, sort_order: v })} />
+              <FieldRow field={{ key: 'sort_order', label: 'Reihenfolge', type: 'number' }} value={editing.sort_order} onChange={v => setEditing({ ...editing, sort_order: v })} />
             </div>
           </div>
           <div className="flex justify-end gap-2 mt-6">

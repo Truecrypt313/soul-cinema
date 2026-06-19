@@ -74,6 +74,15 @@ export default function AdminPricing() {
             </div>
           </div>
         ))}
+        {rows.length === 0 && (
+          <div className="md:col-span-2 lg:col-span-3 bg-card clean-border rounded-xl p-8 text-center">
+            <div className="font-semibold mb-1">Noch keine Pakete angelegt</div>
+            <p className="text-sm text-muted-foreground max-w-md mx-auto mb-4">Klare Preispakete helfen Interessenten, schneller eine Entscheidung zu treffen.</p>
+            <button onClick={() => setEditing({ ...empty })} className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-[#C9963B] text-[#0A0A0A] font-semibold">
+              <Plus className="w-4 h-4" /> Erstes Paket anlegen
+            </button>
+          </div>
+        )}
       </div>
 
       {editing && (
