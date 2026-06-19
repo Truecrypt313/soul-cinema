@@ -94,7 +94,7 @@ export default function AdminPortfolio() {
       <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
         <div>
           <h1 className="text-3xl font-black">Portfolio</h1>
-          <p className="text-sm text-muted-foreground mt-1 max-w-2xl">URL oder Datei-Upload (privater Bucket, signierte URLs).</p>
+          <p className="text-sm text-muted-foreground mt-1 max-w-2xl">URL oder Datei-Upload. Storage-Pfade (z. B. <code>videos/…</code>), externe HTTPS-URLs und relative Pfade wie <code>/media/…</code> werden auf der Website automatisch korrekt aufgelöst.</p>
         </div>
         <button onClick={() => setEditing({ ...empty })} className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-foreground text-background font-semibold">
           <Plus className="w-4 h-4" /> Neu
