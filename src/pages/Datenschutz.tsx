@@ -155,36 +155,36 @@ export default function Datenschutz() {
           </section>
 
           <section>
-            <h2 className="text-foreground text-2xl font-bold mb-4">10. Externe Links und Drittanbieter</h2>
+            <h2 className="text-foreground text-2xl font-bold mb-4">11. Externe Links und Drittanbieter</h2>
             <p>Diese Website kann Links zu externen Diensten und Plattformen enthalten. Eine Datenübermittlung an die jeweiligen Anbieter findet erst dann statt, wenn Sie aktiv auf einen entsprechenden Link klicken. Für die Datenverarbeitung durch die jeweiligen Anbieter gelten deren eigene Datenschutzbestimmungen.</p>
           </section>
 
           {whatsapp && (
             <section>
-              <h2 className="text-foreground text-2xl font-bold mb-4">11. WhatsApp</h2>
+              <h2 className="text-foreground text-2xl font-bold mb-4">12. WhatsApp</h2>
               <p>Auf dieser Website wird optional ein Link zur Kontaktaufnahme über WhatsApp angeboten. Wenn Sie diesen Link nutzen, verarbeitet der Anbieter WhatsApp Ireland Ltd. personenbezogene Daten gemäß seinen eigenen Datenschutzbestimmungen. Die Nutzung ist freiwillig; alternativ können Sie uns jederzeit per E-Mail oder Kontaktformular erreichen.</p>
             </section>
           )}
 
           {calendly && (
             <section>
-              <h2 className="text-foreground text-2xl font-bold mb-4">{whatsapp ? '12' : '11'}. Calendly</h2>
+              <h2 className="text-foreground text-2xl font-bold mb-4">{whatsapp ? '13' : '12'}. Calendly</h2>
               <p>Für die Terminvereinbarung verlinken wir auf den Dienst Calendly (Calendly LLC). Beim Aufruf des Calendly-Links werden Sie auf die Seiten von Calendly weitergeleitet. Im Rahmen einer Terminbuchung verarbeitet Calendly die von Ihnen angegebenen Daten (z. B. Name, E-Mail-Adresse, Terminwunsch). Es gelten die Datenschutzbestimmungen von Calendly.</p>
             </section>
           )}
 
           <section>
-            <h2 className="text-foreground text-2xl font-bold mb-4">{[true, whatsapp, calendly].filter(Boolean).length + 10}. Eingebettete Medien</h2>
+            <h2 className="text-foreground text-2xl font-bold mb-4">{[true, whatsapp, calendly].filter(Boolean).length + 11}. Eingebettete Medien</h2>
             <p>Videos und Medieninhalte auf dieser Website werden über direkte Mediendateien bereitgestellt. Eine Einbindung externer Video-Plattformen (z. B. YouTube, Vimeo) findet nicht statt.</p>
           </section>
 
           <section>
-            <h2 className="text-foreground text-2xl font-bold mb-4">{[true, whatsapp, calendly].filter(Boolean).length + 11}. Keine automatisierte Entscheidungsfindung</h2>
+            <h2 className="text-foreground text-2xl font-bold mb-4">{[true, whatsapp, calendly].filter(Boolean).length + 12}. Keine automatisierte Entscheidungsfindung</h2>
             <p>Eine automatisierte Entscheidungsfindung einschließlich Profiling im Sinne des Art. 22 DSGVO findet nicht statt.</p>
           </section>
 
           <section>
-            <h2 className="text-foreground text-2xl font-bold mb-4">{[true, whatsapp, calendly].filter(Boolean).length + 12}. Aktualität und Änderung dieser Datenschutzerklärung</h2>
+            <h2 className="text-foreground text-2xl font-bold mb-4">{[true, whatsapp, calendly].filter(Boolean).length + 13}. Aktualität und Änderung dieser Datenschutzerklärung</h2>
             <p>Diese Datenschutzerklärung kann angepasst werden, wenn sich die rechtlichen Rahmenbedingungen oder die Inhalte bzw. Dienste der Website ändern. Die jeweils aktuelle Fassung kann jederzeit auf dieser Seite eingesehen werden.</p>
           </section>
 
