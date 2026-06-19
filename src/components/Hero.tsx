@@ -21,9 +21,11 @@ export function Hero() {
   const s = useSettings()
   const videoUrl = setting<string>(s, 'hero_video_url', FALLBACK_VIDEO)
   const posterUrl = setting<string>(s, 'hero_poster_url', '')
+  const posterMobile = setting<string>(s, 'hero_poster_mobile_url', '')
   const badge = setting<string>(s, 'hero_badge', 'Ad Studio für Produktvideos & Social Ads')
   const headline = setting<string>(s, 'hero_headline', 'Dein Produkt. Kinoreif in Szene gesetzt.')
-  const subline = setting<string>(s, 'hero_subline', 'Sende uns Produktbilder, vorhandenes Material oder einen Produktlink. Wir entwickeln daraus hochwertige Produktvideos und Social Ads für Shops, Landingpages und Kampagnen.')
+  const sublineDesktop = setting<string>(s, 'hero_subline', 'Sende uns Produktbilder, vorhandenes Material oder einen Produktlink. Wir entwickeln daraus hochwertige Produktvideos und Social Ads für Shops, Landingpages und Kampagnen.')
+  const sublineMobile = setting<string>(s, 'hero_subline_mobile', 'Produktbilder, Material oder ein Produktlink reichen. Wir machen daraus Videos und Social Ads für Shop, Landingpage und Kampagnen.')
   const secondary = setting<string>(s, 'hero_secondary_line', 'Für Marken, Shops, digitale Produkte und Unternehmen, die online sichtbar werden wollen.')
   const bullets = setting<string[]>(s, 'hero_bullets', [
     'Produktbilder oder Produktlink reichen aus',
@@ -31,8 +33,19 @@ export function Hero() {
     'Formate für Meta, TikTok, YouTube & Shop',
     'Konzept, Produktion & Lieferung aus einer Hand',
   ])
+  const mobileBullets = bullets.slice(0, 2)
   const primaryCta = setting<string>(s, 'primary_cta_label', 'Projekt anfragen')
   const secondaryCta = setting<string>(s, 'secondary_cta_label', 'Portfolio ansehen')
+
+  const [isMobile, setIsMobile] = useState(false)
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 639px)')
+    const onChange = () => setIsMobile(mq.matches)
+    onChange()
+    mq.addEventListener('change', onChange)
+    return () => mq.removeEventListener('change', onChange)
+  }, [])
+  const effectivePoster = (isMobile ? (posterMobile || posterUrl) : posterUrl) || undefined
 
   const [isMuted, setIsMuted] = useState(true)
   const [isScrolled, setIsScrolled] = useState(false)
