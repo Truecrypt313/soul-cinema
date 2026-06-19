@@ -40,11 +40,13 @@ export default function AdminDashboard() {
       setContent(cn)
 
       const r: string[] = []
-      if (cn.portfolio === 0) r.push('Noch keine veröffentlichten Portfolio-Projekte. Eigene Cases steigern Vertrauen.')
-      if (cn.testimonials === 0) r.push('Noch keine sichtbaren Testimonials – erste Kundenstimmen erhöhen Conversion.')
+      if (cn.portfolio < 3) r.push(`Weniger als 3 veröffentlichte Portfolio-Projekte (${cn.portfolio}). Solange das so ist, zeigt die Landingpage „Beispiel-Formate“ statt echter Cases.`)
+      if (cn.testimonials === 0) r.push('Noch keine echten Testimonials sichtbar. Die Sektion wird automatisch ausgeblendet, bis echte Stimmen vorhanden sind.')
+      if (!map.og_image_url) r.push('OG-Image fehlt. Beim Teilen auf Social Media wirkt der Link sonst leer (1200 × 630 px empfohlen).')
       if (typeof map.hero_video_url === 'string' && map.hero_video_url.includes(PLACEHOLDER_VIDEO)) {
         r.push('Hero-Video nutzt noch den temporären Platzhalter. Später durch eigenes Soul-Cinema-Video ersetzen.')
       }
+      if (!map.hero_poster_mobile_url) r.push('Optional: Hero-Poster für Mobile pflegen, um vor dem Video-Load ein passendes Standbild zu zeigen.')
       if (!map.whatsapp_number) r.push('WhatsApp-Nummer ist leer (optional). Direkter Kontakt erhöht Anfragequote.')
       if (!map.calendly_url) r.push('Calendly-Link ist leer (optional). Termine direkt buchen lassen erhöht Conversion.')
       setRecs(r)
