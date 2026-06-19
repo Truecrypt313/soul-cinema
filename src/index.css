@@ -191,3 +191,74 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ============================================================
+   LIGHT-MODE OVERRIDES
+   Remap hardcoded dark-mode color classes (Tailwind arbitrary values)
+   to semantic tokens so the homepage stays readable in Light Mode
+   without touching component source. Dark mode is unaffected.
+============================================================ */
+html:not(.dark) {
+  /* Muted text used across sections (text-[#A8A29E] and opacity variants) */
+  .text-\[\#A8A29E\] { color: var(--muted-foreground); }
+  .text-\[\#A8A29E\]\/80 { color: color-mix(in srgb, var(--muted-foreground) 90%, transparent); }
+  .text-\[\#A8A29E\]\/70 { color: color-mix(in srgb, var(--muted-foreground) 80%, transparent); }
+  .text-\[\#A8A29E\]\/60 { color: color-mix(in srgb, var(--muted-foreground) 70%, transparent); }
+  .placeholder\:text-\[\#A8A29E\]\/60::placeholder { color: color-mix(in srgb, var(--muted-foreground) 75%, transparent); }
+
+  /* Accent (gold) → use primary token (darker copper in light mode) */
+  .text-\[\#C9963B\],
+  .text-\[\#C9963B\]\/90,
+  .text-\[\#C9963B\]\/80,
+  .text-\[\#C9963B\]\/70 { color: var(--primary); }
+  .hover\:text-\[\#C9963B\]:hover { color: var(--primary); }
+  .fill-\[\#C9963B\] { fill: var(--primary); }
+  .bg-\[\#C9963B\] { background-color: var(--primary); }
+  .bg-\[\#C9963B\]\/80 { background-color: color-mix(in srgb, var(--primary) 85%, transparent); }
+  .bg-\[\#C9963B\]\/30 { background-color: color-mix(in srgb, var(--primary) 30%, transparent); }
+  .bg-\[\#C9963B\]\/25,
+  .bg-\[\#C9963B\]\/20 { background-color: color-mix(in srgb, var(--primary) 20%, transparent); }
+  .bg-\[\#C9963B\]\/15 { background-color: color-mix(in srgb, var(--primary) 15%, transparent); }
+  .bg-\[\#C9963B\]\/10 { background-color: color-mix(in srgb, var(--primary) 10%, transparent); }
+  .bg-\[\#C9963B\]\/8 { background-color: color-mix(in srgb, var(--primary) 8%, transparent); }
+  .hover\:bg-\[\#C9963B\]\/25:hover { background-color: color-mix(in srgb, var(--primary) 25%, transparent); }
+  .hover\:bg-\[\#C9963B\]\/20:hover { background-color: color-mix(in srgb, var(--primary) 20%, transparent); }
+  .hover\:bg-\[\#C9963B\]\/10:hover { background-color: color-mix(in srgb, var(--primary) 12%, transparent); }
+  .hover\:bg-\[\#d9a64b\]:hover { background-color: color-mix(in srgb, var(--primary) 85%, #000 0%); filter: brightness(0.92); }
+  .border-\[\#C9963B\]\/60 { border-color: color-mix(in srgb, var(--primary) 60%, transparent); }
+  .border-\[\#C9963B\]\/40 { border-color: color-mix(in srgb, var(--primary) 50%, transparent); }
+  .border-\[\#C9963B\]\/30 { border-color: color-mix(in srgb, var(--primary) 40%, transparent); }
+  .border-\[\#C9963B\]\/25 { border-color: color-mix(in srgb, var(--primary) 35%, transparent); }
+  .hover\:border-\[\#C9963B\]\/40:hover { border-color: color-mix(in srgb, var(--primary) 50%, transparent); }
+  .hover\:border-\[\#C9963B\]\/30:hover { border-color: color-mix(in srgb, var(--primary) 40%, transparent); }
+  .focus\:border-\[\#C9963B\]\/60:focus { border-color: color-mix(in srgb, var(--primary) 65%, transparent); }
+  .focus\:ring-\[\#C9963B\]\/40:focus { --tw-ring-color: color-mix(in srgb, var(--primary) 35%, transparent); }
+  .data-\[state\=open\]\:border-\[\#C9963B\]\/40[data-state="open"] { border-color: color-mix(in srgb, var(--primary) 50%, transparent); }
+
+  /* Dark gold text on gold pill → keep readable */
+  .text-\[\#0A0A0A\] { color: var(--primary-foreground); }
+
+  /* Section/card hairlines using white/X — invisible on light bg */
+  .border-white\/\[0\.04\],
+  .border-white\/\[0\.05\],
+  .border-white\/\[0\.06\],
+  .border-white\/\[0\.08\],
+  .border-white\/10 { border-color: var(--border); }
+  .border-t.border-white\/\[0\.04\],
+  .border-t.border-white\/\[0\.05\],
+  .border-t.border-white\/\[0\.06\] { border-top-color: var(--border); }
+
+  /* Contact input bg-muted is too flat → use white card */
+  form .bg-muted { background-color: var(--card); }
+
+  /* Pricing highlighted card: dark gradient looks bad with dark text in light mode */
+  .bg-gradient-to-b.from-\[\#1c1814\].to-\[\#141414\] {
+    background-image: none;
+    background-color: color-mix(in srgb, var(--primary) 6%, var(--card));
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--primary) 35%, transparent),
+                0 20px 50px -20px color-mix(in srgb, var(--primary) 30%, transparent);
+  }
+
+  /* Portfolio media tile bg gradient (dark) — keep dark so on-media badges/text stay readable.
+     The classes bg-gradient-to-br from-[#1a1a1a] via-[#141414] to-black remain as-is. */
+}
