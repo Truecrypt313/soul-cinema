@@ -18,10 +18,12 @@ const ALLOWED_EVENTS = new Set([
   'contact_submit_success',
   'contact_submit_error',
   'external_link_click',
+  'section_view',
+  'faq_open',
 ])
 
 const META_KEY_ALLOW = new Set([
-  'package_slug', 'package_tier', 'target', 'error_code', 'cta_label',
+  'package_slug', 'package_tier', 'target', 'error_code', 'cta_label', 'faq_id', 'faq_index',
 ])
 
 const BOT_UA = /(bot|crawl|spider|slurp|bingpreview|facebookexternalhit|embedly|quora link preview|outbrain|pinterest|whatsapp|telegrambot|skypeuripreview|nuzzel|discordbot|google|yandex|baiduspider|duckduck|semrush|ahrefs|mj12|petal|headless|phantomjs|puppeteer|lighthouse|preview)/i
