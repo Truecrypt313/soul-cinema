@@ -129,6 +129,7 @@ Deno.serve(async (req) => {
   if (ev === 'page_view' && !settings.track_page_views) return new Response(null, { status: 204, headers: corsHeaders })
   if ((ev === 'cta_click' || ev === 'pricing_cta_click' || ev === 'external_link_click') && !settings.track_cta_clicks) return new Response(null, { status: 204, headers: corsHeaders })
   if ((ev === 'contact_view' || ev === 'contact_start' || ev === 'contact_submit_success' || ev === 'contact_submit_error') && !settings.track_form_events) return new Response(null, { status: 204, headers: corsHeaders })
+  if ((ev === 'section_view' || ev === 'faq_open') && !settings.track_section_views) return new Response(null, { status: 204, headers: corsHeaders })
 
   const ua = p.ua ?? req.headers.get('user-agent') ?? ''
   if (settings.bot_filter_enabled && BOT_UA.test(ua)) return new Response(null, { status: 204, headers: corsHeaders })
