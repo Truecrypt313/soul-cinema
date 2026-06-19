@@ -368,3 +368,45 @@ function DeviceCard({ icon: Icon, label, value }: { icon: any; label: string; va
     </div>
   )
 }
+
+function LeadAttributionBlock({ rows }: { rows: LeadRow[] }) {
+  const group = (key: keyof LeadRow) => {
+    const m = new Map<string, number>()
+    for (const r of rows) {
+      const v = (r[key] as string | null) || '—'
+      m.set(v, (m.get(v) ?? 0) + 1)
+    }
+    return Array.from(m.entries()).sort((a, b) => b[1] - a[1]).slice(0, 10)
+  }
+
+  if (rows.length === 0) {
+    return (
+      <section className="bg-card clean-border rounded-xl p-5 mb-6">
+        <h2 className="text-lg font-bold mb-2">Lead-Attribution</h2>
+        <p className="text-sm text-muted-foreground">
+          Noch keine Lead-Attribution vorhanden. Neue Anfragen werden ab jetzt mit Quelle und Kampagne erfasst.
+        </p>
+      </section>
+    )
+  }
+
+  return (
+    <section className="bg-card clean-border rounded-xl p-5 mb-6">
+      <h2 className="text-lg font-bold mb-1">Lead-Attribution</h2>
+      <p className="text-xs text-muted-foreground mb-4">{rows.length} Leads im gewählten Zeitraum. Quellen, Kampagnen und Paketinteresse aus dem Kontaktformular.</p>
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div><h3 className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Leads nach UTM Source</h3>
+          <Table rows={group('utm_source')} emptyText="—" labelCol="Quelle" /></div>
+        <div><h3 className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Leads nach UTM Campaign</h3>
+          <Table rows={group('utm_campaign')} emptyText="—" labelCol="Kampagne" /></div>
+        <div><h3 className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Leads nach Referrer</h3>
+          <Table rows={group('referrer_domain')} emptyText="—" labelCol="Domain" /></div>
+        <div><h3 className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Leads nach Paketinteresse</h3>
+          <Table rows={group('interest_package')} emptyText="—" labelCol="Paket" /></div>
+        <div><h3 className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Leads nach Gerät</h3>
+          <Table rows={group('device_type')} emptyText="—" labelCol="Gerät" /></div>
+      </div>
+    </section>
+  )
+}
+
