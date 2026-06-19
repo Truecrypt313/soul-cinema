@@ -115,6 +115,7 @@ export default function AdminSettings() {
       {tab === 'Hero' && <HeroPreview values={values} />}
       {tab === 'SEO & Social' && <SocialPreview values={values} />}
       {tab === 'System' && <SystemNotes values={values} />}
+      {tab === 'E-Mail' && <EmailNotes />}
 
       <section className="bg-card clean-border rounded-xl p-5 space-y-4">
         {FIELDS.filter(f => f.group === tab).map(f => {
