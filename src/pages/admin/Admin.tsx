@@ -6,6 +6,7 @@ import { supabase } from '@/integrations/supabase/client'
 import type { Session, User } from '@supabase/supabase-js'
 import { useToast } from '@/hooks/use-toast'
 import { LayoutDashboard, Inbox, Briefcase, Sparkles, ListOrdered, Heart, Users, Tag, HelpCircle, Star, FileText, LogOut, Menu, X } from 'lucide-react'
+import { ThemeToggle } from '@/components/theme/ThemeToggle'
 
 import AdminDashboard from './AdminDashboard'
 import AdminLeads from './AdminLeads'
