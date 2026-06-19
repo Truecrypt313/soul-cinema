@@ -11,6 +11,67 @@ const ENDPOINT = PROJECT_ID
 
 const SESSION_KEY = 'sc_sid'
 const UTM_KEY = 'sc_utm'
+const ATTR_KEY = 'sc_attr'
+const INTEREST_KEY = 'sc_interest_pkg'
+
+export type LeadAttribution = {
+  referrer_domain?: string
+  utm_source?: string
+  utm_medium?: string
+  utm_campaign?: string
+  utm_content?: string
+  utm_term?: string
+  landing_page?: string
+  device_type?: string
+}
+
+function refDomain(): string | undefined {
+  try {
+    if (!document.referrer) return undefined
+    const host = new URL(document.referrer).hostname
+    if (!host || host === window.location.hostname) return undefined
+    return host.slice(0, 200)
+  } catch { return undefined }
+}
+
+/** Capture attribution once per tab/session. Subsequent calls return the stored snapshot. */
+export function captureAttribution(): LeadAttribution {
+  if (typeof window === 'undefined') return {}
+  try {
+    const existing = sessionStorage.getItem(ATTR_KEY)
+    if (existing) return JSON.parse(existing) as LeadAttribution
+  } catch {}
+
+  const utm = readUtmFromUrl() || {}
+  const attr: LeadAttribution = {
+    referrer_domain: refDomain(),
+    utm_source: utm.source,
+    utm_medium: utm.medium,
+    utm_campaign: utm.campaign,
+    utm_content: utm.content,
+    utm_term: utm.term,
+    landing_page: (window.location.pathname + window.location.search).slice(0, 500),
+    device_type: deviceType(),
+  }
+  try { sessionStorage.setItem(ATTR_KEY, JSON.stringify(attr)) } catch {}
+  return attr
+}
+
+export function getAttribution(): LeadAttribution {
+  if (typeof window === 'undefined') return {}
+  try {
+    const raw = sessionStorage.getItem(ATTR_KEY)
+    if (raw) return JSON.parse(raw) as LeadAttribution
+  } catch {}
+  return captureAttribution()
+}
+
+export function setInterestPackage(slug: string) {
+  try { sessionStorage.setItem(INTEREST_KEY, slug.slice(0, 80)) } catch {}
+}
+export function getInterestPackage(): string | undefined {
+  try { return sessionStorage.getItem(INTEREST_KEY) || undefined } catch { return undefined }
+}
 
 function dntOn(): boolean {
   if (typeof navigator === 'undefined') return false
