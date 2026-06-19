@@ -45,7 +45,17 @@ export default function AdminAnalytics() {
   const [events, setEvents] = useState<Ev[]>([])
   const [leadsCount, setLeadsCount] = useState(0)
   const [settings, setSettings] = useState<Settings | null>(null)
+  const [saltConfigured, setSaltConfigured] = useState<boolean | null>(null)
   const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const pid = (import.meta as any).env?.VITE_SUPABASE_PROJECT_ID
+    if (!pid) return
+    fetch(`https://${pid}.supabase.co/functions/v1/track-analytics-event`, { method: 'GET' })
+      .then(r => r.ok ? r.json() : null)
+      .then(d => { if (d) setSaltConfigured(!!d.salt_configured) })
+      .catch(() => {})
+  }, [])
 
   useEffect(() => {
     let active = true
