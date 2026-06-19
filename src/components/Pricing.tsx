@@ -33,7 +33,7 @@ export function Pricing() {
           {pkgs.map((p, i) => {
             const features = Array.isArray(p.features) ? p.features : []
             return (
-              <FadeUp key={p.id} delay={i * 0.07}>
+              <FadeUp key={p.id} delay={i * 0.07} className="h-full">
                 <div className={`relative h-full rounded-2xl p-8 gentle-animation ${
                   p.highlighted
                     ? 'bg-gradient-to-b from-[#1c1814] to-[#141414] border border-[#C9963B]/40 elevated-shadow'
