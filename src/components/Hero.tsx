@@ -88,7 +88,7 @@ export function Hero() {
   }
 
   return (
-    <div className="relative min-h-[100svh] w-full overflow-hidden bg-black film-grain">
+    <div className="stage-dark relative min-h-[100svh] w-full overflow-hidden film-grain">
       <video
         ref={videoRef}
         key={videoUrl}
