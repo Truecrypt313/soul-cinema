@@ -66,7 +66,16 @@ function VideoModal({ src, poster, onClose }: { src: string; poster: string | nu
             autoPlay
             playsInline
             preload="metadata"
-            onError={() => setErr(true)}
+            onError={(e) => {
+              const el = e.currentTarget as HTMLVideoElement
+              console.warn('[Portfolio] modal video error', {
+                src,
+                hasPoster: !!poster,
+                code: el.error?.code,
+                message: el.error?.message,
+              })
+              setErr(true)
+            }}
             className="w-full max-h-[85vh] rounded-lg bg-black shadow-2xl"
           />
         )}
