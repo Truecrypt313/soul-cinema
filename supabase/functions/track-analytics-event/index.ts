@@ -134,7 +134,7 @@ Deno.serve(async (req) => {
   if ((ev === 'section_view' || ev === 'faq_open') && !settings.track_section_views) { console.log('drop:section-off', settings.track_section_views); return new Response(null, { status: 204, headers: corsHeaders }) }
 
   const ua = p.ua ?? req.headers.get('user-agent') ?? ''
-  if (settings.bot_filter_enabled && BOT_UA.test(ua)) return new Response(null, { status: 204, headers: corsHeaders })
+  if (settings.bot_filter_enabled && BOT_UA.test(ua)) { console.log('drop:bot', ua.slice(0,80)); return new Response(null, { status: 204, headers: corsHeaders }) }
 
   const ip = (req.headers.get('x-forwarded-for') ?? '').split(',')[0].trim() || 'na'
   const today = new Date().toISOString().slice(0, 10)
@@ -142,7 +142,7 @@ Deno.serve(async (req) => {
   const visitor_hash = await sha256(`${salt}|${today}|${ip}|${ua}`)
 
   if (!rateLimit(visitor_hash, 60, 60_000) || !rateLimit(`h:${visitor_hash}`, 600, 3_600_000)) {
-    return new Response(null, { status: 204, headers: corsHeaders })
+    console.log('drop:rate'); return new Response(null, { status: 204, headers: corsHeaders })
   }
 
   // whitelist metadata
