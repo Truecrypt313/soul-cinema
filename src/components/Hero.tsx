@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { Volume2, VolumeX, Menu, X, Check } from 'lucide-react'
+import { ThemeToggle } from './theme/ThemeToggle'
 import { useState, useRef, useEffect } from 'react'
 import { useSettings, setting } from '@/hooks/useCms'
 
