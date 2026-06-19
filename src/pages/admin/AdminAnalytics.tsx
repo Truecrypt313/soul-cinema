@@ -41,10 +41,16 @@ const RANGES = [
   { key: '90d', label: '90 Tage', days: 90 },
 ] as const
 
+type LeadRow = {
+  utm_source: string | null; utm_campaign: string | null; referrer_domain: string | null
+  interest_package: string | null; device_type: string | null; created_at: string
+}
+
 export default function AdminAnalytics() {
   const [days, setDays] = useState<number>(7)
   const [events, setEvents] = useState<Ev[]>([])
   const [leadsCount, setLeadsCount] = useState(0)
+  const [leadRows, setLeadRows] = useState<LeadRow[]>([])
   const [settings, setSettings] = useState<Settings | null>(null)
   const [saltConfigured, setSaltConfigured] = useState<boolean | null>(null)
   const [loading, setLoading] = useState(true)
@@ -63,15 +69,17 @@ export default function AdminAnalytics() {
     ;(async () => {
       setLoading(true)
       const since = new Date(Date.now() - days * 86400000).toISOString()
-      const [{ data: evs }, { count }, { data: st }] = await Promise.all([
+      const [{ data: evs }, { count }, { data: st }, { data: lrows }] = await Promise.all([
         supabase.from('analytics_events').select('*').gte('created_at', since).order('created_at', { ascending: false }).limit(20000),
         supabase.from('contact_leads').select('*', { count: 'exact', head: true }).gte('created_at', since),
         supabase.from('analytics_settings').select('*').eq('id', 1).maybeSingle(),
+        supabase.from('contact_leads' as any).select('utm_source, utm_campaign, referrer_domain, interest_package, device_type, created_at').gte('created_at', since),
       ])
       if (!active) return
       setEvents((evs as Ev[]) ?? [])
       setLeadsCount(count ?? 0)
       setSettings((st as Settings) ?? null)
+      setLeadRows(((lrows as unknown) as LeadRow[]) ?? [])
       setLoading(false)
     })()
     return () => { active = false }
