@@ -33,7 +33,14 @@ export function FAQ() {
         </FadeUp>
 
         <FadeUp className="max-w-3xl">
-          <Accordion type="single" collapsible className="space-y-3">
+          <Accordion type="single" collapsible className="space-y-3"
+            onValueChange={(v) => {
+              if (!v) return
+              const idx = Number(v.replace('item-', ''))
+              const it = items[idx]
+              if (it) trackFaqOpen(it.id ?? String(idx), idx)
+            }}>
+
             {items.map((item, i) => (
               <AccordionItem key={item.id} value={`item-${i}`}
                 className="bg-card border border-white/[0.06] rounded-xl px-5 data-[state=open]:border-[#C9963B]/40 gentle-animation">
