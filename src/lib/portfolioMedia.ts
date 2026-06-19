@@ -21,9 +21,25 @@ export async function resolvePortfolioMediaUrl(
   if (!v) return null
   if (/^https?:\/\//i.test(v)) return v
   if (v.startsWith('/')) return v
-  const { data, error } = await supabase.storage.from(BUCKET).createSignedUrl(v, SIGNED_TTL)
-  if (error || !data?.signedUrl) return null
-  return data.signedUrl
+  try {
+    const { data, error } = await supabase.storage.from(BUCKET).createSignedUrl(v, SIGNED_TTL)
+    if (error || !data?.signedUrl) {
+      console.warn('[portfolioMedia] signed URL failed', {
+        bucket: BUCKET,
+        path: v,
+        error: error?.message ?? 'no signedUrl returned',
+      })
+      return null
+    }
+    return data.signedUrl
+  } catch (e: any) {
+    console.warn('[portfolioMedia] unexpected error', {
+      bucket: BUCKET,
+      path: v,
+      error: e?.message ?? String(e),
+    })
+    return null
+  }
 }
 
 /** Resolve many at once; returns a map from raw value -> resolved url (or null). */
