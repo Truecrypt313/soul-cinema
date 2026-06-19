@@ -239,7 +239,16 @@ function VideoPreview({ src, poster }: { src: string; poster: string | null }) {
       preload="metadata"
       onMouseEnter={(e) => { void e.currentTarget.play().catch(() => {}) }}
       onMouseLeave={(e) => { e.currentTarget.pause() }}
-      onError={() => setErr(true)}
+      onError={(e) => {
+        const el = e.currentTarget as HTMLVideoElement
+        console.warn('[Portfolio] preview video error', {
+          src,
+          hasPoster: !!poster,
+          code: el.error?.code,
+          message: el.error?.message,
+        })
+        setErr(true)
+      }}
     />
   )
 }
