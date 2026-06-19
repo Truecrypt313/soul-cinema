@@ -3,10 +3,60 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================================
+   LIGHT MODE (warm, editorial, studio-artig) — Default fallback
+   The app sets `.dark` on <html> by default (see index.html + ThemeProvider),
+   so :root tokens only show when the user actively chose Light.
+============================================================ */
 :root {
   --font-size: 16px;
 
-  /* Soul Cinema palette */
+  /* Brand semantic */
+  --color-bg: #F7F4ED;
+  --color-surface: #FFFFFF;
+  --color-surface-soft: #EFEAE0;
+  --color-text: #1A1612;
+  --color-muted: #5C544A;
+  --color-accent: #A87826;
+  --color-accent-soft: rgba(168, 120, 38, 0.10);
+
+  /* shadcn tokens (Light) */
+  --background: #F7F4ED;
+  --foreground: #1A1612;
+  --card: #FFFFFF;
+  --card-foreground: #1A1612;
+  --popover: #FFFFFF;
+  --popover-foreground: #1A1612;
+  --primary: #A87826;
+  --primary-foreground: #FFFFFF;
+  --secondary: #EFEAE0;
+  --secondary-foreground: #1A1612;
+  --muted: #EFEAE0;
+  --muted-foreground: #5C544A;
+  --accent: #A87826;
+  --accent-foreground: #FFFFFF;
+  --destructive: #b91c1c;
+  --destructive-foreground: #FFFFFF;
+  --border: rgba(26, 22, 18, 0.10);
+  --input: #FFFFFF;
+  --input-background: #FFFFFF;
+  --ring: #A87826;
+
+  /* Legacy aliases */
+  --accent-blue: var(--color-accent);
+  --accent-emerald: var(--color-accent);
+  --accent-purple: var(--color-accent);
+  --accent-gold: var(--color-accent);
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --radius: 0.75rem;
+}
+
+/* ============================================================
+   DARK MODE (default presentation — cinematic, premium)
+============================================================ */
+.dark {
   --color-bg: #0A0A0A;
   --color-surface: #141414;
   --color-surface-soft: #1C1C1C;
@@ -15,7 +65,6 @@
   --color-accent: #C9963B;
   --color-accent-soft: rgba(201, 150, 59, 0.14);
 
-  /* Mapped to shadcn tokens */
   --background: #0A0A0A;
   --foreground: #F4F0E8;
   --card: #141414;
@@ -28,24 +77,14 @@
   --secondary-foreground: #F4F0E8;
   --muted: #1C1C1C;
   --muted-foreground: #B8B2AA;
-  --accent: #1C1C1C;
-  --accent-foreground: #F4F0E8;
+  --accent: #C9963B;
+  --accent-foreground: #0A0A0A;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
   --border: rgba(244, 240, 232, 0.10);
   --input: #1C1C1C;
   --input-background: #141414;
   --ring: #C9963B;
-
-  /* Legacy aliases (avoid breaking older components) */
-  --accent-blue: #C9963B;
-  --accent-emerald: #C9963B;
-  --accent-purple: #C9963B;
-  --accent-gold: #C9963B;
-
-  --font-weight-normal: 400;
-  --font-weight-medium: 500;
-  --radius: 0.75rem;
 }
 
 @layer base {
@@ -55,8 +94,9 @@
     @apply bg-background text-foreground overflow-x-hidden;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     font-feature-settings: "cv02", "cv03", "cv11", "ss01";
-    background: var(--color-bg);
-    color: var(--color-text);
+    background: var(--background);
+    color: var(--foreground);
+    transition: background-color 240ms ease, color 240ms ease;
   }
   * { box-sizing: border-box; }
 }
@@ -71,30 +111,55 @@
   .bg-accent-gold { background-color: var(--color-accent); }
 
   .clean-border { border: 1px solid var(--border); }
-  .subtle-shadow { box-shadow: 0 1px 3px 0 rgba(0,0,0,0.4); }
-  .elevated-shadow { box-shadow: 0 12px 40px -12px rgba(0,0,0,0.6); }
+  .subtle-shadow { box-shadow: 0 1px 3px 0 rgba(0,0,0,0.12); }
+  .elevated-shadow { box-shadow: 0 12px 40px -12px rgba(0,0,0,0.18); }
   .gentle-animation { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
 
+  /* Glass: Light by default (subtle, warm, editorial) */
   .glass-effect {
-    background: rgba(255,255,255,0.04);
-    backdrop-filter: blur(20px) saturate(1.4);
-    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(18px) saturate(1.2);
+    -webkit-backdrop-filter: blur(18px) saturate(1.2);
+    border: 1px solid rgba(26, 22, 18, 0.08);
   }
   .glass-effect:hover {
-    background: rgba(255,255,255,0.08);
-    border-color: rgba(201,150,59,0.35);
+    background: rgba(255, 255, 255, 0.75);
+    border-color: rgba(168, 120, 38, 0.35);
   }
 
-  /* Subtle global film grain */
+  /* Glass: Dark variant — keeps premium cinematic feel */
+  .dark .glass-effect {
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(20px) saturate(1.4);
+    -webkit-backdrop-filter: blur(20px) saturate(1.4);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .dark .glass-effect:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(201, 150, 59, 0.35);
+  }
+
+  /* Dark "stage" — for sections that must stay cinematic even in Light Mode (Hero) */
+  .stage-dark {
+    background-color: #0A0A0A;
+    color: #F4F0E8;
+  }
+
+  /* Film grain — reduced opacity in light mode */
   .film-grain::before {
     content: '';
     position: absolute; inset: 0;
     pointer-events: none;
-    background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
+    background-image: radial-gradient(rgba(0, 0, 0, 0.06) 1px, transparent 1px);
     background-size: 3px 3px;
+    opacity: 0.18;
+    mix-blend-mode: multiply;
+    animation: filmGrain 1.2s steps(4) infinite;
+  }
+  .dark .film-grain::before {
+    background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
     opacity: 0.35;
     mix-blend-mode: overlay;
-    animation: filmGrain 1.2s steps(4) infinite;
   }
 
   @keyframes filmGrain {
@@ -113,11 +178,11 @@
   .animate-pulse { animation-duration: 6s !important; }
 }
 
-/* Scrollbar */
+/* Scrollbar — token-aware */
 ::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: var(--color-bg); }
-::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: var(--color-accent); }
+::-webkit-scrollbar-track { background: var(--background); }
+::-webkit-scrollbar-thumb { background: var(--muted); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--primary); }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

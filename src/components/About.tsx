@@ -19,9 +19,9 @@ function StepDescription({ text }: { text: string }) {
     <div className="space-y-1.5">
       {parts.map((p, i) => {
         const m = p.match(/^([^:]+:)\s*(.*)$/)
-        if (!m) return <p key={i} className="text-sm text-[#B8B2AA] leading-relaxed">{p}</p>
+        if (!m) return <p key={i} className="text-sm text-muted-foreground leading-relaxed">{p}</p>
         return (
-          <p key={i} className="text-sm text-[#B8B2AA] leading-relaxed">
+          <p key={i} className="text-sm text-muted-foreground leading-relaxed">
             <span className="text-[#C9963B]/90 font-semibold">{m[1]} </span>
             {m[2]}
           </p>
@@ -34,17 +34,17 @@ function StepDescription({ text }: { text: string }) {
 export function About() {
   const steps = useCmsList<Row>('process_steps', FALLBACK)
   return (
-    <section className="relative py-28 sm:py-32 bg-[#0A0A0A] border-t border-white/[0.04]">
+    <section className="relative py-28 sm:py-32 bg-background border-t border-white/[0.04]">
       <div className="container mx-auto px-6 sm:px-8 lg:px-12">
         <FadeUp className="max-w-3xl mb-16">
           <div className="flex items-center gap-3 mb-5">
             <span className="h-px w-8 bg-[#C9963B]" />
             <span className="text-xs font-semibold tracking-[0.2em] uppercase text-[#C9963B]">Prozess</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#F4F0E8] leading-tight tracking-tight mb-5">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground leading-tight tracking-tight mb-5">
             Vom <span className="text-highlight">Produktlink</span> zum fertigen <span className="text-highlight">Werbevideo</span>.
           </h2>
-          <p className="text-base sm:text-lg text-[#B8B2AA] leading-relaxed">
+          <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
             Ein klarer Ablauf – von der ersten Anfrage bis zur fertigen Video-Datei.
           </p>
         </FadeUp>
@@ -52,9 +52,9 @@ export function About() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 max-w-7xl">
           {steps.map((s, i) => (
             <FadeUp key={s.id} delay={i * 0.05}>
-              <div className="relative h-full bg-[#141414] border border-white/[0.06] rounded-2xl p-6 hover:border-[#C9963B]/40 gentle-animation">
+              <div className="relative h-full bg-card border border-white/[0.06] rounded-2xl p-6 hover:border-[#C9963B]/40 gentle-animation">
                 {s.step_number && <div className="text-3xl font-black text-[#C9963B]/80 mb-3 tracking-tight">{s.step_number}</div>}
-                <h3 className="font-bold text-base text-[#F4F0E8] mb-3">{s.title}</h3>
+                <h3 className="font-bold text-base text-foreground mb-3">{s.title}</h3>
                 {s.description && <StepDescription text={s.description} />}
                 {i < steps.length - 1 && <div className="hidden lg:block absolute top-9 -right-2.5 w-5 h-px bg-[#C9963B]/30" />}
               </div>

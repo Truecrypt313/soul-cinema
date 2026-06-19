@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { Volume2, VolumeX, Menu, X, Check } from 'lucide-react'
+import { ThemeToggle } from './theme/ThemeToggle'
 import { useState, useRef, useEffect } from 'react'
 import { useSettings, setting } from '@/hooks/useCms'
 
@@ -87,7 +88,7 @@ export function Hero() {
   }
 
   return (
-    <div className="relative min-h-[100svh] w-full overflow-hidden bg-black film-grain">
+    <div className="stage-dark relative min-h-[100svh] w-full overflow-hidden film-grain">
       <video
         ref={videoRef}
         key={videoUrl}
@@ -129,6 +130,7 @@ export function Hero() {
                 className="glass-effect p-2.5 rounded-full text-[#F4F0E8] hover:text-[#C9963B] gentle-animation">
                 {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
               </button>
+              <ThemeToggle variant="glass" className="text-[#F4F0E8] hover:text-[#C9963B]" />
               <button onClick={goContact}
                 className="hidden sm:inline-flex bg-[#C9963B] text-[#0A0A0A] font-semibold px-5 py-2.5 rounded-md hover:bg-[#d9a64b] gentle-animation">
                 {primaryCta}
@@ -159,6 +161,10 @@ export function Hero() {
           <button onClick={goContact} className="mt-6 bg-[#C9963B] text-[#0A0A0A] font-semibold px-6 py-3 rounded-md">
             {primaryCta}
           </button>
+          <div className="mt-6 pt-6 border-t border-white/10 flex items-center justify-between">
+            <span className="text-[#F4F0E8]/70 text-sm">Theme</span>
+            <ThemeToggle variant="glass" className="text-[#F4F0E8] hover:text-[#C9963B]" />
+          </div>
         </div>
       </motion.div>
 
