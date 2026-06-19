@@ -294,6 +294,11 @@ export default function AdminAnalytics() {
         </section>
       </div>
 
+      {/* Lead Attribution (Phase C) */}
+      <LeadAttributionBlock rows={leadRows} />
+
+
+
       {/* Settings */}
       {settings && (
         <section className="bg-card clean-border rounded-xl p-5">
