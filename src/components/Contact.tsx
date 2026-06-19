@@ -130,20 +130,20 @@ export function Contact() {
             </ul>
 
             <div className="space-y-4">
-              <a href={`mailto:${email}`} className="flex items-center gap-3 text-foreground hover:text-[#C9963B] gentle-animation">
+              <a href={`mailto:${email}`} onClick={() => track({ event_name: 'external_link_click', cta_id: 'contact_email', metadata: { target: 'email' } })} className="flex items-center gap-3 text-foreground hover:text-[#C9963B] gentle-animation">
                 <div className="w-10 h-10 rounded-lg bg-accent-soft flex items-center justify-center">
                   <Mail className="w-4 h-4 text-[#C9963B]" />
                 </div>
                 <span className="font-medium">{email}</span>
               </a>
               {whatsapp && (
-                <a href={`https://wa.me/${whatsapp.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener" className="flex items-center gap-3 text-foreground hover:text-[#C9963B] gentle-animation">
+                <a href={`https://wa.me/${whatsapp.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener" onClick={() => track({ event_name: 'external_link_click', cta_id: 'contact_whatsapp', metadata: { target: 'whatsapp' } })} className="flex items-center gap-3 text-foreground hover:text-[#C9963B] gentle-animation">
                   <div className="w-10 h-10 rounded-lg bg-accent-soft flex items-center justify-center"><MessageCircle className="w-4 h-4 text-[#C9963B]" /></div>
                   <span className="font-medium">WhatsApp: {whatsapp}</span>
                 </a>
               )}
               {calendly && (
-                <a href={calendly} target="_blank" rel="noopener" className="flex items-center gap-3 text-foreground hover:text-[#C9963B] gentle-animation">
+                <a href={calendly} target="_blank" rel="noopener" onClick={() => track({ event_name: 'external_link_click', cta_id: 'contact_calendly', metadata: { target: 'calendly' } })} className="flex items-center gap-3 text-foreground hover:text-[#C9963B] gentle-animation">
                   <div className="w-10 h-10 rounded-lg bg-accent-soft flex items-center justify-center"><Calendar className="w-4 h-4 text-[#C9963B]" /></div>
                   <span className="font-medium">Termin buchen</span>
                 </a>
