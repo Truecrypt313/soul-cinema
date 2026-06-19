@@ -12,7 +12,7 @@ import { Footer } from '@/components/Footer'
 import { Seo } from '@/components/Seo'
 import { StickyMobileCta } from '@/components/StickyMobileCta'
 import { useSettings, setting } from '@/hooks/useCms'
-import { trackPageView } from '@/lib/analytics'
+import { trackPageView, observeSectionViews } from '@/lib/analytics'
 
 const FAQS = [
   { q: 'Was brauche ich für ein Projekt?', a: 'Produktbilder, vorhandenes Material oder ein Produktlink reichen für eine erste Einschätzung. Alles weitere klären wir gemeinsam.' },
