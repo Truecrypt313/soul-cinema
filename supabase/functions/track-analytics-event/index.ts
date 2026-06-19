@@ -1,4 +1,4 @@
-// Soul Cinema – First-party Analytics Ingest
+// Soul Cinema – First-party Analytics Ingest (v2 Phase B)
 // Privacy: no raw IP stored, no form contents, no fingerprinting.
 import { createClient } from 'npm:@supabase/supabase-js@2'
 import { z } from 'npm:zod@3'
