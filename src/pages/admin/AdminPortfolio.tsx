@@ -1,10 +1,11 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { supabase } from '@/integrations/supabase/client'
 import { useToast } from '@/hooks/use-toast'
 import { Modal, inp, FieldRow } from './_EntityCrud'
 import { Trash2, Plus, Upload } from 'lucide-react'
+import { resolvePortfolioMediaUrl, resolveMany } from '@/lib/portfolioMedia'
 
 type Item = {
   id: string; title: string; category: string | null; description: string | null
@@ -19,12 +20,16 @@ const VIDEO_TYPES = ['video/mp4', 'video/webm']
 const MAX_IMAGE = 5 * 1024 * 1024
 const MAX_VIDEO = 80 * 1024 * 1024
 
-// Signed-URL cache for previews (private bucket)
-async function signedFor(path: string | null): Promise<string | null> {
-  if (!path) return null
-  if (/^https?:\/\//.test(path)) return path
-  const { data } = await supabase.storage.from('portfolio-media').createSignedUrl(path, 60 * 60 * 24 * 365)
-  return data?.signedUrl ?? null
+function useResolvedUrl(value: string | null | undefined) {
+  const [url, setUrl] = useState<string | null>(null)
+  useEffect(() => {
+    let active = true
+    setUrl(null)
+    if (!value) return
+    resolvePortfolioMediaUrl(value).then(u => { if (active) setUrl(u) })
+    return () => { active = false }
+  }, [value])
+  return url
 }
 
 export default function AdminPortfolio() {
@@ -32,19 +37,17 @@ export default function AdminPortfolio() {
   const [items, setItems] = useState<Item[]>([])
   const [editing, setEditing] = useState<any>(null)
   const [uploading, setUploading] = useState<'thumb' | 'video' | null>(null)
-  const [previews, setPreviews] = useState<Record<string, string>>({})
+  const [previews, setPreviews] = useState<Record<string, string | null>>({})
 
   const load = async () => {
     const { data, error } = await supabase.from('portfolio_items').select('*').order('sort_order', { ascending: true })
     if (error) return toast({ title: 'Fehler', description: error.message, variant: 'destructive' })
     const list = (data as Item[]) ?? []
     setItems(list)
-    const p: Record<string, string> = {}
-    for (const it of list) {
-      const u = await signedFor(it.thumbnail_url)
-      if (u) p[it.id] = u
-    }
-    setPreviews(p)
+    const map = await resolveMany(list.map(i => i.thumbnail_url))
+    const byId: Record<string, string | null> = {}
+    for (const it of list) byId[it.id] = it.thumbnail_url ? map[it.thumbnail_url] ?? null : null
+    setPreviews(byId)
   }
   useEffect(() => { load() }, [])
 
