@@ -70,7 +70,7 @@ export type TrackInput = {
   event_name:
     | 'page_view' | 'cta_click' | 'pricing_cta_click'
     | 'contact_view' | 'contact_start' | 'contact_submit_success' | 'contact_submit_error'
-    | 'external_link_click'
+    | 'external_link_click' | 'section_view' | 'faq_open'
   section_key?: string
   cta_id?: string
   metadata?: Record<string, string | number | boolean>
