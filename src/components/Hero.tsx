@@ -87,7 +87,7 @@ export function Hero() {
   }
 
   return (
-    <div className="relative h-screen w-full overflow-hidden bg-black film-grain">
+    <div className="relative min-h-[100svh] w-full overflow-hidden bg-black film-grain">
       <video
         ref={videoRef}
         key={videoUrl}
@@ -162,15 +162,15 @@ export function Hero() {
         </div>
       </motion.div>
 
-      <div className="relative z-20 h-full flex flex-col justify-center px-6 sm:px-8 lg:px-12 max-w-5xl">
+      <div className="relative z-20 min-h-[100svh] flex flex-col justify-center py-24 sm:py-0 px-6 sm:px-8 lg:px-12 max-w-5xl">
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.3 }}
-          className="inline-flex items-center gap-2 self-start glass-effect rounded-full px-4 py-2 mb-6">
+          className="inline-flex items-center gap-2 self-start glass-effect rounded-full px-4 py-2 mb-5 sm:mb-6">
           <span className="w-1.5 h-1.5 bg-[#C9963B] rounded-full" />
           <span className="text-[#F4F0E8]/90 text-xs sm:text-sm font-medium tracking-wide">{badge}</span>
         </motion.div>
 
         <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.5 }}
-          className="font-brand text-[2.5rem] leading-[1.1] sm:text-5xl sm:leading-[1.05] lg:text-7xl text-[#F4F0E8] tracking-tight mb-6 max-w-4xl">
+          className="font-brand text-[2rem] leading-[1.1] sm:text-5xl sm:leading-[1.05] lg:text-7xl text-[#F4F0E8] tracking-tight mb-5 sm:mb-6 max-w-4xl">
           {headline.split(/(Produkt|Kinoreif)/g).map((part, i) =>
             (part === 'Produkt' || part === 'Kinoreif')
               ? <span key={i} className="text-highlight">{part}</span>
@@ -178,17 +178,34 @@ export function Hero() {
           )}
         </motion.h1>
 
+        {/* Mobile: kürzere Subline */}
         <motion.p initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.75 }}
-          className="text-base sm:text-lg lg:text-xl text-[#F4F0E8]/85 max-w-2xl mb-3 leading-relaxed">
-          {renderHighlighted(subline)}
+          className="sm:hidden text-base text-[#F4F0E8]/85 mb-6 leading-relaxed">
+          {renderHighlighted(sublineMobile)}
+        </motion.p>
+        {/* Desktop: volle Subline + Secondary Line */}
+        <motion.p initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.75 }}
+          className="hidden sm:block text-lg lg:text-xl text-[#F4F0E8]/85 max-w-2xl mb-3 leading-relaxed">
+          {renderHighlighted(sublineDesktop)}
         </motion.p>
         <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.9, delay: 0.9 }}
-          className="text-sm sm:text-base text-[#A8A29E] max-w-2xl mb-8">
+          className="hidden sm:block text-sm sm:text-base text-[#A8A29E] max-w-2xl mb-8">
           {secondary}
         </motion.p>
 
+        {/* Mobile: max 2 Bullets */}
         <motion.ul initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.9, delay: 1.05 }}
-          className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-[#F4F0E8]/85 text-sm mb-8 max-w-2xl">
+          className="sm:hidden flex flex-col gap-2 text-[#F4F0E8]/85 text-sm mb-6">
+          {mobileBullets.map(b => (
+            <li key={b} className="flex items-start gap-2">
+              <Check className="w-4 h-4 text-[#C9963B] mt-0.5 shrink-0" />
+              <span>{b}</span>
+            </li>
+          ))}
+        </motion.ul>
+        {/* Desktop: alle Bullets */}
+        <motion.ul initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.9, delay: 1.05 }}
+          className="hidden sm:grid grid-cols-2 gap-x-6 gap-y-2 text-[#F4F0E8]/85 text-sm mb-8 max-w-2xl">
           {bullets.map(b => (
             <li key={b} className="flex items-start gap-2">
               <Check className="w-4 h-4 text-[#C9963B] mt-0.5 shrink-0" />
