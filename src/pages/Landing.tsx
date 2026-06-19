@@ -64,7 +64,19 @@ export default function Landing() {
   const ogTitle = setting<string>(s, 'og_title', title)
   const ogDescription = setting<string>(s, 'og_description', description)
   const ogImage = setting<string>(s, 'og_image_url', 'https://soulcinema.de/og-image.jpg')
-  useEffect(() => { trackPageView() }, [])
+  useEffect(() => {
+    trackPageView()
+    // start after first paint so initial section doesn't trigger before user really sees it
+    const t = window.setTimeout(() => {
+      const stop = observeSectionViews()
+      ;(window as any).__sc_stop_obs = stop
+    }, 300)
+    return () => {
+      clearTimeout(t)
+      const stop = (window as any).__sc_stop_obs
+      if (typeof stop === 'function') stop()
+    }
+  }, [])
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Seo
