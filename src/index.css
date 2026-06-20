@@ -4,49 +4,54 @@
 @tailwind utilities;
 
 /* ============================================================
-   LIGHT MODE (warm, editorial, studio-artig) — Default fallback
-   The app sets `.dark` on <html> by default (see index.html + ThemeProvider),
-   so :root tokens only show when the user actively chose Light.
+   LIGHT MODE — DEFAULT (Fresh Creative Studio)
+   Off-white + charcoal + coral primary + pink secondary + ice blue.
 ============================================================ */
 :root {
   --font-size: 16px;
 
-  /* Brand semantic — Light (warm editorial) */
-  --color-bg: #F5F1E8;
+  /* Brand semantic — Light */
+  --color-bg: #FAF7F2;
   --color-surface: #FFFFFF;
-  --color-surface-soft: #ECE6D8;
-  --color-text: #14110D;
-  --color-muted: #4A433A;
-  --color-accent: #8A5A1F;
-  --color-accent-soft: rgba(138, 90, 31, 0.10);
+  --color-surface-soft: #F4EEE8;
+  --color-text: #17171C;
+  --color-muted: #6F6660;
+  --color-accent: #F9734A;            /* coral / tangerine */
+  --color-accent-soft: rgba(249, 115, 74, 0.10);
+  --color-accent-pink: #EC4899;
+  --color-accent-blue: #8DD7F7;
+  --color-accent-lavender: #C9B8FB;
+  --color-surface-soft-pink: #FFE8F3;
+  --color-surface-soft-coral: #FFE9DE;
+  --color-surface-soft-blue: #EAF7FD;
+  --color-surface-soft-lavender: #F0EAFE;
 
   /* shadcn tokens (Light) */
-  --background: #F5F1E8;
-  --foreground: #14110D;
+  --background: #FAF7F2;
+  --foreground: #17171C;
   --card: #FFFFFF;
-  --card-foreground: #14110D;
+  --card-foreground: #17171C;
   --popover: #FFFFFF;
-  --popover-foreground: #14110D;
-  --primary: #8A5A1F;
+  --popover-foreground: #17171C;
+  --primary: #F9734A;
   --primary-foreground: #FFFFFF;
-  --secondary: #ECE6D8;
-  --secondary-foreground: #14110D;
-  --muted: #ECE6D8;
-  --muted-foreground: #4A433A;
-  --accent: #8A5A1F;
+  --secondary: #EC4899;
+  --secondary-foreground: #FFFFFF;
+  --muted: #F4EEE8;
+  --muted-foreground: #6F6660;
+  --accent: #F9734A;
   --accent-foreground: #FFFFFF;
   --destructive: #b91c1c;
   --destructive-foreground: #FFFFFF;
-  --border: rgba(20, 17, 13, 0.16);
+  --border: #E6DCD3;
   --input: #FFFFFF;
   --input-background: #FFFFFF;
-  --ring: #8A5A1F;
-
+  --ring: rgba(249, 115, 74, 0.45);
 
   /* Legacy aliases */
-  --accent-blue: var(--color-accent);
+  --accent-blue: var(--color-accent-blue);
   --accent-emerald: var(--color-accent);
-  --accent-purple: var(--color-accent);
+  --accent-purple: var(--color-accent-lavender);
   --accent-gold: var(--color-accent);
 
   --font-weight-normal: 400;
@@ -55,37 +60,44 @@
 }
 
 /* ============================================================
-   DARK MODE (default presentation — cinematic, premium)
+   DARK MODE — modernisiert, optional (Graphite + Coral/Pink)
 ============================================================ */
 .dark {
-  --color-bg: #0A0A0A;
-  --color-surface: #141414;
-  --color-surface-soft: #1C1C1C;
-  --color-text: #F4F0E8;
-  --color-muted: #B8B2AA;
-  --color-accent: #C9963B;
-  --color-accent-soft: rgba(201, 150, 59, 0.14);
+  --color-bg: #111116;
+  --color-surface: #1B1B22;
+  --color-surface-soft: #232330;
+  --color-text: #F8F4EF;
+  --color-muted: #B8AEA5;
+  --color-accent: #FF8A5C;
+  --color-accent-soft: rgba(255, 138, 92, 0.14);
+  --color-accent-pink: #FF6FB5;
+  --color-accent-blue: #9EDEF9;
+  --color-accent-lavender: #C9B8FB;
+  --color-surface-soft-pink: rgba(255, 111, 181, 0.10);
+  --color-surface-soft-coral: rgba(255, 138, 92, 0.10);
+  --color-surface-soft-blue: rgba(158, 222, 249, 0.10);
+  --color-surface-soft-lavender: rgba(201, 184, 251, 0.10);
 
-  --background: #0A0A0A;
-  --foreground: #F4F0E8;
-  --card: #141414;
-  --card-foreground: #F4F0E8;
-  --popover: #141414;
-  --popover-foreground: #F4F0E8;
-  --primary: #C9963B;
-  --primary-foreground: #0A0A0A;
-  --secondary: #1C1C1C;
-  --secondary-foreground: #F4F0E8;
-  --muted: #1C1C1C;
-  --muted-foreground: #B8B2AA;
-  --accent: #C9963B;
-  --accent-foreground: #0A0A0A;
+  --background: #111116;
+  --foreground: #F8F4EF;
+  --card: #1B1B22;
+  --card-foreground: #F8F4EF;
+  --popover: #1B1B22;
+  --popover-foreground: #F8F4EF;
+  --primary: #FF8A5C;
+  --primary-foreground: #14110D;
+  --secondary: #FF6FB5;
+  --secondary-foreground: #14110D;
+  --muted: #232330;
+  --muted-foreground: #B8AEA5;
+  --accent: #FF8A5C;
+  --accent-foreground: #14110D;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-  --border: rgba(244, 240, 232, 0.10);
-  --input: #1C1C1C;
-  --input-background: #141414;
-  --ring: #C9963B;
+  --border: rgba(248, 244, 239, 0.10);
+  --input: #232330;
+  --input-background: #1B1B22;
+  --ring: rgba(255, 138, 92, 0.45);
 }
 
 @layer base {
@@ -112,23 +124,32 @@
   .bg-accent-gold { background-color: var(--color-accent); }
 
   .clean-border { border: 1px solid var(--border); }
-  .subtle-shadow { box-shadow: 0 1px 3px 0 rgba(0,0,0,0.12); }
-  .elevated-shadow { box-shadow: 0 12px 40px -12px rgba(0,0,0,0.18); }
+  .subtle-shadow { box-shadow: 0 1px 3px 0 rgba(20, 17, 13, 0.06); }
+  .elevated-shadow { box-shadow: 0 14px 40px -16px rgba(20, 17, 13, 0.18); }
   .gentle-animation { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+
+  /* Brand gradient text — Coral → Pink → Tangerine */
+  .text-gradient-brand {
+    background-image: linear-gradient(120deg, #F9734A 0%, #EC4899 55%, #FFB36B 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
 
   /* Glass: Light by default (subtle, warm, editorial) */
   .glass-effect {
-    background: rgba(255, 255, 255, 0.55);
+    background: rgba(255, 255, 255, 0.65);
     backdrop-filter: blur(18px) saturate(1.2);
     -webkit-backdrop-filter: blur(18px) saturate(1.2);
-    border: 1px solid rgba(26, 22, 18, 0.08);
+    border: 1px solid rgba(23, 23, 28, 0.08);
   }
   .glass-effect:hover {
-    background: rgba(255, 255, 255, 0.75);
-    border-color: rgba(168, 120, 38, 0.35);
+    background: rgba(255, 255, 255, 0.82);
+    border-color: rgba(249, 115, 74, 0.35);
   }
 
-  /* Glass: Dark variant — keeps premium cinematic feel */
+  /* Glass: Dark variant */
   .dark .glass-effect {
     background: rgba(255, 255, 255, 0.04);
     backdrop-filter: blur(20px) saturate(1.4);
@@ -137,10 +158,10 @@
   }
   .dark .glass-effect:hover {
     background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(201, 150, 59, 0.35);
+    border-color: rgba(255, 138, 92, 0.35);
   }
 
-  /* Dark "stage" — for sections that must stay cinematic even in Light Mode (Hero) */
+  /* Dark "stage" — for sections that must stay cinematic in any mode (Hero) */
   .stage-dark {
     background-color: #0A0A0A;
     color: #F4F0E8;
@@ -193,20 +214,19 @@
 }
 
 /* ============================================================
-   LIGHT-MODE OVERRIDES
-   Remap hardcoded dark-mode color classes (Tailwind arbitrary values)
-   to semantic tokens so the homepage stays readable in Light Mode
-   without touching component source. Dark mode is unaffected.
+   LIGHT-MODE OVERRIDES — Remap legacy dark/gold Tailwind arbitrary
+   values onto the new Fresh Creative Studio tokens.
+   Hero stage (.stage-dark) and Portfolio media tiles stay dark.
 ============================================================ */
 html:not(.dark) {
-  /* Muted text used across sections (text-[#A8A29E] and opacity variants) */
+  /* Muted text */
   .text-\[\#A8A29E\] { color: var(--muted-foreground); }
   .text-\[\#A8A29E\]\/80 { color: color-mix(in srgb, var(--muted-foreground) 90%, transparent); }
   .text-\[\#A8A29E\]\/70 { color: color-mix(in srgb, var(--muted-foreground) 80%, transparent); }
   .text-\[\#A8A29E\]\/60 { color: color-mix(in srgb, var(--muted-foreground) 70%, transparent); }
   .placeholder\:text-\[\#A8A29E\]\/60::placeholder { color: color-mix(in srgb, var(--muted-foreground) 75%, transparent); }
 
-  /* Accent (gold) → use primary token (darker copper in light mode) */
+  /* Legacy gold → coral primary */
   .text-\[\#C9963B\],
   .text-\[\#C9963B\]\/90,
   .text-\[\#C9963B\]\/80,
@@ -224,7 +244,7 @@ html:not(.dark) {
   .hover\:bg-\[\#C9963B\]\/25:hover { background-color: color-mix(in srgb, var(--primary) 25%, transparent); }
   .hover\:bg-\[\#C9963B\]\/20:hover { background-color: color-mix(in srgb, var(--primary) 20%, transparent); }
   .hover\:bg-\[\#C9963B\]\/10:hover { background-color: color-mix(in srgb, var(--primary) 12%, transparent); }
-  .hover\:bg-\[\#d9a64b\]:hover { background-color: color-mix(in srgb, var(--primary) 85%, #000 0%); filter: brightness(0.92); }
+  .hover\:bg-\[\#d9a64b\]:hover { background-color: color-mix(in srgb, var(--primary) 88%, #000); }
   .border-\[\#C9963B\]\/60 { border-color: color-mix(in srgb, var(--primary) 60%, transparent); }
   .border-\[\#C9963B\]\/40 { border-color: color-mix(in srgb, var(--primary) 50%, transparent); }
   .border-\[\#C9963B\]\/30 { border-color: color-mix(in srgb, var(--primary) 40%, transparent); }
@@ -235,10 +255,10 @@ html:not(.dark) {
   .focus\:ring-\[\#C9963B\]\/40:focus { --tw-ring-color: color-mix(in srgb, var(--primary) 35%, transparent); }
   .data-\[state\=open\]\:border-\[\#C9963B\]\/40[data-state="open"] { border-color: color-mix(in srgb, var(--primary) 50%, transparent); }
 
-  /* Dark gold text on gold pill → keep readable */
+  /* Dark gold pill text → primary-foreground (white on coral) */
   .text-\[\#0A0A0A\] { color: var(--primary-foreground); }
 
-  /* Section/card hairlines using white/X — invisible on light bg */
+  /* Hairlines on dark surfaces — invisible on cream → use real border */
   .border-white\/\[0\.04\],
   .border-white\/\[0\.05\],
   .border-white\/\[0\.06\],
@@ -248,17 +268,20 @@ html:not(.dark) {
   .border-t.border-white\/\[0\.05\],
   .border-t.border-white\/\[0\.06\] { border-top-color: var(--border); }
 
-  /* Contact input bg-muted is too flat → use white card */
+  /* Contact input bg-muted → use clean white card */
   form .bg-muted { background-color: var(--card); }
 
-  /* Pricing highlighted card: dark gradient looks bad with dark text in light mode */
+  /* Pricing highlighted card: dark gradient → fresh coral-tinted premium card */
   .bg-gradient-to-b.from-\[\#1c1814\].to-\[\#141414\] {
-    background-image: none;
-    background-color: color-mix(in srgb, var(--primary) 6%, var(--card));
-    box-shadow: 0 0 0 1px color-mix(in srgb, var(--primary) 35%, transparent),
-                0 20px 50px -20px color-mix(in srgb, var(--primary) 30%, transparent);
+    background-image: linear-gradient(180deg,
+      color-mix(in srgb, var(--primary) 8%, var(--card)) 0%,
+      color-mix(in srgb, var(--secondary) 5%, var(--card)) 100%);
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--primary) 40%, transparent),
+      0 24px 60px -24px color-mix(in srgb, var(--primary) 35%, transparent),
+      0 12px 36px -18px color-mix(in srgb, var(--secondary) 25%, transparent);
   }
 
-  /* Portfolio media tile bg gradient (dark) — keep dark so on-media badges/text stay readable.
-     The classes bg-gradient-to-br from-[#1a1a1a] via-[#141414] to-black remain as-is. */
+  /* Portfolio media tile bg gradient (dark) — keep as-is so on-media
+     badges & text stay readable on top of dark video stills. */
 }
