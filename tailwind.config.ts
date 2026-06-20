@@ -46,9 +46,17 @@ export default {
         accent: {
           DEFAULT: "var(--accent)",
           foreground: "var(--accent-foreground)",
-          blue: "var(--accent-blue)",
+          blue: "var(--color-accent-blue)",
+          pink: "var(--color-accent-pink)",
+          lavender: "var(--color-accent-lavender)",
           emerald: "var(--accent-emerald)",
           purple: "var(--accent-purple)",
+        },
+        soft: {
+          pink: "var(--color-surface-soft-pink)",
+          coral: "var(--color-surface-soft-coral)",
+          blue: "var(--color-surface-soft-blue)",
+          lavender: "var(--color-surface-soft-lavender)",
         },
         popover: {
           DEFAULT: "var(--popover)",

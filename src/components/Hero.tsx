@@ -288,9 +288,9 @@ export function Hero() {
               return (
                 <span
                   key={li}
-                  className="block leading-[0.95] text-[3.25rem] sm:text-7xl lg:text-[9rem] text-highlight italic tracking-tight"
+                  className="block leading-[0.95] text-[3.25rem] sm:text-7xl lg:text-[9rem] text-gradient-brand italic tracking-tight"
                   style={{
-                    textShadow: '0 2px 24px rgba(201,150,59,0.25)',
+                    filter: 'drop-shadow(0 4px 28px rgba(249, 115, 74, 0.35))',
                   }}
                 >
                   {line[0].text}
