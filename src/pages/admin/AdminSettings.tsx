@@ -21,6 +21,14 @@ const FIELDS: Setting[] = [
   { key: 'primary_cta_label', label: 'Primärer CTA — Text', group: 'Hero', placeholder: 'Projekt anfragen' },
   { key: 'secondary_cta_label', label: 'Sekundärer CTA — Text', group: 'Hero', placeholder: 'Portfolio ansehen' },
 
+  // ─── Musik & Audio ────────────────────────────────────
+  { key: 'music_enabled', label: 'Musik aktivieren', type: 'switch', group: 'Musik & Audio', hint: 'Aktiviert den Soundtrack auf der Main Page. Autoplay mit Ton wird von Browsern blockiert — Musik startet erst nach Klick auf den Sound-Button.' },
+  { key: 'music_url', label: 'Musik-URL', type: 'url', group: 'Musik & Audio', placeholder: 'https://.../soundtrack.mp3 oder /media/audio/soundtrack.mp3', hint: 'Direktlink zu MP3, WebM, OGG oder gültigem Storage-Pfad. Empfohlen: weboptimierte MP3.' },
+  { key: 'music_volume', label: 'Lautstärke (0.0 – 1.0)', type: 'number', group: 'Musik & Audio', placeholder: '0.35', hint: 'Wert zwischen 0.0 und 1.0. Empfohlen: 0.25 – 0.40.' },
+  { key: 'music_loop', label: 'Wiederholen (Loop)', type: 'switch', group: 'Musik & Audio', hint: 'Wenn aktiv, läuft die Musik im Loop.' },
+  { key: 'music_label', label: 'Button-Label', type: 'text', group: 'Musik & Audio', placeholder: 'Soundtrack', hint: 'Wird für Tooltip / aria-label des Musik-Buttons verwendet.' },
+  { key: 'music_show_control', label: 'Sound-Button anzeigen', type: 'switch', group: 'Musik & Audio', hint: 'Wenn deaktiviert, wird kein Musik-Button im Hero angezeigt.' },
+
   // ─── Kontakt ──────────────────────────────────────────
   { key: 'contact_email', label: 'Kontakt-E-Mail', type: 'email', group: 'Kontakt', placeholder: 'hallo@soulcinema.de' },
   { key: 'contact_phone', label: 'Telefon (optional)', group: 'Kontakt', placeholder: '+49 …' },
