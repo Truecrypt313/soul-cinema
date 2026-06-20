@@ -282,6 +282,48 @@ function EmailNotes() {
   )
 }
 
+function MusicPreview({ values }: { values: Record<string, any> }) {
+  const [resolved, setResolved] = useState<string | null>(null)
+  const enabled = parseBool(values.music_enabled, false)
+  const url: string = typeof values.music_url === 'string' ? values.music_url : ''
+  const volume = parseVolume(values.music_volume, 0.35)
+  const loop = parseBool(values.music_loop, true)
+  const showControl = parseBool(values.music_show_control, true)
+
+  useEffect(() => {
+    let active = true
+    if (!url || !url.trim()) { setResolved(null); return }
+    resolveAudioUrl(url).then(u => { if (active) setResolved(u) })
+    return () => { active = false }
+  }, [url])
+
+  return (
+    <div className="mb-6 bg-card clean-border rounded-xl overflow-hidden">
+      <div className="px-5 py-3 border-b border-border text-xs uppercase tracking-wider text-muted-foreground">Musik-Vorschau</div>
+      <div className="p-5 space-y-3 text-sm">
+        <div className="flex flex-wrap gap-x-6 gap-y-1 text-muted-foreground">
+          <div>Aktiviert: <span className="text-foreground font-medium">{enabled ? 'ja' : 'nein'}</span></div>
+          <div>Lautstärke: <span className="text-foreground font-medium">{volume.toFixed(2)}</span></div>
+          <div>Loop: <span className="text-foreground font-medium">{loop ? 'ja' : 'nein'}</span></div>
+          <div>Sound-Button: <span className="text-foreground font-medium">{showControl ? 'sichtbar' : 'verborgen'}</span></div>
+        </div>
+        {!url.trim() ? (
+          <div className="text-muted-foreground italic">Keine Musik-URL hinterlegt. Trage eine Audio-URL ein, um die Vorschau zu testen.</div>
+        ) : resolved ? (
+          <audio controls src={resolved} className="w-full" />
+        ) : (
+          <div className="text-muted-foreground italic">Audio konnte nicht aufgelöst werden. Prüfe die URL oder den Storage-Pfad.</div>
+        )}
+        <p className="text-[11px] text-muted-foreground">
+          Empfohlen: MP3 oder WebM Audio, kurz geloopt und weboptimiert. Auf der Website startet die Musik erst nach Nutzerklick — Browser blockieren Autoplay mit Ton.
+        </p>
+      </div>
+    </div>
+  )
+}
+
+
+
 
 
 function ListEditor({ value, onChange }: { value: string[]; onChange: (v: string[]) => void }) {
