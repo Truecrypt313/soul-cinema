@@ -13,13 +13,13 @@ type ThemeContextValue = {
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined)
 
 function readInitial(): Theme {
-  if (typeof window === 'undefined') return 'dark'
+  if (typeof window === 'undefined') return 'light'
   try {
     const stored = window.localStorage.getItem(STORAGE_KEY)
     if (stored === 'light' || stored === 'dark') return stored
   } catch {}
-  // Dark is the brand default — system preference is intentionally NOT auto-applied.
-  return 'dark'
+  // Light is the new brand default — system preference is intentionally NOT auto-applied.
+  return 'light'
 }
 
 function applyThemeClass(theme: Theme) {
