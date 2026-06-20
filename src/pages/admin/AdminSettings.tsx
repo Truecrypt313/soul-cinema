@@ -62,7 +62,7 @@ const FIELDS: Setting[] = [
   { key: 'admin_setup_code', label: 'Admin-Setup-Code', group: 'System', hint: 'Nach Aktivierung des ersten Admins bitte leeren – sonst kann jeder mit dem Code ein weiteres Admin-Konto beanspruchen.' },
 ]
 
-const GROUPS = ['Hero', 'Kontakt', 'SEO & Social', 'Footer & Social', 'E-Mail', 'System'] as const
+const GROUPS = ['Hero', 'Musik & Audio', 'Kontakt', 'SEO & Social', 'Footer & Social', 'E-Mail', 'System'] as const
 
 export default function AdminSettings() {
   const { toast } = useToast()
