@@ -3,8 +3,9 @@ import { useEffect, useMemo, useState } from 'react'
 import { supabase } from '@/integrations/supabase/client'
 import { useToast } from '@/hooks/use-toast'
 import { Image as ImageIcon } from 'lucide-react'
+import { parseBool, parseVolume, resolveAudioUrl } from '@/lib/audioMedia'
 
-type Setting = { key: string; label: string; type?: 'text' | 'textarea' | 'list' | 'url' | 'email'; hint?: string; group: string; rows?: number; placeholder?: string }
+type Setting = { key: string; label: string; type?: 'text' | 'textarea' | 'list' | 'url' | 'email' | 'switch' | 'number'; hint?: string; group: string; rows?: number; placeholder?: string }
 
 const FIELDS: Setting[] = [
   // ─── Hero ─────────────────────────────────────────────
@@ -19,6 +20,14 @@ const FIELDS: Setting[] = [
   { key: 'hero_poster_mobile_url', label: 'Mobile Hero Poster URL', type: 'url', group: 'Hero', hint: 'Optional. Wenn leer, wird das normale Poster oder Video genutzt.' },
   { key: 'primary_cta_label', label: 'Primärer CTA — Text', group: 'Hero', placeholder: 'Projekt anfragen' },
   { key: 'secondary_cta_label', label: 'Sekundärer CTA — Text', group: 'Hero', placeholder: 'Portfolio ansehen' },
+
+  // ─── Musik & Audio ────────────────────────────────────
+  { key: 'music_enabled', label: 'Musik aktivieren', type: 'switch', group: 'Musik & Audio', hint: 'Aktiviert den Soundtrack auf der Main Page. Autoplay mit Ton wird von Browsern blockiert — Musik startet erst nach Klick auf den Sound-Button.' },
+  { key: 'music_url', label: 'Musik-URL', type: 'url', group: 'Musik & Audio', placeholder: 'https://.../soundtrack.mp3 oder /media/audio/soundtrack.mp3', hint: 'Direktlink zu MP3, WebM, OGG oder gültigem Storage-Pfad. Empfohlen: weboptimierte MP3.' },
+  { key: 'music_volume', label: 'Lautstärke (0.0 – 1.0)', type: 'number', group: 'Musik & Audio', placeholder: '0.35', hint: 'Wert zwischen 0.0 und 1.0. Empfohlen: 0.25 – 0.40.' },
+  { key: 'music_loop', label: 'Wiederholen (Loop)', type: 'switch', group: 'Musik & Audio', hint: 'Wenn aktiv, läuft die Musik im Loop.' },
+  { key: 'music_label', label: 'Button-Label', type: 'text', group: 'Musik & Audio', placeholder: 'Soundtrack', hint: 'Wird für Tooltip / aria-label des Musik-Buttons verwendet.' },
+  { key: 'music_show_control', label: 'Sound-Button anzeigen', type: 'switch', group: 'Musik & Audio', hint: 'Wenn deaktiviert, wird kein Musik-Button im Hero angezeigt.' },
 
   // ─── Kontakt ──────────────────────────────────────────
   { key: 'contact_email', label: 'Kontakt-E-Mail', type: 'email', group: 'Kontakt', placeholder: 'hallo@soulcinema.de' },
@@ -53,7 +62,7 @@ const FIELDS: Setting[] = [
   { key: 'admin_setup_code', label: 'Admin-Setup-Code', group: 'System', hint: 'Nach Aktivierung des ersten Admins bitte leeren – sonst kann jeder mit dem Code ein weiteres Admin-Konto beanspruchen.' },
 ]
 
-const GROUPS = ['Hero', 'Kontakt', 'SEO & Social', 'Footer & Social', 'E-Mail', 'System'] as const
+const GROUPS = ['Hero', 'Musik & Audio', 'Kontakt', 'SEO & Social', 'Footer & Social', 'E-Mail', 'System'] as const
 
 export default function AdminSettings() {
   const { toast } = useToast()
@@ -116,6 +125,7 @@ export default function AdminSettings() {
       {tab === 'SEO & Social' && <SocialPreview values={values} />}
       {tab === 'System' && <SystemNotes values={values} />}
       {tab === 'E-Mail' && <EmailNotes />}
+      {tab === 'Musik & Audio' && <MusicPreview values={values} />}
 
       <section className="bg-card clean-border rounded-xl p-5 space-y-4">
         {FIELDS.filter(f => f.group === tab).map(f => {
@@ -127,6 +137,24 @@ export default function AdminSettings() {
                 <ListEditor value={Array.isArray(v) ? v : []} onChange={(arr) => setVal(f.key, arr)} />
               ) : f.type === 'textarea' ? (
                 <textarea rows={f.rows ?? 2} value={typeof v === 'string' ? v : ''} placeholder={f.placeholder} onChange={e => setVal(f.key, e.target.value)} className={inp} />
+              ) : f.type === 'switch' ? (
+                <label className="inline-flex items-center gap-3 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={parseBool(v, false)}
+                    onChange={e => setVal(f.key, e.target.checked)}
+                    className="h-4 w-4 accent-[#C9963B]"
+                  />
+                  <span className="text-sm text-muted-foreground">{parseBool(v, false) ? 'Aktiv' : 'Inaktiv'}</span>
+                </label>
+              ) : f.type === 'number' ? (
+                <input
+                  type="number" step="0.05" min="0" max="1"
+                  value={typeof v === 'number' ? v : (typeof v === 'string' ? v : '')}
+                  placeholder={f.placeholder}
+                  onChange={e => setVal(f.key, e.target.value)}
+                  className={inp}
+                />
               ) : (
                 <input
                   type={f.type === 'email' ? 'email' : f.type === 'url' ? 'url' : 'text'}
@@ -253,6 +281,48 @@ function EmailNotes() {
     </div>
   )
 }
+
+function MusicPreview({ values }: { values: Record<string, any> }) {
+  const [resolved, setResolved] = useState<string | null>(null)
+  const enabled = parseBool(values.music_enabled, false)
+  const url: string = typeof values.music_url === 'string' ? values.music_url : ''
+  const volume = parseVolume(values.music_volume, 0.35)
+  const loop = parseBool(values.music_loop, true)
+  const showControl = parseBool(values.music_show_control, true)
+
+  useEffect(() => {
+    let active = true
+    if (!url || !url.trim()) { setResolved(null); return }
+    resolveAudioUrl(url).then(u => { if (active) setResolved(u) })
+    return () => { active = false }
+  }, [url])
+
+  return (
+    <div className="mb-6 bg-card clean-border rounded-xl overflow-hidden">
+      <div className="px-5 py-3 border-b border-border text-xs uppercase tracking-wider text-muted-foreground">Musik-Vorschau</div>
+      <div className="p-5 space-y-3 text-sm">
+        <div className="flex flex-wrap gap-x-6 gap-y-1 text-muted-foreground">
+          <div>Aktiviert: <span className="text-foreground font-medium">{enabled ? 'ja' : 'nein'}</span></div>
+          <div>Lautstärke: <span className="text-foreground font-medium">{volume.toFixed(2)}</span></div>
+          <div>Loop: <span className="text-foreground font-medium">{loop ? 'ja' : 'nein'}</span></div>
+          <div>Sound-Button: <span className="text-foreground font-medium">{showControl ? 'sichtbar' : 'verborgen'}</span></div>
+        </div>
+        {!url.trim() ? (
+          <div className="text-muted-foreground italic">Keine Musik-URL hinterlegt. Trage eine Audio-URL ein, um die Vorschau zu testen.</div>
+        ) : resolved ? (
+          <audio controls src={resolved} className="w-full" />
+        ) : (
+          <div className="text-muted-foreground italic">Audio konnte nicht aufgelöst werden. Prüfe die URL oder den Storage-Pfad.</div>
+        )}
+        <p className="text-[11px] text-muted-foreground">
+          Empfohlen: MP3 oder WebM Audio, kurz geloopt und weboptimiert. Auf der Website startet die Musik erst nach Nutzerklick — Browser blockieren Autoplay mit Ton.
+        </p>
+      </div>
+    </div>
+  )
+}
+
+
 
 
 
