@@ -125,6 +125,7 @@ export default function AdminSettings() {
       {tab === 'SEO & Social' && <SocialPreview values={values} />}
       {tab === 'System' && <SystemNotes values={values} />}
       {tab === 'E-Mail' && <EmailNotes />}
+      {tab === 'Musik & Audio' && <MusicPreview values={values} />}
 
       <section className="bg-card clean-border rounded-xl p-5 space-y-4">
         {FIELDS.filter(f => f.group === tab).map(f => {
@@ -136,6 +137,24 @@ export default function AdminSettings() {
                 <ListEditor value={Array.isArray(v) ? v : []} onChange={(arr) => setVal(f.key, arr)} />
               ) : f.type === 'textarea' ? (
                 <textarea rows={f.rows ?? 2} value={typeof v === 'string' ? v : ''} placeholder={f.placeholder} onChange={e => setVal(f.key, e.target.value)} className={inp} />
+              ) : f.type === 'switch' ? (
+                <label className="inline-flex items-center gap-3 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={parseBool(v, false)}
+                    onChange={e => setVal(f.key, e.target.checked)}
+                    className="h-4 w-4 accent-[#C9963B]"
+                  />
+                  <span className="text-sm text-muted-foreground">{parseBool(v, false) ? 'Aktiv' : 'Inaktiv'}</span>
+                </label>
+              ) : f.type === 'number' ? (
+                <input
+                  type="number" step="0.05" min="0" max="1"
+                  value={typeof v === 'number' ? v : (typeof v === 'string' ? v : '')}
+                  placeholder={f.placeholder}
+                  onChange={e => setVal(f.key, e.target.value)}
+                  className={inp}
+                />
               ) : (
                 <input
                   type={f.type === 'email' ? 'email' : f.type === 'url' ? 'url' : 'text'}
