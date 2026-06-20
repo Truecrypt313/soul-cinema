@@ -3,8 +3,9 @@ import { useEffect, useMemo, useState } from 'react'
 import { supabase } from '@/integrations/supabase/client'
 import { useToast } from '@/hooks/use-toast'
 import { Image as ImageIcon } from 'lucide-react'
+import { parseBool, parseVolume, resolveAudioUrl } from '@/lib/audioMedia'
 
-type Setting = { key: string; label: string; type?: 'text' | 'textarea' | 'list' | 'url' | 'email'; hint?: string; group: string; rows?: number; placeholder?: string }
+type Setting = { key: string; label: string; type?: 'text' | 'textarea' | 'list' | 'url' | 'email' | 'switch' | 'number'; hint?: string; group: string; rows?: number; placeholder?: string }
 
 const FIELDS: Setting[] = [
   // ─── Hero ─────────────────────────────────────────────
