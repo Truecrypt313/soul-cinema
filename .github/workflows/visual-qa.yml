@@ -73,10 +73,20 @@ jobs:
             echo "Using local preview URL: $LOCAL_BASE_URL"
           fi
 
-      - name: Run visual screenshot tests
+      - name: Run smoke screenshot tests
         env:
           LOCAL_BASE_URL: ${{ env.LOCAL_BASE_URL }}
         run: npx playwright test tests/visual/screenshot.spec.ts --reporter=list
+
+      - name: Run visual regression tests (Hero / Pricing / Portfolio / FAQ / Contact, light + dark)
+        env:
+          LOCAL_BASE_URL: ${{ env.LOCAL_BASE_URL }}
+        run: npx playwright test tests/visual/regression.spec.ts --config=playwright.config.ts --reporter=list
+
+      - name: Run accessibility & contrast audit (light + dark)
+        env:
+          LOCAL_BASE_URL: ${{ env.LOCAL_BASE_URL }}
+        run: npx playwright test tests/visual/a11y.spec.ts --config=playwright.config.ts --reporter=list
 
       - name: Upload visual QA artifacts
         if: always()
@@ -85,6 +95,7 @@ jobs:
           name: soul-cinema-visual-qa
           path: |
             visual-results/**/*
+            tests/visual/regression.spec.ts-snapshots/**/*
             preview.log
           if-no-files-found: warn
           retention-days: 14
