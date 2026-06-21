@@ -40,7 +40,7 @@ jobs:
           else
             npm install
           fi
-          npm install --no-save @playwright/test
+          npm install --no-save @playwright/test @axe-core/playwright
 
       - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium
