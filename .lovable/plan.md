@@ -1,186 +1,114 @@
-## Ziel
+# Plan: Logo-Auftritt + CreativePromptSection optimieren
 
-Soul Cinema visuell minimal lebendiger machen — inspiriert von agentur-popkorn.de, aber **keine Kopie**. Bestehender Hero, Navigation, Backend, Musik, Portfolio, Contact bleiben unverändert.
+Zwei gezielte, kleine Eingriffe. Kein Redesign, keine Nav-Struktur-Änderung, keine Backend-/Funktions-Änderung.
 
-## Scope (was passiert)
+## Scope
 
-1. **Neues Wordmark-Logo** als React-SVG-Komponente
-2. **CreativePromptSection** als neuer Block direkt unter dem Hero
-3. **Motion-Sticker / Tags** dezent in der neuen Section
-4. **Optionaler Marquee** mit Format-Stichworten unter der Prompt-Section
-5. **Minimaler Nav-Polish** (nur Logo-Tausch + Hover-Feinheiten)
+**Geändert wird ausschließlich:**
+- `src/components/brand/SoulCinemaWordmark.tsx` — optische Feinjustierung
+- `src/components/Hero.tsx` — nur Logo-Größe + minimale Header-Abstände (Zeile 223–224)
+- `src/components/Footer.tsx` — Logo-Größe leicht angepasst (Konsistenz)
+- `src/components/CreativePromptSection.tsx` — Wording + visuelle Hierarchie + Sticker + Marquee
 
-## Out of Scope (bewusst nicht)
-
-- Hero-Video, Hero-Layout, Musik-System
-- Navigation-Struktur, Mobile-Menu-Umbau
-- Portfolio, Pricing, Contact, Footer-Logik
-- Supabase, Edge Functions, Storage, Admin, Analytics, Mail
-- Routing, SEO-Seiten, Datenschutz/Impressum/AGB
-- Keine neuen DB-Tabellen, keine neuen Settings-Keys
+**Nicht angefasst:** Navigation, Hero-Video, Musik-System, Portfolio, Contact, Mail, Admin, Analytics, Supabase, Routing, Pricing, Theme, Legal Pages.
 
 ---
 
-## 1. SoulCinemaWordmark (neu)
+## 1. Logo / Wordmark präsenter machen
 
-**Datei:** `src/components/brand/SoulCinemaWordmark.tsx`
+### `SoulCinemaWordmark.tsx` (Feintuning, keine Neuerfindung)
+- "Soul" italic serif bleibt, Gewicht 600 → **700** für mehr Präsenz
+- "CINEMA" letter-spacing leicht offener (0.22em → **0.26em**) und vertikal sauber auf gleiche Baseline mit "Soul" ausgerichtet
+- Play-Dreieck etwas größer (16×20 → **20×24**), Ice-Blue-Spark von r=2 → **r=2.5**, Position leicht nachjustiert
+- viewBox bleibt `0 0 360 64`, Aspect Ratio unverändert → keine Layout-Shifts an Einbau-Stellen
+- Bleibt `currentColor`-basiert → Light/Dark + über Hero-Video weiterhin gut
 
-- Reines SVG, `currentColor`-basiert → funktioniert in Light & Dark
-- `SOUL` in `font-brand` (Cormorant Garamond) als `<text>` mit leicht weicherem Tracking
-- `CINEMA` cleaner, editorial, etwas weiteres letter-spacing
-- Kleiner Akzent: dezenter Play-Dreieck oder Frame-Punkt in `var(--primary)` (Coral) zwischen den Wörtern
-- Optional ein winziger Ice-Blue Spark als zweiter Akzent
-- Props: `className`, `size` (height in px, default ~28)
-- ARIA: `role="img"` + `aria-label="Soul Cinema"`
+### `Hero.tsx` (eine Zeile)
+Aktuell: `<SoulCinemaWordmark size={26} className="md:h-7 h-6 w-auto" />`
+Neu: `<SoulCinemaWordmark size={32} className="md:!h-[38px] h-[30px] w-auto" />`
+→ Desktop ~38px, Mobile ~30px. Header-Padding (`py-4`) bleibt — Nav-Layout unverändert.
 
-**Einsatz:**
-- Hero-Header (Zeile 223 in `src/components/Hero.tsx`): Text `Soul Cinema` → `<SoulCinemaWordmark />`
-- Footer (`src/components/Footer.tsx` Zeile 15): gleiches Wordmark, kleinere Größe
-- Header-Layout, Spacing, Mobile-Menu bleiben unverändert
+### `Footer.tsx`
+Footer-Logo: `size={24}` → `size={28}` (Konsistenz mit präsenter Marke, bleibt aber kleiner als Header).
 
-Optional zusätzlich `public/soul-cinema-wordmark.svg` als statisches Asset (für OG/Favicon-Wiederverwendung, nicht zwingend).
-
----
-
-## 2. CreativePromptSection (neu)
-
-**Datei:** `src/components/CreativePromptSection.tsx`
-
-**Einbau:** in `src/pages/Landing.tsx` direkt nach `<section id="hero">` und vor `<section id="services">`, als eigene `<section id="creative-prompt">`.
-
-**Aufbau:**
-
-```text
-┌─ Section (py-24, bg-background) ──────────────────────┐
-│  [floating sticker: "Hook First"  ↗ rotated -6deg]    │
-│                                                       │
-│      H2: "So entsteht dein Scroll-Stopper."           │
-│      (große Headline, font-brand, mit                 │
-│       text-gradient-brand auf einem Wort)             │
-│                                                       │
-│  ┌─ Glass Card (rounded-2xl, border, shadow) ──────┐  │
-│  │  ● ● ●   creative-brief.txt        [Status pill]│  │
-│  │  ──────────────────────────────────────────────  │  │
-│  │  Prompt:                                         │  │
-│  │   > Mach aus meinem Produkt einen Scroll-Stopper.│  │
-│  │                                                  │  │
-│  │  Input:                                          │  │
-│  │   Produkt   → Dein Produkt / App / Shop          │  │
-│  │   Ziel      → Mehr Aufmerksamkeit & Klicks       │  │
-│  │   Format    → 9:16 · 1:1 · 16:9                  │  │
-│  │   Style     → UGC · cinematic · clean · bold     │  │
-│  │                                                  │  │
-│  │  Output:                                         │  │
-│  │   ▸ Hook 01  Problem → Produkt → CTA             │  │
-│  │   ▸ Hook 02  Unboxing → Benefit → Proof          │  │
-│  │   ▸ Hook 03  Fast Cut → Feature → Action         │  │
-│  │   ▸ Hero Clip + Social Cutdowns                  │  │
-│  │                                                  │  │
-│  │  Status: ▮ Ready to launch_                      │  │
-│  │                                                  │  │
-│  │  [ Projekt briefen → ]                           │  │
-│  └──────────────────────────────────────────────────┘  │
-│   [sticker: "9:16"]      [sticker: "UGC Look"]        │
-└───────────────────────────────────────────────────────┘
-```
-
-**Animationen:**
-- Zeile-für-Zeile Reveal via `framer-motion` `useInView` + staggered opacity/y
-- Blinkender Cursor `_` am Ende der Status-Zeile (CSS keyframes)
-- Floating Sticker: leichte y-Oszillation (6s ease infinite)
-- Komplett deaktiviert via `@media (prefers-reduced-motion: reduce)` (existiert schon global in `index.css`)
-
-**CTA:**
-- Button (`variant="default"`): `Projekt briefen`
-- `onClick`: smooth scroll zu `#contact` via `document.getElementById('contact')?.scrollIntoView({behavior:'smooth'})`
-- Tracking: `track('cta_click', { source: 'creative_prompt' })` aus `@/lib/analytics` (vorhandene Funktion, keine neuen Events nötig)
-
-**Design-Tokens (bestehend):**
-- Card: `bg-card border border-border` + `glass-effect` Variante
-- Akzente: `var(--primary)` Coral, `var(--secondary)` Pink, `var(--color-accent-blue)` Ice Blue, `var(--color-accent-lavender)`
-- Status-Pill: `bg-soft-coral` mit `text-primary`
-- Keine Hardcoded Hex
+**Was bewusst NICHT passiert:** kein Logo-Ersatz, kein Bild-Import, keine Nav-Item-Änderung, kein Spacing-Umbau, kein neues SVG-Konzept.
 
 ---
 
-## 3. Motion-Sticker / Tags
+## 2. CreativePromptSection — Wording & Inhalte
 
-Kleine Pill-Komponente inline in `CreativePromptSection` (kein separates File nötig):
+### Neue Texte (1:1 übernommen aus Brief)
+- **Eyebrow:** `Creative Brief`
+- **Headline:** `Aus Produkt wird Performance-Creative.` — Wort `Performance-Creative` mit `text-gradient-brand italic`
+- **Subline:** `Du gibst uns Produktlink, Bilder oder vorhandenes Material. Wir entwickeln daraus Hooks, Formate und Video-Ads, die in Feeds auffallen.`
+- **Prompt-Zeile:** `Mach aus meinem Produkt ein Ad, das hängen bleibt.`
+- **Input:** Produkt / Ziel / Plattform / Look / Material (5 Zeilen, neue Werte aus Brief)
+- **Output:** Hook 01–03 + Hero Clip + Cutdowns (5 Zeilen, neues Wording)
+- **Status:** `Ready for launch` (statt `Ready to launch`)
+- **Hinweistext unter CTA:** `Kein Template. Kein Standard-Ad. Jedes Video startet mit einer klaren Creative-Idee.`
+- **CTA:** `Projekt briefen` (bleibt)
 
-```tsx
-<span className="inline-flex items-center rounded-full px-3 py-1 text-xs font-medium
-                 bg-soft-pink text-secondary rotate-[-4deg] shadow-sm">
-  9:16 Ads
-</span>
-```
+`Scroll-Stopper` wird als Sticker/Tag prominent platziert (nicht mehr als Headline-Word).
 
-Varianten: Coral, Pink, Ice Blue, Lavender — 4–6 Sticker rund um die Card verteilt, leicht rotiert (-6° bis +6°), absolute Position auf Desktop, statisch im Flow auf Mobile.
+### Sticker-Set (neu kuratiert, 4 Tags statt 4 generische)
+- `Scroll-Stopper` — Soft Coral
+- `Hook First` — Soft Pink
+- `Shop Ready` — Soft Blue
+- `Launch Clip` — Soft Lavender
 
-**Nur in der neuen Section** — Hero, Services, Portfolio bleiben sticker-frei.
-
----
-
-## 4. Marquee (optional, am Ende der Section)
-
-Schmales Band unter der Card:
-
-```text
-9:16 Ads · Product Videos · Launch Clips · UGC Style · Social Cutdowns · Hook Variants · Shop Creatives · ...
-```
-
-- CSS-only keyframes `translateX(0 → -50%)`, Duration ~40s linear infinite
-- `overflow-hidden`, doppelter Inhalt für nahtlosen Loop
-- `text-muted-foreground` mit Trenner `·` in `text-primary`
-- Pausiert bei `prefers-reduced-motion`
+### Marquee (neues Wording + Reihenfolge)
+`Product Videos · Social Ads · Hook Variants · UGC Style · Launch Clips · Shop Creatives · App Videos · Cinematic Cuts · 9:16 Cutdowns`
 
 ---
 
-## 5. Nav-Polish (minimal)
+## 3. CreativePromptSection — Visuelles Layout
 
-In `src/components/Hero.tsx` (enthält den Header):
-- **Nur** Text `Soul Cinema` (Zeile 223) durch `<SoulCinemaWordmark />` ersetzen
-- Keine Änderungen an `NAV`-Array, Mobile-Menu, Spacing, Toggle, Sound-Button
+Bestehendes zentriertes Layout bleibt (kein 2-Spalten-Umbau, da Risiko für Layout-Bruch zu groß und Brief lässt beides zu). Card wird größer, hochwertiger, weniger Terminal-schwarz, mehr Creative-Brief.
 
----
+### Konkrete visuelle Änderungen
+- Section bekommt **dezenten Gradient-Hintergrund**: `bg-[radial-gradient(ellipse_at_top,hsl(var(--soft-coral)/0.35),transparent_60%),radial-gradient(ellipse_at_bottom_right,hsl(var(--soft-blue)/0.25),transparent_55%)]` über `bg-background`
+- Headline-Größe leicht hoch: `text-4xl sm:text-5xl md:text-6xl` → `text-5xl sm:text-6xl md:text-7xl`, `tracking-tight`
+- Card `max-w-3xl` → `max-w-4xl`, mehr Padding (`p-6 md:p-10` → `p-8 md:p-12`)
+- Card-Hintergrund: `bg-card` → `bg-card/95 backdrop-blur-sm` mit zusätzlicher dezenter Top-Highlight-Linie (Coral → transparent)
+- Window-Chrome moderner: Filename → `creative-brief.md`, Live-Pill bleibt, Chrome-Dots etwas kleiner und gedeckter
+- Input/Output-Zeilen: Label-Spalte breiter (`w-20 md:w-24` → `w-24 md:w-28`), bessere `gap-y-1.5` zwischen Zeilen
+- Output-Block bekommt linke Akzent-Border (`border-l-2 border-primary/40 pl-4`) für Storyboard-Feeling
+- Status-Badge größer, mit Glow-Shadow (`shadow-[0_0_24px_-6px_hsl(var(--primary)/0.5)]`)
+- CTA-Button: Größe `lg`, beibehaltener Smooth-Scroll zu `#contact`, Analytics-Tracking bleibt
 
-## Mobile-Checks
+### Mobile
+- Card-Padding mobil `p-6` (nicht enger)
+- Sticker bleiben in-flow unter Card (`md:hidden` + Desktop `absolute`)
+- Headline auf Mobile `text-4xl` (nicht zu groß)
+- `break-words` + `whitespace-normal` auf KV-Zeilen → keine horizontale Scrollbar
+- Marquee unverändert mobil-tauglich
 
-- Card: `max-w-2xl mx-auto`, padding `p-6 md:p-10`
-- Sticker auf Mobile: `static` statt `absolute`, in flex-wrap unter der Card
-- Prompt-Zeilen: `text-sm md:text-base`, `break-words`
-- Marquee: `text-xs md:text-sm`
-- Wordmark: `h-7 md:h-8`
-
----
-
-## Geänderte/neue Dateien
-
-**Neu:**
-- `src/components/brand/SoulCinemaWordmark.tsx`
-- `src/components/CreativePromptSection.tsx`
-
-**Geändert (minimal):**
-- `src/pages/Landing.tsx` — eine `<section>`-Zeile + Import
-- `src/components/Hero.tsx` — Logo-Text → Wordmark-Komponente (1 Zeile)
-- `src/components/Footer.tsx` — Logo-Text → Wordmark-Komponente (1 Zeile)
-
-**Nicht angefasst:** Hero-Video-Logik, Music-System, Theme, Routing, Supabase, Admin, alle UI-Primitives, Contact, Portfolio, Pricing, FAQ.
+### Animationen
+- Stagger-Delay 0.04s → **0.05s** (minimal ruhiger)
+- Float-Y-Amplitude 6px → **4px** (weniger nervös)
+- Marquee-Duration 40s → **55s** (ruhiger)
+- `prefers-reduced-motion` bleibt respektiert
 
 ---
+
+## Technische Details
+
+- Keine neuen Dependencies
+- Keine neuen DB-Felder, keine Settings-Keys
+- Keine Änderung an `index.css` Tokens — alle Farben über bestehende Semantic Tokens (`--primary`, `--secondary`, `--color-accent-blue`, `--soft-coral`, `--soft-pink`, `--soft-blue`, `--soft-lavender`)
+- Bestehende Imports + Analytics-Call (`track({ event_name: 'cta_click', ... })`) bleiben
+- `framer-motion` bereits im Projekt
+- TypeScript: Line-Type bleibt identisch, nur Inhalte ändern sich
 
 ## Verification
 
-- `npm run build` (vom Harness) — TypeScript & Imports
-- Manuelle Sichtprüfung Light + Dark, Desktop + Mobile (Preview)
-- Visual-Regression-Snapshots werden beim nächsten Workflow-Run neu generiert (Hero/Pricing/Portfolio/FAQ/Contact bleiben — nur Hero könnte minimal abweichen durch Wordmark-Tausch; neue Section ist nicht in der Snapshot-Liste, also keine Test-Breaks)
+- `npm run build` (vom Harness) — TS + Imports
+- Manuelle Sichtprüfung Light/Dark × Desktop/Mobile:
+  - Header: Logo wirkt präsenter, überlappt nicht mit Nav/CTA
+  - CreativePromptSection: Headline neu, keine horizontale Scrollbar mobil, CTA scrollt zu `#contact`
+  - Hero-Video läuft, Musik-Toggle, Portfolio-Playback, Kontaktformular unverändert
+- Visual-Regression-Snapshots: Hero ändert sich minimal (Logo größer) → Baseline bei nächstem Workflow-Run neu generieren
 
----
+## Bewusst NICHT enthalten
 
-## Was bewusst NICHT von PopKorn übernommen wird
-
-- Keine Inhalte/Texte/Cases/Logos/Bilder
-- Kein PopKorn-Farbschema (bleibt Coral/Pink/Ice Blue von Soul Cinema)
-- Keine wilden Cursor-Effekte, kein Custom-Cursor
-- Kein Floating-Nav-Umbau
-- Keine Marquee mit echten Kundennamen
-- Keine übertriebenen Hover-Distortions oder WebGL-Effekte
+Navigation-Struktur, Nav-Labels, Mobile-Menu, Hero-Video, Hero-Headline-Logik, Musik, Portfolio, Contact-Form, Mailversand, Admin, Analytics-Events, Supabase, Storage, Edge Functions, Pricing, Legal, Routing, Sitemap, Theme-Tokens, neues Logo-Konzept, 2-Spalten-Hero-Umbau, PopKorn-Übernahmen.
