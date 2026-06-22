@@ -136,6 +136,13 @@ export function Hero() {
     return () => { document.body.style.overflow = 'unset' }
   }, [isMobileMenuOpen])
 
+  useEffect(() => {
+    if (!isMobileMenuOpen) return
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setIsMobileMenuOpen(false) }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [isMobileMenuOpen])
+
   const goContact = () => {
     track({ event_name: 'cta_click', cta_id: 'hero_primary' })
     document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
