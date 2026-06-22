@@ -1,22 +1,22 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Volume2, VolumeX, Menu, X, Check } from 'lucide-react'
+import { Volume2, VolumeX, Menu, X, Check, ArrowUpRight } from 'lucide-react'
 import { ThemeToggle } from './theme/ThemeToggle'
 import { useState, useRef, useEffect, useMemo } from 'react'
 import { useSettings, setting } from '@/hooks/useCms'
 import { track } from '@/lib/analytics'
 import { parseBool, parseVolume, resolveAudioUrl } from '@/lib/audioMedia'
 
-const NAV = [
-  { href: '#services', label: 'Leistungen' },
-  { href: '#portfolio', label: 'Portfolio' },
-  { href: '#process', label: 'Prozess' },
-  { href: '#why', label: 'Warum' },
-  { href: '#pricing', label: 'Preise' },
-  { href: '#faq', label: 'FAQ' },
-  { href: '#contact', label: 'Kontakt' },
+// Reduced bullet-word navigation for a creative-studio feel.
+// Each item carries a soft tinted hover surface (Coral / Pink / Blue / Lavender).
+const NAV: Array<{ href: string; label: string; hover: string; dot: string }> = [
+  { href: '#portfolio', label: 'Work',   hover: 'hover:bg-soft-pink',     dot: 'bg-accent-pink' },
+  { href: '#services',  label: 'Videos', hover: 'hover:bg-soft-coral',    dot: 'bg-primary' },
+  { href: '#process',   label: 'Ablauf', hover: 'hover:bg-soft-blue',     dot: 'bg-accent-blue' },
+  { href: '#pricing',   label: 'Preise', hover: 'hover:bg-soft-lavender', dot: 'bg-accent-lavender' },
 ]
+const MOBILE_NAV = [...NAV, { href: '#contact', label: 'Kontakt', hover: 'hover:bg-soft-coral', dot: 'bg-primary' }]
 
 const FALLBACK_VIDEO = 'https://mojli.s3.us-east-2.amazonaws.com/Mojli+Website+upscaled+(12mb).webm'
 
@@ -136,6 +136,13 @@ export function Hero() {
     return () => { document.body.style.overflow = 'unset' }
   }, [isMobileMenuOpen])
 
+  useEffect(() => {
+    if (!isMobileMenuOpen) return
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setIsMobileMenuOpen(false) }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [isMobileMenuOpen])
+
   const goContact = () => {
     track({ event_name: 'cta_click', cta_id: 'hero_primary' })
     document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
@@ -211,67 +218,116 @@ export function Hero() {
       <div className="absolute inset-0 hidden sm:block pointer-events-none bg-gradient-to-b from-black/70 via-black/50 to-black/90" />
       <div className="absolute inset-0 hidden sm:block pointer-events-none bg-gradient-to-r from-black/60 via-transparent to-transparent" />
 
+      {/* ────────── Floating Pill Navbar ────────── */}
       <motion.nav
-        initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
-        className="fixed top-0 left-0 right-0 z-[110]"
+        initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, ease: 'easeOut' }}
+        className="fixed top-3 sm:top-4 left-0 right-0 z-[110] px-3 sm:px-6"
+        aria-label="Hauptnavigation"
       >
-        <div className={`w-full px-6 sm:px-8 lg:px-12 py-4 transition-all duration-300 ${
-          isScrolled ? 'bg-[#0A0A0A]/85 backdrop-blur-xl border-b border-white/5' : 'bg-transparent'
+        <div className={`mx-auto max-w-6xl flex items-center justify-between gap-3 rounded-full pl-4 pr-2 sm:pl-5 sm:pr-2.5 py-2 transition-all duration-300 backdrop-blur-xl border ${
+          isScrolled
+            ? 'bg-background/85 border-border shadow-[0_10px_40px_-18px_rgba(0,0,0,0.25)]'
+            : 'bg-background/55 border-white/15 shadow-[0_8px_30px_-20px_rgba(0,0,0,0.35)]'
         }`}>
-          <div className="flex items-center justify-between">
-            <a href="#hero" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="font-brand text-[#F4F0E8] text-2xl tracking-wide cursor-pointer">
-              Soul Cinema
-            </a>
+          {/* Brand */}
+          <a
+            href="#hero"
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="font-brand text-foreground text-lg sm:text-xl tracking-wide cursor-pointer shrink-0 hover:text-primary gentle-animation"
+          >
+            Soul Cinema
+          </a>
 
-            <div className="hidden lg:flex items-center gap-7">
-              {NAV.map(n => (
-                <a key={n.href} href={n.href} className="text-[#F4F0E8]/80 hover:text-[#C9963B] text-sm font-medium gentle-animation">
-                  {n.label}
-                </a>
-              ))}
-            </div>
-
-            <div className="flex items-center gap-3">
-              {showSoundButton && (
-                <button onClick={toggleSound} aria-label={soundAriaLabel} title={soundAriaLabel}
-                  className="glass-effect p-2.5 rounded-full text-[#F4F0E8] hover:text-[#C9963B] gentle-animation">
-                  {soundOn ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
-                </button>
-              )}
-              <ThemeToggle variant="glass" className="text-[#F4F0E8] hover:text-[#C9963B]" />
-              <button onClick={goContact}
-                className="hidden sm:inline-flex bg-[#C9963B] text-[#0A0A0A] font-semibold px-5 py-2.5 rounded-md hover:bg-[#d9a64b] gentle-animation">
-                {primaryCta}
-              </button>
-              <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} aria-label="Menü"
-                className="lg:hidden glass-effect p-2.5 rounded-full text-[#F4F0E8] z-[120] relative">
-                {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-              </button>
-            </div>
-          </div>
-        </div>
-      </motion.nav>
-
-      {isMobileMenuOpen && (
-        <div className="lg:hidden fixed inset-0 bg-black/60 backdrop-blur-md z-[80]" onClick={() => setIsMobileMenuOpen(false)} />
-      )}
-      <motion.div initial={false} animate={{ x: isMobileMenuOpen ? '0%' : '100%' }} transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-        className="lg:hidden fixed top-0 right-0 h-full w-72 max-w-[85vw] bg-[#0A0A0A]/95 backdrop-blur-xl border-l border-white/10 z-[90]">
-        <div className="flex flex-col h-full p-6 pt-24">
-          <div className="flex flex-col space-y-2">
+          {/* Center pill nav (desktop) */}
+          <div className="hidden lg:flex items-center gap-1 bg-foreground/[0.04] dark:bg-white/5 rounded-full p-1 border border-foreground/[0.06] dark:border-white/10">
             {NAV.map(n => (
-              <a key={n.href} href={n.href} onClick={() => setIsMobileMenuOpen(false)}
-                className="px-4 py-3 hover:bg-white/5 hover:text-[#C9963B] rounded-lg text-[#F4F0E8] font-medium">
+              <a
+                key={n.href}
+                href={n.href}
+                className={`group relative inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-medium text-foreground/80 hover:text-foreground gentle-animation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${n.hover}`}
+              >
+                <span className={`inline-block w-1.5 h-1.5 rounded-full ${n.dot} opacity-0 group-hover:opacity-100 transition-opacity`} />
                 {n.label}
               </a>
             ))}
           </div>
-          <button onClick={goContact} className="mt-6 bg-[#C9963B] text-[#0A0A0A] font-semibold px-6 py-3 rounded-md">
-            {primaryCta}
+
+          {/* Right cluster */}
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            {showSoundButton && (
+              <button onClick={toggleSound} aria-label={soundAriaLabel} title={soundAriaLabel}
+                className="hidden sm:inline-flex items-center justify-center w-9 h-9 rounded-full border border-border bg-card/60 text-foreground hover:text-primary hover:border-primary/40 gentle-animation">
+                {soundOn ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+              </button>
+            )}
+            <span className="hidden sm:inline-flex">
+              <ThemeToggle variant="plain" />
+            </span>
+            <button
+              onClick={goContact}
+              className="hidden sm:inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold text-primary-foreground bg-gradient-to-r from-primary via-accent-pink to-primary shadow-[0_8px_24px_-10px_color-mix(in_srgb,var(--primary)_70%,transparent)] hover:shadow-[0_12px_30px_-10px_color-mix(in_srgb,var(--primary)_80%,transparent)] hover:-translate-y-0.5 gentle-animation"
+            >
+              Projekt starten
+              <ArrowUpRight className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              aria-label={isMobileMenuOpen ? 'Menü schließen' : 'Menü öffnen'}
+              aria-expanded={isMobileMenuOpen}
+              aria-controls="mobile-nav"
+              className="lg:hidden inline-flex items-center gap-2 rounded-full pl-3 pr-3 py-2 text-sm font-semibold text-foreground border border-border bg-card/70 hover:border-primary/40 hover:text-primary gentle-animation z-[120] relative"
+            >
+              {isMobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+              <span className="hidden sm:inline">Menu</span>
+            </button>
+          </div>
+        </div>
+      </motion.nav>
+
+      {/* ────────── Mobile Overlay Menu ────────── */}
+      {isMobileMenuOpen && (
+        <div className="lg:hidden fixed inset-0 bg-foreground/40 backdrop-blur-md z-[80]" onClick={() => setIsMobileMenuOpen(false)} />
+      )}
+      <motion.div
+        id="mobile-nav"
+        initial={false}
+        animate={{ x: isMobileMenuOpen ? '0%' : '100%' }}
+        transition={{ type: 'spring', damping: 26, stiffness: 220 }}
+        className="lg:hidden fixed top-0 right-0 h-full w-80 max-w-[88vw] bg-background/95 backdrop-blur-2xl border-l border-border z-[90] shadow-2xl"
+        role="dialog"
+        aria-modal="true"
+      >
+        <div className="flex flex-col h-full p-6 pt-24">
+          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-3">Menu</p>
+          <div className="flex flex-col space-y-1">
+            {MOBILE_NAV.map(n => (
+              <a
+                key={n.href}
+                href={n.href}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`group flex items-center justify-between px-4 py-3 rounded-2xl text-foreground text-lg font-medium font-brand tracking-tight gentle-animation ${n.hover}`}
+              >
+                <span className="flex items-center gap-3">
+                  <span className={`inline-block w-1.5 h-1.5 rounded-full ${n.dot}`} />
+                  {n.label}
+                </span>
+                <ArrowUpRight className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
+              </a>
+            ))}
+          </div>
+          <p className="mt-6 text-xs text-muted-foreground">
+            Product videos. Social ads. Launch creatives.
+          </p>
+          <button
+            onClick={goContact}
+            className="mt-4 inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold text-primary-foreground bg-gradient-to-r from-primary via-accent-pink to-primary shadow-[0_10px_30px_-12px_color-mix(in_srgb,var(--primary)_75%,transparent)]"
+          >
+            Projekt starten
+            <ArrowUpRight className="w-4 h-4" />
           </button>
-          <div className="mt-6 pt-6 border-t border-white/10 flex items-center justify-between">
-            <span className="text-[#F4F0E8]/70 text-sm">Theme</span>
-            <ThemeToggle variant="glass" className="text-[#F4F0E8] hover:text-[#C9963B]" />
+          <div className="mt-auto pt-6 border-t border-border flex items-center justify-between">
+            <span className="text-muted-foreground text-sm">Theme</span>
+            <ThemeToggle variant="plain" />
           </div>
         </div>
       </motion.div>
