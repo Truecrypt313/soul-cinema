@@ -1,94 +1,99 @@
-# Plan: TrustSignals-Sektion (ehrlicher Social Proof ohne Fakes)
+## Ziel
 
-Ziel: Eine vertrauensbildende Sektion zwischen Portfolio und Pricing, die als Zielgruppen-/Wirkungs-Cards formuliert ist — ohne erfundene Namen, Logos, Sternebewertungen oder Performance-Metriken.
+Bestehende Navbar (lebt aktuell in `src/components/Hero.tsx`, Zeilen 215–278) kontrolliert veredeln — kein Redesign, kein Floating-Pill-Experiment. Klares Plus an Wertigkeit, Kreativität und Kontrast in Light & Dark Mode.
 
-## Scope
+## Geänderte Datei
 
-**Neu:**
-- `src/components/TrustSignals.tsx` — komplette Sektion (Headline, 3 Wirkungs-Cards, Trust-Pills, CTA)
+- `src/components/Hero.tsx` — nur der `<motion.nav>`-Block (Header + Mobile-Drawer) sowie die `NAV`-Konstante.
+- Optional minimale Feinjustierung an `src/components/brand/SoulCinemaWordmark.tsx` (nur Proportionen/Spark-Sichtbarkeit, kein neues Konzept).
 
-**Geändert:**
-- `src/pages/Landing.tsx` — `<TrustSignals />` zwischen Portfolio und Pricing einbauen, alten `<Testimonials />` Aufruf entfernen
-- `.lovable/plan.md` — Plan-Dokument aktualisieren
+Alles andere bleibt unangetastet.
 
-**Bewusst NICHT geändert:** `src/components/Testimonials.tsx` selbst (bleibt im Repo, nur nicht mehr eingebunden — verhindert Datenverlust für später, falls echte Testimonials in der DB stehen). Keine DB-Tabelle angefasst. Keine Edge Function, kein Routing, keine Navigation, kein Hero, kein Pricing, kein Contact, kein Admin, kein Musik-System, kein Storage.
+## Änderungen im Detail
 
-## 1. Position in Landing.tsx
+### 1. Navigation reduzieren
+`NAV` von 7 auf 4 Punkte kürzen:
 
-Reihenfolge bleibt: Hero → CreativePrompt → Services → Portfolio → **TrustSignals (neu)** → Process → Awards → Pricing → FAQ → Contact.
+```text
+Leistungen   → #services
+Portfolio    → #portfolio
+Prozess      → #process
+Preise       → #pricing
+```
 
-`<Testimonials />` wird aus dem Render-Tree entfernt (Komponente bleibt als Datei erhalten, damit später wieder aktivierbar — kein Code-Verlust).
+`Warum`, `FAQ`, `Kontakt` raus aus der Hauptnav (Sections bleiben auf der Seite). Kontakt ist nur noch der CTA rechts.
 
-## 2. Inhalte (1:1 aus Brief)
+### 2. Logo präsenter
+- Desktop: `size={40}` (vorher 32 / md:38).
+- Mobile: `h-[32px]`.
+- Klickbar bleibt (Anker `#hero`, smooth scroll).
+- Optional: in der Wordmark Spark-Punkt minimal vergrößern (r 2.5 → 3) und CINEMA-Tracking 0.26em → 0.22em für etwas mehr Gewicht. Nur wenn unauffällig.
 
-**Eyebrow:** `Wirkung` · **Headline:** `Was starke Creatives auslösen.` · **Subline:** `Soul Cinema verbindet Produktfokus, klare Hooks und moderne Formate für Website, Shop und Social Ads.`
+### 3. Theme-bewusster Glass-Header
+Aktuell wird im Scroll-Zustand hart `bg-[#0A0A0A]/85` gesetzt — schlecht für Light Mode.
 
-**Card 1 — D2C Brand**
-- Headline: „Vom Produktbild zur Kampagnen-Idee."
-- Text: „Aus vorhandenem Material entsteht ein Creative, das nicht nur schön aussieht, sondern direkt als Social Ad, Shop-Video oder Launch-Clip gedacht ist."
-- Highlight-Pill: „Hook-Varianten statt nur ein einzelner Clip"
-- Micro-Quote: „Endlich sieht das Produkt so aus, wie es sich anfühlen soll." (kursiv, **ohne** Name/Rolle/Stern)
-- Avatar: SVG-Gradient-Kreis (Coral→Pink) mit Spark-Icon
+Neuer Ansatz, weiterhin sticky/fixed:
 
-**Card 2 — App / SaaS**
-- Headline: „Komplexe Produkte werden schnell verständlich."
-- Text: „Funktionen, Vorteile und Use Cases werden so reduziert, dass Nutzer in wenigen Sekunden verstehen, warum das Produkt relevant ist."
-- Highlight-Pill: „Ideal für Landingpage, Demo und Paid Ads"
-- Micro-Quote: „Man versteht die App, bevor man überhaupt scrollt."
-- Avatar: SVG-Gradient-Kreis (Ice Blue→Lavender) mit UI-Frame-Icon
+- **Unscrolled (über Hero):** `bg-transparent`, Text in `#F4F0E8` (Hero-Cream), wie heute. Damit über dem Video lesbar.
+- **Scrolled:** theme-aware Glass via Tailwind `dark:`-Varianten:
+  - Light: `bg-background/75 backdrop-blur-xl border-b border-border/60 shadow-[0_8px_24px_-18px_rgba(0,0,0,0.25)]`, Text `text-foreground`.
+  - Dark: `dark:bg-[#0A0A0A]/80 dark:border-white/5`.
+- Übergang via `transition-colors duration-300`.
+- Shadow nur im Scrolled-Zustand.
 
-**Card 3 — E-Commerce**
-- Headline: „Mehr Energie für Shop, Reels und Ads."
-- Text: „Produktvideos bekommen den richtigen Rhythmus für moderne Feeds: schnell genug für TikTok und Reels, hochwertig genug für Website und Brand-Auftritt."
-- Highlight-Pill: „9:16, 1:1 und 16:9 Cutdowns"
-- Micro-Quote: „Das wirkt wie Content — nicht wie klassische Werbung."
-- Avatar: SVG-Gradient-Kreis (Tangerine→Pink) mit Play-Icon
+Damit verschwindet die Navbar weder auf Light- noch Dark-Hintergrund.
 
-## 3. Trust-Pills (unter den Cards)
+### 4. Nav-Links moderner
+- Etwas kompakteres Gap (`gap-6`).
+- Hover-State: kleiner Coral-Dot links + sanfte Color-Transition zu `text-primary`.
+- Focus-Ring sichtbar (`focus-visible:ring-2 focus-visible:ring-primary/40 rounded-full`).
+- Kein neuer Scrollspy.
 
-`Klare Hooks` · `Social-Ready Formate` · `Produktfokus` · `Schneller Briefing-Prozess`
+Markup-Skizze pro Link:
+```tsx
+<a className="group relative inline-flex items-center gap-2 text-sm font-medium
+              text-[color:var(--nav-fg)] hover:text-primary transition-colors">
+  <span className="h-1.5 w-1.5 rounded-full bg-primary opacity-0
+                   group-hover:opacity-100 transition-opacity" />
+  {n.label}
+</a>
+```
 
-Kleine Pills mit dezenten Soft-Coral/Pink/Blue/Lavender-Hintergründen (`bg-[hsl(var(--soft-coral)/0.15)]` etc.), `border border-white/10`, `text-xs`, abgerundet. Keine Zahlen, keine Logos.
+`--nav-fg` wird inline gesetzt: im unscrolled-Zustand cream, scrolled = `hsl(var(--foreground))`.
 
-## 4. CTA-Block am Ende der Sektion
+### 5. CTA stärker
+- `rounded-full` statt `rounded-md`.
+- Beibehalt der Coral-Brand-Farbe (`bg-primary text-primary-foreground` statt hardcoded `#C9963B`, damit theme-konsistent).
+- Dezenter Shadow + Hover-Lift (`hover:-translate-y-0.5 hover:shadow-[0_10px_28px_-12px_color-mix(in_srgb,var(--primary)_70%,transparent)]`).
+- Label bleibt `Projekt anfragen`, optional `↗`-Icon (lucide `ArrowUpRight`).
+- Funktion (`goContact`) unverändert — Tracking bleibt.
 
-- Headline: „Bereit für dein erstes Creative?"
-- Subline: „Schick uns Produktlink, Bilder oder App — wir denken daraus dein erstes Video-Konzept."
-- Primary Button `lg`: `Projekt briefen` → Smooth-Scroll zu `#contact`
-- Secondary Link (ghost/outline): `Portfolio ansehen` → Smooth-Scroll zu `#portfolio`
+### 6. Brand-Microline (optional, dezent)
+Neben dem Logo auf Desktop ab `xl:`:
+```text
+Product Videos & Social Ads
+```
+in `text-xs tracking-wide text-foreground/55 dark:text-white/55`, durch `border-l pl-3 ml-3` getrennt. Mobile + `<xl` ausgeblendet. Wird gestrichen, falls es im Build zu voll wirkt.
 
-## 5. Design
+### 7. Mobile sanft
+- Logo links 32px.
+- Menübutton rechts: `rounded-full` Pill mit Icon + Label „Menü" ab `sm`, nur Icon darunter.
+- Drawer-Struktur bleibt; aber:
+  - Hintergrund theme-aware (`bg-background/95 dark:bg-[#0A0A0A]/95`, `border-l border-border/60`).
+  - Links nutzen `text-foreground` mit hover `bg-primary/10` und `text-primary`.
+  - Mobile-Links: Leistungen, Portfolio, Prozess, Preise, Kontakt.
+  - CTA `Projekt anfragen` prominent (rounded-full, primary).
+- Schließt nach Klick (bereits umgesetzt).
 
-- Light Mode default, Section-Hintergrund: `bg-background` mit dezentem Radial-Gradient (Soft Coral oben links, Soft Blue unten rechts, je ~0.18 Opacity)
-- Cards: `bg-card`, `border border-white/10`, `rounded-2xl`, `p-7 md:p-8`, dezenter Shadow, Hover: `translate-y-[-2px]` + stärkerer Shadow + Border-Tint
-- Card-Aufbau (von oben): Avatar (56px Gradient-Circle mit Inline-SVG-Icon) · Label-Pill (z. B. „D2C Brand") · Headline (`text-xl font-semibold tracking-tight`) · Text (`text-sm text-muted-foreground leading-relaxed`) · Highlight-Pill mit Häkchen-Icon · trennende `border-t border-white/5` · Micro-Quote kursiv (`text-sm italic text-foreground/80`) ohne Person/Stern/Badge
-- Grid: `grid-cols-1 md:grid-cols-3 gap-5`, max-w-7xl zentriert
-- Mobile: Cards untereinander, `p-6`, ausreichend Touch-Spacing, keine horizontale Scrollbar
-- Dark Mode: über semantische Tokens automatisch korrekt (kein hartcodiertes Weiß/Schwarz)
-- Animation: `FadeUp` (bestehende Komponente) mit Stagger 0.05s, `prefers-reduced-motion` respektiert
+### 8. QA-Checks nach Umsetzung
+- Build via Harness (kein manueller `npm run build`).
+- Playwright-Screenshots `/` in Light & Dark, je oben + nach Scroll, Desktop (1280×900) und Mobile (390×844). Sicherstellen: Logo lesbar, Nav-Links sichtbar, CTA kontrastreich, keine White-on-White-Situation, keine horizontale Scroll-Leiste.
+- Anker-Scroll manuell verifizieren (Leistungen/Portfolio/Prozess/Preise/CTA→Kontakt).
 
-## 6. Avatare / Icons
+## Bewusst NICHT angefasst
 
-Reine Inline-SVG, keine externen URLs, keine Fotos, keine KI-Gesichter, keine Initialen:
-- 56×56 Circle mit `linearGradient` (Tokens: `--soft-coral` / `--soft-pink` / `--soft-blue` / `--soft-lavender` / `--soft-tangerine` falls vorhanden, sonst Fallback Coral/Pink)
-- Zentriertes weißes Icon (Spark / Frame / Play) als Inline-SVG-Path
-- Keine `lucide-react`-Avatare nötig — eigene Mini-Komponente `<GradientAvatar variant="..." />`
+Hero-Video & Headline, CreativePromptSection, Portfolio, Services, About/Prozess, Pricing, FAQ, Contact-Formular & Mailversand, Admin, Supabase, Analytics, Musik-System, Routing, Footer, restliche Farb-Tokens.
 
-## 7. Analytics
+## Liefer-Zusammenfassung am Ende
 
-CTA-Klicks lösen das bestehende `track({ event_name: 'cta_click', location: 'trust_section', ... })` aus (gleiches Schema wie CreativePromptSection). Keine neuen Events, keine Cookies, keine PII.
-
-## 8. Bestehende Testimonials
-
-`src/components/Testimonials.tsx` lädt aus `testimonials`-Tabelle und rendert nur, wenn Einträge `visible=true` existieren. **Aktuell kein Fake-Inhalt im Code**, aber um die TrustSignals-Sektion als alleinigen Social-Proof-Block zu etablieren, wird der Aufruf aus `Landing.tsx` entfernt. Datei + Tabelle bleiben unangetastet — kein Datenverlust, später reaktivierbar.
-
-## Verification
-
-- `npm run build` (TS + Imports)
-- Manuell Light/Dark × Desktop/Mobile: Sektion sichtbar zwischen Portfolio und Pricing, keine horizontale Scrollbar, Cards hover-fähig, beide CTAs scrollen korrekt
-- Keine sichtbaren „Demo"/„fiktiv"-Badges, keine Sterne, keine Namen, keine Logos, keine Zahlen
-- Hero-Video, Musik, Portfolio-Playback, Contact-Form, Admin, Mailversand unverändert
-
-## Bewusst NICHT enthalten
-
-Contact, Mail, SMTP, Portfolio-Upload, Storage, Musik, Admin, CRM, DB-Tabellen, Edge Functions, Legal, Pricing, Hero-Video, Routing, Sitemap, Robots, Navigation, ThemeProvider, neue Tracking-Systeme, externe Bilder, Stockfotos, KI-Gesichter, Sterne-Ratings, Verified-Badges, Fake-Logos, Fake-Metriken.
+Welche Datei(en) geändert, wie Logo skaliert wurde, welche Nav-Punkte gestrichen, wie CTA/Hover/Glass umgesetzt wurden, Mobile-Anpassungen, was bewusst unangetastet blieb, manuell zu prüfende Stellen.
