@@ -1,22 +1,22 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Volume2, VolumeX, Menu, X, Check } from 'lucide-react'
+import { Volume2, VolumeX, Menu, X, Check, ArrowUpRight } from 'lucide-react'
 import { ThemeToggle } from './theme/ThemeToggle'
 import { useState, useRef, useEffect, useMemo } from 'react'
 import { useSettings, setting } from '@/hooks/useCms'
 import { track } from '@/lib/analytics'
 import { parseBool, parseVolume, resolveAudioUrl } from '@/lib/audioMedia'
 
-const NAV = [
-  { href: '#services', label: 'Leistungen' },
-  { href: '#portfolio', label: 'Portfolio' },
-  { href: '#process', label: 'Prozess' },
-  { href: '#why', label: 'Warum' },
-  { href: '#pricing', label: 'Preise' },
-  { href: '#faq', label: 'FAQ' },
-  { href: '#contact', label: 'Kontakt' },
+// Reduced bullet-word navigation for a creative-studio feel.
+// Each item carries a soft tinted hover surface (Coral / Pink / Blue / Lavender).
+const NAV: Array<{ href: string; label: string; hover: string; dot: string }> = [
+  { href: '#portfolio', label: 'Work',   hover: 'hover:bg-soft-pink',     dot: 'bg-accent-pink' },
+  { href: '#services',  label: 'Videos', hover: 'hover:bg-soft-coral',    dot: 'bg-primary' },
+  { href: '#process',   label: 'Ablauf', hover: 'hover:bg-soft-blue',     dot: 'bg-accent-blue' },
+  { href: '#pricing',   label: 'Preise', hover: 'hover:bg-soft-lavender', dot: 'bg-accent-lavender' },
 ]
+const MOBILE_NAV = [...NAV, { href: '#contact', label: 'Kontakt', hover: 'hover:bg-soft-coral', dot: 'bg-primary' }]
 
 const FALLBACK_VIDEO = 'https://mojli.s3.us-east-2.amazonaws.com/Mojli+Website+upscaled+(12mb).webm'
 
