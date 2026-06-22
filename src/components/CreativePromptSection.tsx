@@ -14,35 +14,32 @@ interface Line {
   text?: string
 }
 
-const LINES: Line[] = [
-  { kind: 'label', text: 'Prompt' },
-  { kind: 'prompt', text: 'Mach aus meinem Produkt einen Scroll-Stopper.' },
-  { kind: 'spacer' },
-  { kind: 'label', text: 'Input' },
-  { kind: 'kv', key: 'Produkt', value: 'Dein Produkt / App / Shop' },
-  { kind: 'kv', key: 'Ziel',    value: 'Mehr Aufmerksamkeit & Klicks' },
-  { kind: 'kv', key: 'Format',  value: '9:16 · 1:1 · 16:9' },
-  { kind: 'kv', key: 'Style',   value: 'UGC · cinematic · clean · bold' },
-  { kind: 'spacer' },
-  { kind: 'label', text: 'Output' },
-  { kind: 'output', key: 'Hook 01', value: 'Problem → Produkt → CTA' },
-  { kind: 'output', key: 'Hook 02', value: 'Unboxing → Benefit → Proof' },
-  { kind: 'output', key: 'Hook 03', value: 'Fast Cut → Feature → Action' },
-  { kind: 'output', key: 'Hero Clip', value: '+ Social Cutdowns' },
-  { kind: 'spacer' },
-  { kind: 'status', text: 'Ready to launch' },
+const INPUT_LINES: Line[] = [
+  { kind: 'kv', key: 'Produkt',   value: 'Produktlink, Bilder oder App/Shop' },
+  { kind: 'kv', key: 'Ziel',      value: 'Aufmerksamkeit, Klicks, Vertrauen' },
+  { kind: 'kv', key: 'Plattform', value: 'TikTok · Meta · YouTube · Shop' },
+  { kind: 'kv', key: 'Look',      value: 'UGC · cinematic · clean · bold' },
+  { kind: 'kv', key: 'Material',  value: 'Bilder · Clips · Link · Briefing' },
+]
+
+const OUTPUT_LINES: Line[] = [
+  { kind: 'output', key: 'Hook 01',   value: 'Problem → Produkt → CTA' },
+  { kind: 'output', key: 'Hook 02',   value: 'Unboxing → Benefit → Proof' },
+  { kind: 'output', key: 'Hook 03',   value: 'Fast Cut → Feature → Action' },
+  { kind: 'output', key: 'Hero Clip', value: 'für Website & Landingpage' },
+  { kind: 'output', key: 'Cutdowns',  value: '9:16 · 1:1 · 16:9 für Social Ads' },
 ]
 
 const STICKERS = [
-  { label: '9:16 Ads',      cls: 'bg-soft-coral text-primary',           rot: '-rotate-6', pos: 'top-2 -left-2 md:-left-6' },
-  { label: 'Hook First',    cls: 'bg-soft-pink text-secondary',           rot: 'rotate-3',  pos: 'top-4 -right-3 md:-right-8' },
-  { label: 'UGC Look',      cls: 'bg-soft-blue text-foreground',          rot: '-rotate-3', pos: 'bottom-6 -left-3 md:-left-10' },
-  { label: 'Scroll Stopper',cls: 'bg-soft-lavender text-foreground',      rot: 'rotate-6',  pos: 'bottom-2 -right-2 md:-right-6' },
+  { label: 'Scroll-Stopper', cls: 'bg-soft-coral text-primary',      rot: '-rotate-6', pos: 'top-2 -left-3 md:-left-8' },
+  { label: 'Hook First',     cls: 'bg-soft-pink text-secondary',      rot: 'rotate-3',  pos: 'top-6 -right-3 md:-right-10' },
+  { label: 'Shop Ready',     cls: 'bg-soft-blue text-foreground',     rot: '-rotate-3', pos: 'bottom-8 -left-3 md:-left-12' },
+  { label: 'Launch Clip',    cls: 'bg-soft-lavender text-foreground', rot: 'rotate-6',  pos: 'bottom-2 -right-2 md:-right-8' },
 ]
 
 const MARQUEE_ITEMS = [
-  '9:16 Ads', 'Product Videos', 'Launch Clips', 'UGC Style',
-  'Social Cutdowns', 'Hook Variants', 'Shop Creatives', 'Cinematic Cuts',
+  'Product Videos', 'Social Ads', 'Hook Variants', 'UGC Style',
+  'Launch Clips', 'Shop Creatives', 'App Videos', 'Cinematic Cuts', '9:16 Cutdowns',
 ]
 
 export function CreativePromptSection() {
@@ -59,130 +56,186 @@ export function CreativePromptSection() {
     hidden: { opacity: 0, y: 6 },
     show: (i: number) => ({
       opacity: 1, y: 0,
-      transition: { delay: reduce ? 0 : 0.04 * i, duration: 0.35, ease: 'easeOut' as const },
+      transition: { delay: reduce ? 0 : 0.05 * i, duration: 0.35, ease: 'easeOut' as const },
     }),
   }
 
   return (
     <section
       id="creative-prompt"
-      aria-label="Creative Prompt"
-      className="relative py-20 md:py-28 bg-background overflow-hidden"
+      aria-label="Creative Brief"
+      className="relative py-24 md:py-32 bg-background overflow-hidden"
     >
-      <div className="container mx-auto px-6 sm:px-8 lg:px-12">
+      {/* Soft brand gradient backdrop */}
+      <div
+        aria-hidden
+        className="absolute inset-0 pointer-events-none opacity-90"
+        style={{
+          background:
+            'radial-gradient(ellipse at top, hsl(var(--soft-coral) / 0.35), transparent 60%), radial-gradient(ellipse at bottom right, hsl(var(--soft-blue) / 0.28), transparent 55%)',
+        }}
+      />
+
+      <div className="relative container mx-auto px-6 sm:px-8 lg:px-12">
         {/* Headline */}
-        <div className="max-w-3xl mx-auto text-center mb-12 md:mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-soft-coral text-primary text-xs font-medium uppercase tracking-wider mb-5">
+        <div className="max-w-3xl mx-auto text-center mb-14 md:mb-20">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-soft-coral text-primary text-xs font-semibold uppercase tracking-[0.18em] mb-6">
             <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
             Creative Brief
           </div>
-          <h2 className="font-brand text-4xl sm:text-5xl md:text-6xl leading-[1.05] text-foreground">
-            So entsteht dein{' '}
-            <span className="text-gradient-brand italic">Scroll-Stopper</span>.
+          <h2 className="font-brand text-4xl sm:text-6xl md:text-7xl leading-[1.02] tracking-tight text-foreground">
+            Aus Produkt wird{' '}
+            <span className="text-gradient-brand italic">Performance-Creative</span>.
           </h2>
-          <p className="mt-5 text-base md:text-lg text-muted-foreground max-w-xl mx-auto">
-            Vom Produkt zum fertigen Ad-Konzept — Format, Hook und Cutdown in einem Brief.
+          <p className="mt-6 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+            Du gibst uns Produktlink, Bilder oder vorhandenes Material. Wir entwickeln daraus Hooks, Formate und Video-Ads, die in Feeds auffallen.
           </p>
         </div>
 
         {/* Card + Stickers */}
-        <div ref={ref} className="relative max-w-3xl mx-auto">
-          {/* Floating stickers — hidden on small screens to avoid overlap */}
+        <div ref={ref} className="relative max-w-4xl mx-auto">
+          {/* Floating stickers — desktop only */}
           {STICKERS.map((s, i) => (
             <motion.span
               key={s.label}
               aria-hidden
-              className={`hidden md:inline-flex absolute z-20 items-center rounded-full px-3 py-1.5 text-xs font-semibold shadow-md ring-1 ring-border ${s.cls} ${s.rot} ${s.pos}`}
+              className={`hidden md:inline-flex absolute z-20 items-center rounded-full px-3.5 py-1.5 text-xs font-semibold shadow-md ring-1 ring-border ${s.cls} ${s.rot} ${s.pos}`}
               initial={{ opacity: 0, y: 10 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 0.4 + i * 0.08, duration: 0.4 }}
               style={
                 reduce
                   ? undefined
-                  : {
-                      animation: `floatY ${5 + i}s ease-in-out ${i * 0.3}s infinite`,
-                    }
+                  : { animation: `floatY ${6 + i}s ease-in-out ${i * 0.3}s infinite` }
               }
             >
               {s.label}
             </motion.span>
           ))}
 
-          <div className="relative rounded-2xl border border-border bg-card shadow-[0_24px_60px_-24px_rgba(20,17,13,0.18)] overflow-hidden">
+          <div className="relative rounded-2xl border border-border bg-card/95 backdrop-blur-sm shadow-[0_30px_80px_-30px_rgba(20,17,13,0.22)] overflow-hidden">
+            {/* Top highlight line */}
+            <div
+              aria-hidden
+              className="absolute top-0 left-0 right-0 h-px"
+              style={{ background: 'linear-gradient(90deg, transparent, hsl(var(--primary) / 0.6), transparent)' }}
+            />
+
             {/* Window chrome */}
             <div className="flex items-center justify-between px-5 py-3 border-b border-border bg-muted/40">
               <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#FF6B6B]/80" />
-                <span className="w-2.5 h-2.5 rounded-full bg-[#FFD166]/80" />
-                <span className="w-2.5 h-2.5 rounded-full bg-[#06D6A0]/80" />
-                <span className="ml-3 text-xs font-mono text-muted-foreground">creative-brief.txt</span>
+                <span className="w-2 h-2 rounded-full bg-foreground/15" />
+                <span className="w-2 h-2 rounded-full bg-foreground/15" />
+                <span className="w-2 h-2 rounded-full bg-foreground/15" />
+                <span className="ml-3 text-xs font-mono text-muted-foreground">creative-brief.md</span>
               </div>
-              <span className="hidden sm:inline-flex items-center gap-1.5 text-[10px] uppercase tracking-wider font-semibold text-primary">
-                <span className="w-1.5 h-1.5 rounded-full bg-primary" /> live
+              <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.18em] font-semibold text-primary">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" /> live
               </span>
             </div>
 
             {/* Body */}
-            <div className="p-6 md:p-10 font-mono text-sm md:text-[15px] leading-relaxed">
-              {LINES.map((line, i) => {
-                if (line.kind === 'spacer') return <div key={i} className="h-3" aria-hidden />
+            <div className="p-6 md:p-12 font-mono text-sm md:text-[15px] leading-relaxed">
+              {/* Prompt */}
+              <motion.div
+                custom={0}
+                variants={lineVariants}
+                initial="hidden"
+                animate={inView ? 'show' : 'hidden'}
+              >
+                <div className="text-secondary font-semibold mb-2">Prompt</div>
+                <div className="text-foreground break-words">
+                  <span className="text-primary mr-2">{'>'}</span>
+                  Mach aus meinem Produkt ein Ad, das hängen bleibt.
+                </div>
+              </motion.div>
 
-                return (
-                  <motion.div
-                    key={i}
-                    custom={i}
-                    variants={lineVariants}
-                    initial="hidden"
-                    animate={inView ? 'show' : 'hidden'}
-                    className="flex flex-wrap gap-x-3"
-                  >
-                    {line.kind === 'label' && (
-                      <span className="text-secondary font-semibold">{line.text}:</span>
-                    )}
-                    {line.kind === 'prompt' && (
-                      <span className="text-foreground">
-                        <span className="text-primary mr-2">{'>'}</span>
-                        {line.text}
-                      </span>
-                    )}
-                    {line.kind === 'kv' && (
-                      <>
-                        <span className="text-muted-foreground w-20 md:w-24 shrink-0">{line.key}</span>
-                        <span className="text-foreground break-words">→ {line.value}</span>
-                      </>
-                    )}
-                    {line.kind === 'output' && (
-                      <span className="text-foreground break-words">
-                        <span className="text-primary mr-2">▸</span>
-                        <span className="text-secondary font-semibold mr-2">{line.key}</span>
-                        {line.value}
-                      </span>
-                    )}
-                    {line.kind === 'status' && (
-                      <span className="inline-flex items-center gap-2">
-                        <span className="text-muted-foreground">Status:</span>
-                        <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-soft-coral text-primary font-semibold text-xs">
-                          <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                          {line.text}
-                          <span className="cursor-blink">_</span>
-                        </span>
-                      </span>
-                    )}
-                  </motion.div>
-                )
-              })}
+              {/* Input */}
+              <div className="mt-7">
+                <motion.div
+                  custom={1}
+                  variants={lineVariants}
+                  initial="hidden"
+                  animate={inView ? 'show' : 'hidden'}
+                  className="text-secondary font-semibold mb-3"
+                >
+                  Input
+                </motion.div>
+                <div className="space-y-1.5">
+                  {INPUT_LINES.map((line, i) => (
+                    <motion.div
+                      key={i}
+                      custom={i + 2}
+                      variants={lineVariants}
+                      initial="hidden"
+                      animate={inView ? 'show' : 'hidden'}
+                      className="flex flex-wrap gap-x-3"
+                    >
+                      <span className="text-muted-foreground w-24 md:w-28 shrink-0">{line.key}</span>
+                      <span className="text-foreground break-words whitespace-normal">→ {line.value}</span>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Output */}
+              <div className="mt-7">
+                <motion.div
+                  custom={7}
+                  variants={lineVariants}
+                  initial="hidden"
+                  animate={inView ? 'show' : 'hidden'}
+                  className="text-secondary font-semibold mb-3"
+                >
+                  Output
+                </motion.div>
+                <div className="space-y-1.5 border-l-2 border-primary/40 pl-4">
+                  {OUTPUT_LINES.map((line, i) => (
+                    <motion.div
+                      key={i}
+                      custom={i + 8}
+                      variants={lineVariants}
+                      initial="hidden"
+                      animate={inView ? 'show' : 'hidden'}
+                      className="text-foreground break-words"
+                    >
+                      <span className="text-primary mr-2">▸</span>
+                      <span className="text-secondary font-semibold mr-2">{line.key}</span>
+                      {line.value}
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Status */}
+              <motion.div
+                custom={14}
+                variants={lineVariants}
+                initial="hidden"
+                animate={inView ? 'show' : 'hidden'}
+                className="mt-7 flex items-center gap-3 flex-wrap"
+              >
+                <span className="text-muted-foreground">Status:</span>
+                <span
+                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-soft-coral text-primary font-semibold text-xs shadow-[0_0_24px_-6px_hsl(var(--primary)/0.5)]"
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                  Ready for launch
+                  <span className="cursor-blink">_</span>
+                </span>
+              </motion.div>
 
               {/* CTA */}
               <motion.div
                 initial={{ opacity: 0, y: 8 }}
                 animate={inView ? { opacity: 1, y: 0 } : {}}
-                transition={{ delay: reduce ? 0 : 0.04 * LINES.length + 0.2, duration: 0.4 }}
-                className="mt-8 pt-6 border-t border-border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+                transition={{ delay: reduce ? 0 : 0.9, duration: 0.4 }}
+                className="mt-9 pt-6 border-t border-border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
               >
-                <p className="text-xs text-muted-foreground font-sans max-w-sm">
-                  Jedes Projekt startet mit einem kurzen Brief — keine Templates, keine Fließband-Ads.
+                <p className="text-xs md:text-sm text-muted-foreground font-sans max-w-md leading-relaxed">
+                  Kein Template. Kein Standard-Ad. Jedes Video startet mit einer klaren Creative-Idee.
                 </p>
-                <Button onClick={handleCta} className="group">
+                <Button onClick={handleCta} size="lg" className="group shrink-0">
                   Projekt briefen
                   <ArrowRight className="ml-1 w-4 h-4 transition-transform group-hover:translate-x-0.5" />
                 </Button>
@@ -204,10 +257,10 @@ export function CreativePromptSection() {
         </div>
 
         {/* Marquee */}
-        <div className="mt-16 md:mt-20 relative overflow-hidden border-y border-border py-4">
-          <div className="marquee-track flex gap-8 whitespace-nowrap text-sm md:text-base font-medium text-muted-foreground">
+        <div className="mt-16 md:mt-24 relative overflow-hidden border-y border-border py-5">
+          <div className="marquee-track flex gap-10 whitespace-nowrap text-sm md:text-base font-medium text-muted-foreground">
             {[...MARQUEE_ITEMS, ...MARQUEE_ITEMS, ...MARQUEE_ITEMS].map((item, i) => (
-              <span key={i} className="inline-flex items-center gap-8">
+              <span key={i} className="inline-flex items-center gap-10">
                 {item}
                 <span className="text-primary" aria-hidden>·</span>
               </span>
@@ -218,8 +271,8 @@ export function CreativePromptSection() {
 
       <style>{`
         @keyframes floatY {
-          0%, 100% { transform: translateY(0) var(--tw-rotate, rotate(0)); }
-          50%      { transform: translateY(-6px) var(--tw-rotate, rotate(0)); }
+          0%, 100% { transform: translateY(0); }
+          50%      { transform: translateY(-4px); }
         }
         @keyframes cursorBlink {
           0%, 49% { opacity: 1; }
@@ -235,7 +288,7 @@ export function CreativePromptSection() {
           to   { transform: translateX(-33.333%); }
         }
         .marquee-track {
-          animation: marqueeScroll 40s linear infinite;
+          animation: marqueeScroll 55s linear infinite;
           width: max-content;
         }
         @media (prefers-reduced-motion: reduce) {
