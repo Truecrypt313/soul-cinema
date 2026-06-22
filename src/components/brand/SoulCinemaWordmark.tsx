@@ -9,8 +9,8 @@ interface Props {
 
 /**
  * Soul Cinema wordmark — pure SVG, theme-aware via currentColor.
- * "SOUL" → editorial serif (Cormorant Garamond), warm + soft.
- * "CINEMA" → wider tracking, cleaner, cinematic.
+ * "Soul" → editorial italic serif (Cormorant Garamond), warm + premium.
+ * "CINEMA" → wider tracking, clean, cinematic.
  * Coral play-triangle + ice-blue spark as small brand accents.
  */
 export function SoulCinemaWordmark({ className, size = 28, title = 'Soul Cinema' }: Props) {
@@ -26,14 +26,14 @@ export function SoulCinemaWordmark({ className, size = 28, title = 'Soul Cinema'
     >
       <title>{title}</title>
 
-      {/* SOUL — editorial serif */}
+      {/* Soul — editorial italic serif */}
       <text
         x="0"
         y="46"
         fill="currentColor"
         style={{
           fontFamily: "'Cormorant Garamond', Georgia, serif",
-          fontWeight: 600,
+          fontWeight: 700,
           fontSize: '46px',
           letterSpacing: '0.01em',
           fontStyle: 'italic',
@@ -42,23 +42,22 @@ export function SoulCinemaWordmark({ className, size = 28, title = 'Soul Cinema'
         Soul
       </text>
 
-      {/* Coral play-triangle accent */}
-      <g transform="translate(110 22)">
-        <polygon points="0,0 16,10 0,20" fill="var(--primary)" />
-        {/* tiny ice-blue spark */}
-        <circle cx="22" cy="4" r="2" fill="var(--color-accent-blue)" />
+      {/* Coral play-triangle accent + ice-blue spark */}
+      <g transform="translate(112 20)">
+        <polygon points="0,0 20,12 0,24" fill="var(--primary)" />
+        <circle cx="27" cy="4" r="2.5" fill="var(--color-accent-blue)" />
       </g>
 
-      {/* CINEMA — clean uppercase */}
+      {/* CINEMA — clean uppercase, cinematic tracking */}
       <text
-        x="148"
-        y="42"
+        x="152"
+        y="44"
         fill="currentColor"
         style={{
           fontFamily: "'Inter', system-ui, sans-serif",
           fontWeight: 700,
-          fontSize: '26px',
-          letterSpacing: '0.22em',
+          fontSize: '28px',
+          letterSpacing: '0.26em',
         }}
       >
         CINEMA
