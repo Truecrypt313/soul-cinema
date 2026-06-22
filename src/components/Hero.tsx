@@ -7,6 +7,7 @@ import { useState, useRef, useEffect, useMemo } from 'react'
 import { useSettings, setting } from '@/hooks/useCms'
 import { track } from '@/lib/analytics'
 import { parseBool, parseVolume, resolveAudioUrl } from '@/lib/audioMedia'
+import { SoulCinemaWordmark } from '@/components/brand/SoulCinemaWordmark'
 
 const NAV = [
   { href: '#services', label: 'Leistungen' },
