@@ -1,114 +1,94 @@
-# Plan: Logo-Auftritt + CreativePromptSection optimieren
+# Plan: TrustSignals-Sektion (ehrlicher Social Proof ohne Fakes)
 
-Zwei gezielte, kleine Eingriffe. Kein Redesign, keine Nav-Struktur-Änderung, keine Backend-/Funktions-Änderung.
+Ziel: Eine vertrauensbildende Sektion zwischen Portfolio und Pricing, die als Zielgruppen-/Wirkungs-Cards formuliert ist — ohne erfundene Namen, Logos, Sternebewertungen oder Performance-Metriken.
 
 ## Scope
 
-**Geändert wird ausschließlich:**
-- `src/components/brand/SoulCinemaWordmark.tsx` — optische Feinjustierung
-- `src/components/Hero.tsx` — nur Logo-Größe + minimale Header-Abstände (Zeile 223–224)
-- `src/components/Footer.tsx` — Logo-Größe leicht angepasst (Konsistenz)
-- `src/components/CreativePromptSection.tsx` — Wording + visuelle Hierarchie + Sticker + Marquee
+**Neu:**
+- `src/components/TrustSignals.tsx` — komplette Sektion (Headline, 3 Wirkungs-Cards, Trust-Pills, CTA)
 
-**Nicht angefasst:** Navigation, Hero-Video, Musik-System, Portfolio, Contact, Mail, Admin, Analytics, Supabase, Routing, Pricing, Theme, Legal Pages.
+**Geändert:**
+- `src/pages/Landing.tsx` — `<TrustSignals />` zwischen Portfolio und Pricing einbauen, alten `<Testimonials />` Aufruf entfernen
+- `.lovable/plan.md` — Plan-Dokument aktualisieren
 
----
+**Bewusst NICHT geändert:** `src/components/Testimonials.tsx` selbst (bleibt im Repo, nur nicht mehr eingebunden — verhindert Datenverlust für später, falls echte Testimonials in der DB stehen). Keine DB-Tabelle angefasst. Keine Edge Function, kein Routing, keine Navigation, kein Hero, kein Pricing, kein Contact, kein Admin, kein Musik-System, kein Storage.
 
-## 1. Logo / Wordmark präsenter machen
+## 1. Position in Landing.tsx
 
-### `SoulCinemaWordmark.tsx` (Feintuning, keine Neuerfindung)
-- "Soul" italic serif bleibt, Gewicht 600 → **700** für mehr Präsenz
-- "CINEMA" letter-spacing leicht offener (0.22em → **0.26em**) und vertikal sauber auf gleiche Baseline mit "Soul" ausgerichtet
-- Play-Dreieck etwas größer (16×20 → **20×24**), Ice-Blue-Spark von r=2 → **r=2.5**, Position leicht nachjustiert
-- viewBox bleibt `0 0 360 64`, Aspect Ratio unverändert → keine Layout-Shifts an Einbau-Stellen
-- Bleibt `currentColor`-basiert → Light/Dark + über Hero-Video weiterhin gut
+Reihenfolge bleibt: Hero → CreativePrompt → Services → Portfolio → **TrustSignals (neu)** → Process → Awards → Pricing → FAQ → Contact.
 
-### `Hero.tsx` (eine Zeile)
-Aktuell: `<SoulCinemaWordmark size={26} className="md:h-7 h-6 w-auto" />`
-Neu: `<SoulCinemaWordmark size={32} className="md:!h-[38px] h-[30px] w-auto" />`
-→ Desktop ~38px, Mobile ~30px. Header-Padding (`py-4`) bleibt — Nav-Layout unverändert.
+`<Testimonials />` wird aus dem Render-Tree entfernt (Komponente bleibt als Datei erhalten, damit später wieder aktivierbar — kein Code-Verlust).
 
-### `Footer.tsx`
-Footer-Logo: `size={24}` → `size={28}` (Konsistenz mit präsenter Marke, bleibt aber kleiner als Header).
+## 2. Inhalte (1:1 aus Brief)
 
-**Was bewusst NICHT passiert:** kein Logo-Ersatz, kein Bild-Import, keine Nav-Item-Änderung, kein Spacing-Umbau, kein neues SVG-Konzept.
+**Eyebrow:** `Wirkung` · **Headline:** `Was starke Creatives auslösen.` · **Subline:** `Soul Cinema verbindet Produktfokus, klare Hooks und moderne Formate für Website, Shop und Social Ads.`
 
----
+**Card 1 — D2C Brand**
+- Headline: „Vom Produktbild zur Kampagnen-Idee."
+- Text: „Aus vorhandenem Material entsteht ein Creative, das nicht nur schön aussieht, sondern direkt als Social Ad, Shop-Video oder Launch-Clip gedacht ist."
+- Highlight-Pill: „Hook-Varianten statt nur ein einzelner Clip"
+- Micro-Quote: „Endlich sieht das Produkt so aus, wie es sich anfühlen soll." (kursiv, **ohne** Name/Rolle/Stern)
+- Avatar: SVG-Gradient-Kreis (Coral→Pink) mit Spark-Icon
 
-## 2. CreativePromptSection — Wording & Inhalte
+**Card 2 — App / SaaS**
+- Headline: „Komplexe Produkte werden schnell verständlich."
+- Text: „Funktionen, Vorteile und Use Cases werden so reduziert, dass Nutzer in wenigen Sekunden verstehen, warum das Produkt relevant ist."
+- Highlight-Pill: „Ideal für Landingpage, Demo und Paid Ads"
+- Micro-Quote: „Man versteht die App, bevor man überhaupt scrollt."
+- Avatar: SVG-Gradient-Kreis (Ice Blue→Lavender) mit UI-Frame-Icon
 
-### Neue Texte (1:1 übernommen aus Brief)
-- **Eyebrow:** `Creative Brief`
-- **Headline:** `Aus Produkt wird Performance-Creative.` — Wort `Performance-Creative` mit `text-gradient-brand italic`
-- **Subline:** `Du gibst uns Produktlink, Bilder oder vorhandenes Material. Wir entwickeln daraus Hooks, Formate und Video-Ads, die in Feeds auffallen.`
-- **Prompt-Zeile:** `Mach aus meinem Produkt ein Ad, das hängen bleibt.`
-- **Input:** Produkt / Ziel / Plattform / Look / Material (5 Zeilen, neue Werte aus Brief)
-- **Output:** Hook 01–03 + Hero Clip + Cutdowns (5 Zeilen, neues Wording)
-- **Status:** `Ready for launch` (statt `Ready to launch`)
-- **Hinweistext unter CTA:** `Kein Template. Kein Standard-Ad. Jedes Video startet mit einer klaren Creative-Idee.`
-- **CTA:** `Projekt briefen` (bleibt)
+**Card 3 — E-Commerce**
+- Headline: „Mehr Energie für Shop, Reels und Ads."
+- Text: „Produktvideos bekommen den richtigen Rhythmus für moderne Feeds: schnell genug für TikTok und Reels, hochwertig genug für Website und Brand-Auftritt."
+- Highlight-Pill: „9:16, 1:1 und 16:9 Cutdowns"
+- Micro-Quote: „Das wirkt wie Content — nicht wie klassische Werbung."
+- Avatar: SVG-Gradient-Kreis (Tangerine→Pink) mit Play-Icon
 
-`Scroll-Stopper` wird als Sticker/Tag prominent platziert (nicht mehr als Headline-Word).
+## 3. Trust-Pills (unter den Cards)
 
-### Sticker-Set (neu kuratiert, 4 Tags statt 4 generische)
-- `Scroll-Stopper` — Soft Coral
-- `Hook First` — Soft Pink
-- `Shop Ready` — Soft Blue
-- `Launch Clip` — Soft Lavender
+`Klare Hooks` · `Social-Ready Formate` · `Produktfokus` · `Schneller Briefing-Prozess`
 
-### Marquee (neues Wording + Reihenfolge)
-`Product Videos · Social Ads · Hook Variants · UGC Style · Launch Clips · Shop Creatives · App Videos · Cinematic Cuts · 9:16 Cutdowns`
+Kleine Pills mit dezenten Soft-Coral/Pink/Blue/Lavender-Hintergründen (`bg-[hsl(var(--soft-coral)/0.15)]` etc.), `border border-white/10`, `text-xs`, abgerundet. Keine Zahlen, keine Logos.
 
----
+## 4. CTA-Block am Ende der Sektion
 
-## 3. CreativePromptSection — Visuelles Layout
+- Headline: „Bereit für dein erstes Creative?"
+- Subline: „Schick uns Produktlink, Bilder oder App — wir denken daraus dein erstes Video-Konzept."
+- Primary Button `lg`: `Projekt briefen` → Smooth-Scroll zu `#contact`
+- Secondary Link (ghost/outline): `Portfolio ansehen` → Smooth-Scroll zu `#portfolio`
 
-Bestehendes zentriertes Layout bleibt (kein 2-Spalten-Umbau, da Risiko für Layout-Bruch zu groß und Brief lässt beides zu). Card wird größer, hochwertiger, weniger Terminal-schwarz, mehr Creative-Brief.
+## 5. Design
 
-### Konkrete visuelle Änderungen
-- Section bekommt **dezenten Gradient-Hintergrund**: `bg-[radial-gradient(ellipse_at_top,hsl(var(--soft-coral)/0.35),transparent_60%),radial-gradient(ellipse_at_bottom_right,hsl(var(--soft-blue)/0.25),transparent_55%)]` über `bg-background`
-- Headline-Größe leicht hoch: `text-4xl sm:text-5xl md:text-6xl` → `text-5xl sm:text-6xl md:text-7xl`, `tracking-tight`
-- Card `max-w-3xl` → `max-w-4xl`, mehr Padding (`p-6 md:p-10` → `p-8 md:p-12`)
-- Card-Hintergrund: `bg-card` → `bg-card/95 backdrop-blur-sm` mit zusätzlicher dezenter Top-Highlight-Linie (Coral → transparent)
-- Window-Chrome moderner: Filename → `creative-brief.md`, Live-Pill bleibt, Chrome-Dots etwas kleiner und gedeckter
-- Input/Output-Zeilen: Label-Spalte breiter (`w-20 md:w-24` → `w-24 md:w-28`), bessere `gap-y-1.5` zwischen Zeilen
-- Output-Block bekommt linke Akzent-Border (`border-l-2 border-primary/40 pl-4`) für Storyboard-Feeling
-- Status-Badge größer, mit Glow-Shadow (`shadow-[0_0_24px_-6px_hsl(var(--primary)/0.5)]`)
-- CTA-Button: Größe `lg`, beibehaltener Smooth-Scroll zu `#contact`, Analytics-Tracking bleibt
+- Light Mode default, Section-Hintergrund: `bg-background` mit dezentem Radial-Gradient (Soft Coral oben links, Soft Blue unten rechts, je ~0.18 Opacity)
+- Cards: `bg-card`, `border border-white/10`, `rounded-2xl`, `p-7 md:p-8`, dezenter Shadow, Hover: `translate-y-[-2px]` + stärkerer Shadow + Border-Tint
+- Card-Aufbau (von oben): Avatar (56px Gradient-Circle mit Inline-SVG-Icon) · Label-Pill (z. B. „D2C Brand") · Headline (`text-xl font-semibold tracking-tight`) · Text (`text-sm text-muted-foreground leading-relaxed`) · Highlight-Pill mit Häkchen-Icon · trennende `border-t border-white/5` · Micro-Quote kursiv (`text-sm italic text-foreground/80`) ohne Person/Stern/Badge
+- Grid: `grid-cols-1 md:grid-cols-3 gap-5`, max-w-7xl zentriert
+- Mobile: Cards untereinander, `p-6`, ausreichend Touch-Spacing, keine horizontale Scrollbar
+- Dark Mode: über semantische Tokens automatisch korrekt (kein hartcodiertes Weiß/Schwarz)
+- Animation: `FadeUp` (bestehende Komponente) mit Stagger 0.05s, `prefers-reduced-motion` respektiert
 
-### Mobile
-- Card-Padding mobil `p-6` (nicht enger)
-- Sticker bleiben in-flow unter Card (`md:hidden` + Desktop `absolute`)
-- Headline auf Mobile `text-4xl` (nicht zu groß)
-- `break-words` + `whitespace-normal` auf KV-Zeilen → keine horizontale Scrollbar
-- Marquee unverändert mobil-tauglich
+## 6. Avatare / Icons
 
-### Animationen
-- Stagger-Delay 0.04s → **0.05s** (minimal ruhiger)
-- Float-Y-Amplitude 6px → **4px** (weniger nervös)
-- Marquee-Duration 40s → **55s** (ruhiger)
-- `prefers-reduced-motion` bleibt respektiert
+Reine Inline-SVG, keine externen URLs, keine Fotos, keine KI-Gesichter, keine Initialen:
+- 56×56 Circle mit `linearGradient` (Tokens: `--soft-coral` / `--soft-pink` / `--soft-blue` / `--soft-lavender` / `--soft-tangerine` falls vorhanden, sonst Fallback Coral/Pink)
+- Zentriertes weißes Icon (Spark / Frame / Play) als Inline-SVG-Path
+- Keine `lucide-react`-Avatare nötig — eigene Mini-Komponente `<GradientAvatar variant="..." />`
 
----
+## 7. Analytics
 
-## Technische Details
+CTA-Klicks lösen das bestehende `track({ event_name: 'cta_click', location: 'trust_section', ... })` aus (gleiches Schema wie CreativePromptSection). Keine neuen Events, keine Cookies, keine PII.
 
-- Keine neuen Dependencies
-- Keine neuen DB-Felder, keine Settings-Keys
-- Keine Änderung an `index.css` Tokens — alle Farben über bestehende Semantic Tokens (`--primary`, `--secondary`, `--color-accent-blue`, `--soft-coral`, `--soft-pink`, `--soft-blue`, `--soft-lavender`)
-- Bestehende Imports + Analytics-Call (`track({ event_name: 'cta_click', ... })`) bleiben
-- `framer-motion` bereits im Projekt
-- TypeScript: Line-Type bleibt identisch, nur Inhalte ändern sich
+## 8. Bestehende Testimonials
+
+`src/components/Testimonials.tsx` lädt aus `testimonials`-Tabelle und rendert nur, wenn Einträge `visible=true` existieren. **Aktuell kein Fake-Inhalt im Code**, aber um die TrustSignals-Sektion als alleinigen Social-Proof-Block zu etablieren, wird der Aufruf aus `Landing.tsx` entfernt. Datei + Tabelle bleiben unangetastet — kein Datenverlust, später reaktivierbar.
 
 ## Verification
 
-- `npm run build` (vom Harness) — TS + Imports
-- Manuelle Sichtprüfung Light/Dark × Desktop/Mobile:
-  - Header: Logo wirkt präsenter, überlappt nicht mit Nav/CTA
-  - CreativePromptSection: Headline neu, keine horizontale Scrollbar mobil, CTA scrollt zu `#contact`
-  - Hero-Video läuft, Musik-Toggle, Portfolio-Playback, Kontaktformular unverändert
-- Visual-Regression-Snapshots: Hero ändert sich minimal (Logo größer) → Baseline bei nächstem Workflow-Run neu generieren
+- `npm run build` (TS + Imports)
+- Manuell Light/Dark × Desktop/Mobile: Sektion sichtbar zwischen Portfolio und Pricing, keine horizontale Scrollbar, Cards hover-fähig, beide CTAs scrollen korrekt
+- Keine sichtbaren „Demo"/„fiktiv"-Badges, keine Sterne, keine Namen, keine Logos, keine Zahlen
+- Hero-Video, Musik, Portfolio-Playback, Contact-Form, Admin, Mailversand unverändert
 
 ## Bewusst NICHT enthalten
 
-Navigation-Struktur, Nav-Labels, Mobile-Menu, Hero-Video, Hero-Headline-Logik, Musik, Portfolio, Contact-Form, Mailversand, Admin, Analytics-Events, Supabase, Storage, Edge Functions, Pricing, Legal, Routing, Sitemap, Theme-Tokens, neues Logo-Konzept, 2-Spalten-Hero-Umbau, PopKorn-Übernahmen.
+Contact, Mail, SMTP, Portfolio-Upload, Storage, Musik, Admin, CRM, DB-Tabellen, Edge Functions, Legal, Pricing, Hero-Video, Routing, Sitemap, Robots, Navigation, ThemeProvider, neue Tracking-Systeme, externe Bilder, Stockfotos, KI-Gesichter, Sterne-Ratings, Verified-Badges, Fake-Logos, Fake-Metriken.

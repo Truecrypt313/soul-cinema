@@ -3,10 +3,10 @@ import { Hero } from '@/components/Hero'
 import { CreativePromptSection } from '@/components/CreativePromptSection'
 import { Services } from '@/components/Services'
 import { Portfolio } from '@/components/Portfolio'
+import { TrustSignals } from '@/components/TrustSignals'
 import { About } from '@/components/About'
 import { Awards } from '@/components/Awards'
 import { Pricing } from '@/components/Pricing'
-import { Testimonials } from '@/components/Testimonials'
 import { FAQ } from '@/components/FAQ'
 import { Contact } from '@/components/Contact'
 import { Footer } from '@/components/Footer'
@@ -94,10 +94,10 @@ export default function Landing() {
         <CreativePromptSection />
         <section id="services" aria-label="Leistungen"><Services /></section>
         <section id="portfolio" aria-label="Portfolio"><Portfolio /></section>
+        <section id="trust" aria-label="Wirkung"><TrustSignals /></section>
         <section id="process" aria-label="Prozess"><About /></section>
         <section id="why" aria-label="Warum Soul Cinema"><Awards /></section>
         <section id="pricing" aria-label="Preise"><Pricing /></section>
-        <Testimonials />
         <section id="faq" aria-label="FAQ"><FAQ /></section>
         <section id="contact" aria-label="Kontakt"><Contact /></section>
       </main>
