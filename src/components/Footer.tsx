@@ -2,6 +2,7 @@
 import { Link } from 'react-router-dom'
 import { Mail } from 'lucide-react'
 import { useSettings, setting } from '@/hooks/useCms'
+import { SoulCinemaWordmark } from '@/components/brand/SoulCinemaWordmark'
 
 export function Footer() {
   const s = useSettings()
