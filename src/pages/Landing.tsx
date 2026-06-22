@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { Hero } from '@/components/Hero'
+import { CreativePromptSection } from '@/components/CreativePromptSection'
 import { Services } from '@/components/Services'
 import { Portfolio } from '@/components/Portfolio'
 import { About } from '@/components/About'
