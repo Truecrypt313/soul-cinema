@@ -219,9 +219,10 @@ export function Hero() {
         <div
           className={`w-full px-5 sm:px-8 lg:px-12 py-3 sm:py-3.5 transition-all duration-300 ${
             solidNav
-              ? 'bg-background/95 dark:bg-[#0A0A0A]/85 backdrop-blur-xl border-b border-border dark:border-white/5 shadow-[0_8px_24px_-18px_rgba(0,0,0,0.25)]'
+              ? 'bg-background dark:bg-[#0A0A0A] backdrop-blur-xl border-b border-border dark:border-white/5 shadow-[0_8px_24px_-18px_rgba(0,0,0,0.25)]'
               : 'bg-transparent border-b border-transparent'
           }`}
+
 
         >
           <div className="flex items-center justify-between gap-4">
