@@ -138,9 +138,9 @@ export function TrustSignals() {
                   <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3">{c.text}</p>
                 </div>
                 <div className="mt-auto">
-                  <div className="inline-flex items-start gap-2 rounded-lg bg-muted/60 px-3 py-2 text-xs font-medium text-foreground/90">
+                  <div className="flex items-start gap-2 rounded-lg bg-muted/60 px-3 py-2 text-xs font-medium text-foreground/90 min-h-[3rem]">
                     <Check className="h-3.5 w-3.5 mt-0.5 text-primary shrink-0" />
-                    <span>{c.highlight}</span>
+                    <span className="line-clamp-2">{c.highlight}</span>
                   </div>
                   <div className="mt-5 pt-5 border-t border-white/5">
                     <p className="text-sm italic text-foreground/75 leading-relaxed">„{c.quote}"</p>
