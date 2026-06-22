@@ -221,7 +221,7 @@ export function Hero() {
         }`}>
           <div className="flex items-center justify-between">
             <a href="#hero" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="text-[#F4F0E8] cursor-pointer inline-flex items-center" aria-label="Soul Cinema — Startseite">
-              <SoulCinemaWordmark size={26} className="md:h-7 h-6 w-auto" />
+              <SoulCinemaWordmark size={32} className="md:!h-[38px] h-[30px] w-auto" />
             </a>
 
             <div className="hidden lg:flex items-center gap-7">
