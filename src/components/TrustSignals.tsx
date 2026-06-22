@@ -135,7 +135,7 @@ export function TrustSignals() {
                   <h3 className="text-xl font-semibold tracking-tight text-foreground leading-snug mb-3">
                     {c.headline}
                   </h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed mb-5">{c.text}</p>
+                  <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3">{c.text}</p>
                 </div>
                 <div className="mt-auto">
                   <div className="inline-flex items-start gap-2 rounded-lg bg-muted/60 px-3 py-2 text-xs font-medium text-foreground/90">
