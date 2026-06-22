@@ -2,6 +2,7 @@
 import { Link } from 'react-router-dom'
 import { Mail } from 'lucide-react'
 import { useSettings, setting } from '@/hooks/useCms'
+import { SoulCinemaWordmark } from '@/components/brand/SoulCinemaWordmark'
 
 export function Footer() {
   const s = useSettings()
@@ -12,7 +13,7 @@ export function Footer() {
       <div className="container mx-auto px-6 sm:px-8 lg:px-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mb-12">
           <div>
-            <div className="font-brand text-foreground text-2xl tracking-wide mb-4">Soul Cinema</div>
+            <div className="text-foreground mb-4"><SoulCinemaWordmark size={24} /></div>
             <p className="text-[#A8A29E] leading-relaxed text-sm max-w-sm">{text}</p>
           </div>
           <div>

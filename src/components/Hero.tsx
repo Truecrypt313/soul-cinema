@@ -7,6 +7,7 @@ import { useState, useRef, useEffect, useMemo } from 'react'
 import { useSettings, setting } from '@/hooks/useCms'
 import { track } from '@/lib/analytics'
 import { parseBool, parseVolume, resolveAudioUrl } from '@/lib/audioMedia'
+import { SoulCinemaWordmark } from '@/components/brand/SoulCinemaWordmark'
 
 const NAV = [
   { href: '#services', label: 'Leistungen' },
@@ -219,8 +220,8 @@ export function Hero() {
           isScrolled ? 'bg-[#0A0A0A]/85 backdrop-blur-xl border-b border-white/5' : 'bg-transparent'
         }`}>
           <div className="flex items-center justify-between">
-            <a href="#hero" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="font-brand text-[#F4F0E8] text-2xl tracking-wide cursor-pointer">
-              Soul Cinema
+            <a href="#hero" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="text-[#F4F0E8] cursor-pointer inline-flex items-center" aria-label="Soul Cinema — Startseite">
+              <SoulCinemaWordmark size={26} className="md:h-7 h-6 w-auto" />
             </a>
 
             <div className="hidden lg:flex items-center gap-7">

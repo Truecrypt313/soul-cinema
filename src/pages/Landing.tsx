@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { Hero } from '@/components/Hero'
+import { CreativePromptSection } from '@/components/CreativePromptSection'
 import { Services } from '@/components/Services'
 import { Portfolio } from '@/components/Portfolio'
 import { About } from '@/components/About'
@@ -90,6 +91,7 @@ export default function Landing() {
       />
       <main className="relative" role="main">
         <section id="hero" aria-label="Hero"><Hero /></section>
+        <CreativePromptSection />
         <section id="services" aria-label="Leistungen"><Services /></section>
         <section id="portfolio" aria-label="Portfolio"><Portfolio /></section>
         <section id="process" aria-label="Prozess"><About /></section>
