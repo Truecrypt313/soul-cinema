@@ -47,28 +47,28 @@ const CARDS: Card[] = [
     label: 'D2C Brand',
     variant: 'coral',
     icon: <Sparkles className="h-6 w-6" strokeWidth={2.25} />,
-    headline: 'Vom Produktbild zur Kampagnen-Idee.',
-    text: 'Aus vorhandenem Material entsteht ein Creative, das nicht nur schön aussieht, sondern direkt als Social Ad, Shop-Video oder Launch-Clip gedacht ist.',
-    highlight: 'Hook-Varianten statt nur ein einzelner Clip',
+    headline: 'Vom Produktbild zum Launch-Clip.',
+    text: 'Aus deinem Material wird ein Ad, der aussieht und verkauft – für Social, Shop und Paid Campaigns.',
+    highlight: 'Hook-Varianten statt nur ein Clip',
     quote: 'Endlich sieht das Produkt so aus, wie es sich anfühlen soll.',
   },
   {
     label: 'App / SaaS',
     variant: 'blue',
     icon: <LayoutGrid className="h-6 w-6" strokeWidth={2.25} />,
-    headline: 'Komplexe Produkte werden schnell verständlich.',
-    text: 'Funktionen, Vorteile und Use Cases werden so reduziert, dass Nutzer in wenigen Sekunden verstehen, warum das Produkt relevant ist.',
-    highlight: 'Ideal für Landingpage, Demo und Paid Ads',
+    headline: 'Komplexe Produkte. Klare Message.',
+    text: 'Features und Benefits werden so reduziert, dass Nutzer in Sekunden verstehen, warum dein Produkt zählt.',
+    highlight: 'Für Demo, Landingpage und Paid Ads',
     quote: 'Man versteht die App, bevor man überhaupt scrollt.',
   },
   {
     label: 'E-Commerce',
     variant: 'tangerine',
     icon: <Play className="h-6 w-6 fill-current" strokeWidth={2.25} />,
-    headline: 'Mehr Energie für Shop, Reels und Ads.',
-    text: 'Produktvideos bekommen den richtigen Rhythmus für moderne Feeds: schnell genug für TikTok und Reels, hochwertig genug für Website und Brand-Auftritt.',
+    headline: 'Content, der verkauft.',
+    text: 'Ein Produktvideo für alle Feeds: schnell genug für TikTok, hochwertig genug für Shop und Brand.',
     highlight: '9:16, 1:1 und 16:9 Cutdowns',
-    quote: 'Das wirkt wie Content — nicht wie klassische Werbung.',
+    quote: 'Das wirkt wie Content – nicht wie klassische Werbung.',
   },
 ]
 
@@ -135,7 +135,7 @@ export function TrustSignals() {
                   <h3 className="text-xl font-semibold tracking-tight text-foreground leading-snug mb-3">
                     {c.headline}
                   </h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed mb-5">{c.text}</p>
+                  <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3">{c.text}</p>
                 </div>
                 <div className="mt-auto">
                   <div className="inline-flex items-start gap-2 rounded-lg bg-muted/60 px-3 py-2 text-xs font-medium text-foreground/90">
