@@ -121,9 +121,9 @@ export function TrustSignals() {
           </p>
         </FadeUp>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-7xl">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-7xl items-stretch">
           {CARDS.map((c, i) => (
-            <FadeUp key={c.label} delay={i * 0.05}>
+            <FadeUp key={c.label} delay={i * 0.05} className="h-full">
               <article className="group h-full bg-card border border-white/10 rounded-2xl p-6 md:p-7 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:border-white/20 flex flex-col">
                 <div className="flex items-center gap-4 mb-5">
                   <GradientAvatar variant={c.variant}>{c.icon}</GradientAvatar>
@@ -131,10 +131,12 @@ export function TrustSignals() {
                     {c.label}
                   </span>
                 </div>
-                <h3 className="text-xl font-semibold tracking-tight text-foreground leading-snug mb-3">
-                  {c.headline}
-                </h3>
-                <p className="text-sm text-muted-foreground leading-relaxed mb-5">{c.text}</p>
+                <div className="flex-1">
+                  <h3 className="text-xl font-semibold tracking-tight text-foreground leading-snug mb-3">
+                    {c.headline}
+                  </h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed mb-5">{c.text}</p>
+                </div>
                 <div className="mt-auto">
                   <div className="inline-flex items-start gap-2 rounded-lg bg-muted/60 px-3 py-2 text-xs font-medium text-foreground/90">
                     <Check className="h-3.5 w-3.5 mt-0.5 text-primary shrink-0" />
