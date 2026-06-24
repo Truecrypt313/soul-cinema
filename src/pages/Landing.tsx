@@ -94,12 +94,15 @@ export default function Landing() {
       />
       <main className="relative" role="main">
         <section id="hero" aria-label="Hero"><Hero /></section>
+        <MiniHeroVideo />
         <CreativePromptSection />
         <section id="services" aria-label="Leistungen"><Services /></section>
         <section id="portfolio" aria-label="Portfolio"><Portfolio /></section>
+        <ScrollFeatures />
         <section id="trust" aria-label="Wirkung"><TrustSignals /></section>
         <section id="process" aria-label="Prozess"><About /></section>
         <section id="why" aria-label="Warum Soul Cinema"><Awards /></section>
+        <CreatorCarousel />
         <section id="pricing" aria-label="Preise"><Pricing /></section>
         <section id="faq" aria-label="FAQ"><FAQ /></section>
         <section id="contact" aria-label="Kontakt"><Contact /></section>
