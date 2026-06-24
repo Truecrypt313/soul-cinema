@@ -95,7 +95,7 @@ export function CreativePromptSection() {
         {/* Card */}
         <div ref={ref} className="relative max-w-4xl mx-auto">
 
-          <div className="relative rounded-2xl border border-border bg-card/95 backdrop-blur-sm shadow-[0_30px_80px_-30px_rgba(20,17,13,0.22)] overflow-hidden">
+          <div className="relative rounded-2xl border border-border bg-card/95 backdrop-blur-sm shadow-[0_18px_50px_-30px_rgba(20,17,13,0.18)] overflow-hidden">
             {/* Top highlight line */}
             <div
               aria-hidden
