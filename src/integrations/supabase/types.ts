@@ -245,6 +245,36 @@ export type Database = {
         }
         Relationships: []
       }
+      creative_styles: {
+        Row: {
+          created_at: string
+          id: string
+          image_url: string | null
+          label: string
+          sort_order: number
+          updated_at: string
+          visible: boolean
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          label: string
+          sort_order?: number
+          updated_at?: string
+          visible?: boolean
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          label?: string
+          sort_order?: number
+          updated_at?: string
+          visible?: boolean
+        }
+        Relationships: []
+      }
       faq_items: {
         Row: {
           answer: string

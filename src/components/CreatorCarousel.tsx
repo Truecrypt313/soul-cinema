@@ -1,6 +1,9 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { track } from '@/lib/analytics'
+import { useCmsList } from '@/hooks/useCms'
+import { resolveMany } from '@/lib/portfolioMedia'
 import tile1 from '@/assets/team-member-1.png'
 import tile2 from '@/assets/team-member-2.png'
 import tile3 from '@/assets/team-member-3.png'
@@ -9,27 +12,44 @@ import tile5 from '@/assets/team-member-5.png'
 import tile6 from '@/assets/team-member-6.png'
 import tile7 from '@/assets/team-member-7.png'
 
-type Tile = { src: string; label: string }
+type DbRow = { id: string; label: string; image_url: string | null; sort_order: number; visible: boolean }
+type Tile = { key: string; src: string; label: string }
 
-const TILES: Tile[] = [
-  { src: tile1, label: 'UGC Hook' },
-  { src: tile2, label: 'Cinematic Product' },
-  { src: tile3, label: 'App Demo' },
-  { src: tile4, label: 'E-Commerce Reel' },
-  { src: tile5, label: 'Launch Teaser' },
-  { src: tile6, label: 'Founder Ad' },
-  { src: tile7, label: 'Before / After' },
+const FALLBACK_TILES: Tile[] = [
+  { key: 'f1', src: tile1, label: 'UGC Hook' },
+  { key: 'f2', src: tile2, label: 'Cinematic Product' },
+  { key: 'f3', src: tile3, label: 'App Demo' },
+  { key: 'f4', src: tile4, label: 'E-Commerce Reel' },
+  { key: 'f5', src: tile5, label: 'Launch Teaser' },
+  { key: 'f6', src: tile6, label: 'Founder Ad' },
+  { key: 'f7', src: tile7, label: 'Before / After' },
 ]
 
 export function CreatorCarousel() {
+  const rows = useCmsList<DbRow>('creative_styles', [])
+  const [resolved, setResolved] = useState<Record<string, string | null>>({})
+
+  useEffect(() => {
+    let active = true
+    if (!rows.length) return
+    resolveMany(rows.map(r => r.image_url)).then(map => { if (active) setResolved(map) })
+    return () => { active = false }
+  }, [rows])
+
+  const tiles: Tile[] = rows.length
+    ? rows.map((r, i) => ({
+        key: r.id,
+        label: r.label,
+        src: (r.image_url && resolved[r.image_url]) || FALLBACK_TILES[i % FALLBACK_TILES.length].src,
+      }))
+    : FALLBACK_TILES
+
   const goContact = () => {
     track({ event_name: 'cta_click', cta_id: 'creator_carousel_contact', section_key: 'creative_styles' })
     document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
   }
 
-  // Order so middle is largest: [outer, neighbor, mid, NEIGHBOR, MID, NEIGHBOR, mid, neighbor, outer]
-  // We'll just pick a center index and compute sizes relative to it.
-  const centerIdx = Math.floor(TILES.length / 2)
+  const centerIdx = Math.floor(tiles.length / 2)
 
   const sizeFor = (i: number) => {
     const d = Math.abs(i - centerIdx)
@@ -38,6 +58,8 @@ export function CreatorCarousel() {
     if (d === 2) return 'w-14 h-14 sm:w-16 sm:h-16 opacity-80'
     return 'w-12 h-12 sm:w-14 sm:h-14 opacity-60'
   }
+
+  if (tiles.length === 0) return null
 
   return (
     <section
@@ -60,8 +82,8 @@ export function CreatorCarousel() {
 
       {/* Desktop tile strip */}
       <div className="hidden sm:flex items-end justify-center gap-4 mb-10">
-        {TILES.map((t, i) => (
-          <div key={t.label} className="flex flex-col items-center gap-2 group">
+        {tiles.map((t, i) => (
+          <div key={t.key} className="flex flex-col items-center gap-2 group">
             <div
               className={`relative ${sizeFor(i)} rounded-2xl overflow-hidden border border-border transition-all duration-200 hover:scale-110 hover:opacity-100`}
             >
@@ -77,8 +99,8 @@ export function CreatorCarousel() {
       {/* Mobile scrollable strip */}
       <div className="sm:hidden -mx-4 px-4 overflow-x-auto snap-x snap-mandatory">
         <div className="flex items-end gap-3 pb-4">
-          {TILES.map((t) => (
-            <div key={t.label} className="snap-center shrink-0 flex flex-col items-center gap-2">
+          {tiles.map((t) => (
+            <div key={t.key} className="snap-center shrink-0 flex flex-col items-center gap-2">
               <div className="w-20 h-20 rounded-2xl overflow-hidden border border-border">
                 <img src={t.src} alt="" className="w-full h-full object-cover" loading="lazy" />
               </div>
