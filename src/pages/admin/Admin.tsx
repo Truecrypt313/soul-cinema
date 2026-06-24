@@ -20,6 +20,7 @@ import AdminFAQ from './AdminFAQ'
 import AdminTestimonials from './AdminTestimonials'
 import AdminSettings from './AdminSettings'
 import AdminAnalytics from './AdminAnalytics'
+import AdminCreativeStyles from './AdminCreativeStyles'
 
 type AuthState = 'loading' | 'guest' | 'authenticated'
 
