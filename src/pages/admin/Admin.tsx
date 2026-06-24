@@ -180,6 +180,7 @@ export default function Admin() {
             <Route path="preise" element={<AdminPricing />} />
             <Route path="faq" element={<AdminFAQ />} />
             <Route path="testimonials" element={<AdminTestimonials />} />
+            <Route path="creative-styles" element={<AdminCreativeStyles />} />
             <Route path="einstellungen" element={<AdminSettings />} />
             {/* Legacy redirects */}
             <Route path="leads" element={<Navigate to="/admin/anfragen" replace />} />
