@@ -223,28 +223,15 @@ export function CreativePromptSection() {
                 </Button>
               </motion.div>
             </div>
-          </div>
-
-          {/* Mobile stickers (in-flow) */}
-          <div className="md:hidden mt-6 flex flex-wrap justify-center gap-2">
-            {STICKERS.map(s => (
-              <span
-                key={s.label}
-                className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ring-1 ring-border ${s.cls} ${s.rot}`}
-              >
-                {s.label}
-              </span>
-            ))}
-          </div>
         </div>
 
-        {/* Marquee */}
-        <div className="mt-16 md:mt-24 relative overflow-hidden border-y border-border py-5">
-          <div className="marquee-track flex gap-10 whitespace-nowrap text-sm md:text-base font-medium text-muted-foreground">
+        {/* Marquee — dezenter */}
+        <div className="mt-16 md:mt-24 relative overflow-hidden border-y border-border/60 py-3 opacity-60">
+          <div className="marquee-track flex gap-10 whitespace-nowrap text-xs font-medium text-muted-foreground">
             {[...MARQUEE_ITEMS, ...MARQUEE_ITEMS, ...MARQUEE_ITEMS].map((item, i) => (
               <span key={i} className="inline-flex items-center gap-10">
                 {item}
-                <span className="text-primary" aria-hidden>·</span>
+                <span className="text-primary/60" aria-hidden>·</span>
               </span>
             ))}
           </div>
@@ -270,7 +257,7 @@ export function CreativePromptSection() {
           to   { transform: translateX(-33.333%); }
         }
         .marquee-track {
-          animation: marqueeScroll 55s linear infinite;
+          animation: marqueeScroll 90s linear infinite;
           width: max-content;
         }
         @media (prefers-reduced-motion: reduce) {
