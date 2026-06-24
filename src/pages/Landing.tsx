@@ -1,11 +1,14 @@
 import { useEffect } from 'react'
 import { Hero } from '@/components/Hero'
+import { MiniHeroVideo } from '@/components/MiniHeroVideo'
 import { CreativePromptSection } from '@/components/CreativePromptSection'
 import { Services } from '@/components/Services'
 import { Portfolio } from '@/components/Portfolio'
+import { ScrollFeatures } from '@/components/ScrollFeatures'
 import { TrustSignals } from '@/components/TrustSignals'
 import { About } from '@/components/About'
 import { Awards } from '@/components/Awards'
+import { CreatorCarousel } from '@/components/CreatorCarousel'
 import { Pricing } from '@/components/Pricing'
 import { FAQ } from '@/components/FAQ'
 import { Contact } from '@/components/Contact'
@@ -16,10 +19,10 @@ import { useSettings, setting } from '@/hooks/useCms'
 import { trackPageView, observeSectionViews } from '@/lib/analytics'
 
 const FAQS = [
-  { q: 'Was brauche ich für ein Projekt?', a: 'Produktbilder, vorhandenes Material oder ein Produktlink reichen für eine erste Einschätzung. Alles weitere klären wir gemeinsam.' },
-  { q: 'Wie lange dauert ein Video?', a: 'Ein einzelnes Video typischerweise 1–2 Wochen, Kampagnen-Pakete entsprechend länger.' },
+  { q: 'Was brauche ich für ein Projekt?', a: 'Produktbilder, vorhandenes Material oder ein Produktlink reichen für eine erste Einschätzung. Alles Weitere klären wir gemeinsam.' },
+  { q: 'Wie lange dauert ein Video?', a: 'Ein einzelnes Video dauert typischerweise 1–2 Wochen, Kampagnenpakete entsprechend länger.' },
   { q: 'Für welche Plattformen produziert ihr?', a: 'Meta (Instagram, Facebook), TikTok, YouTube Shorts, Shop-Seiten, Landingpages und Brand-Channels.' },
-  { q: 'Macht ihr auch laufenden Content?', a: 'Ja, mit dem Brand-Suite-Paket übernehmen wir die kontinuierliche Produktion neuer Creatives.' },
+  { q: 'Produziert ihr auch regelmäßig Content?', a: 'Ja, mit dem Brand-Suite-Paket übernehmen wir die kontinuierliche Produktion neuer Videos.' },
   { q: 'Was kostet ein Video?', a: 'Einstiegspreise findest du in unseren Paketen. Den finalen Preis nennen wir nach einem kurzen Briefing.' },
 ]
 
