@@ -56,7 +56,7 @@ export function Hero() {
   const posterUrl = setting<string>(s, 'hero_poster_url', '')
   const posterMobile = setting<string>(s, 'hero_poster_mobile_url', '')
   const headline = setting<string>(s, 'hero_headline', 'Dein Produkt. Kinoreif in Szene gesetzt.')
-  const sublineDesktop = setting<string>(s, 'hero_subline', 'Sende uns Produktbilder, vorhandenes Material oder einen Produktlink. Wir entwickeln daraus hochwertige Produktvideos und Social Ads für Shops, Landingpages und Kampagnen.')
+  const sublineDesktop = setting<string>(s, 'hero_subline', 'Schick uns Produktbilder, vorhandenes Material oder einen Produktlink. Wir entwickeln daraus hochwertige Produktvideos und Social Ads für Shops, Landingpages und Kampagnen.')
   const sublineMobile = setting<string>(s, 'hero_subline_mobile', 'Produktbilder, Material oder ein Produktlink reichen. Wir machen daraus Videos und Social Ads für Shop, Landingpage und Kampagnen.')
   const secondary = setting<string>(s, 'hero_secondary_line', 'Für Marken, Shops, digitale Produkte und Unternehmen, die online sichtbar werden wollen.')
   const bullets = setting<string[]>(s, 'hero_bullets', [
@@ -217,15 +217,13 @@ export function Hero() {
         className="fixed top-0 left-0 right-0 z-[110]"
       >
         <div
-          className={`w-full px-5 sm:px-8 lg:px-12 py-3 sm:py-3.5 transition-all duration-300 ${
+          className={`w-full py-3 sm:py-3.5 transition-all duration-300 ${
             solidNav
               ? 'bg-background dark:bg-[#0A0A0A] backdrop-blur-xl border-b border-border dark:border-white/5 shadow-[0_8px_24px_-18px_rgba(0,0,0,0.25)]'
               : 'bg-transparent border-b border-transparent'
           }`}
-
-
         >
-          <div className="flex items-center justify-between gap-4">
+          <div className="max-w-[1400px] ml-0 mr-auto px-5 sm:px-8 lg:px-12 flex items-center justify-between gap-4">
             <a
               href="#hero"
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
@@ -243,7 +241,7 @@ export function Hero() {
 
                 }`}
               >
-                Product Videos & Social Ads
+                Produktvideos · Social Ads
               </span>
             </a>
 
