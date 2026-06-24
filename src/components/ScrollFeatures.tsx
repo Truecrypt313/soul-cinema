@@ -11,6 +11,7 @@ type Feature = {
   title: string
   text: string
   prompt: string
+  tint: string
 }
 
 const FEATURES: Feature[] = [
@@ -19,24 +20,28 @@ const FEATURES: Feature[] = [
     title: 'Aus deinem Produkt wird eine Ad-Idee.',
     text: 'Kein generisches Template. Wir entwickeln Hook, Szene und Format auf dein Produkt zugeschnitten.',
     prompt: 'Input: Produktlink + Zielgruppe + Plattform',
+    tint: 'hue-rotate(0deg) saturate(1)',
   },
   {
     badge: '02 · Hook',
     title: 'Mehrere Hooks, ein Produkt.',
     text: 'Für A/B-Tests und Kampagnen liefern wir verschiedene Hook-Varianten aus einem Briefing.',
     prompt: 'Hook: Problem → Produkt → Ergebnis',
+    tint: 'hue-rotate(-15deg) saturate(1.25) contrast(1.05)',
   },
   {
     badge: '03 · Format',
     title: 'Alle Formate. Eine Produktion.',
     text: '9:16 für TikTok und Reels, 1:1 für Meta, 16:9 für YouTube und Shop — alles in einem Paket.',
     prompt: 'Output: 9:16 · 1:1 · 16:9 · MP4',
+    tint: 'hue-rotate(20deg) saturate(1.15) brightness(1.05)',
   },
   {
     badge: '04 · Lieferung',
     title: 'Direkt bereit für deinen Workflow.',
     text: 'Fertige MP4-Dateien, plattformoptimiert, zur direkten Verwendung in Ads Manager, Shop oder Website.',
     prompt: 'Delivery: Social Ads · Shop · Landingpage',
+    tint: 'hue-rotate(-30deg) saturate(0.9) contrast(1.1)',
   },
 ]
 
@@ -49,20 +54,31 @@ export function ScrollFeatures() {
 
   useEffect(() => {
     if (typeof window === 'undefined') return
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0]
-        if (visible) {
-          const idx = Number((visible.target as HTMLElement).dataset.index)
-          if (!Number.isNaN(idx)) setActiveIndex(idx)
+
+    const compute = () => {
+      const anchor = window.innerHeight * 0.45
+      let bestIdx = 0
+      let bestDist = Infinity
+      refs.current.forEach((el, i) => {
+        if (!el) return
+        const rect = el.getBoundingClientRect()
+        const center = rect.top + rect.height / 2
+        const dist = Math.abs(center - anchor)
+        if (dist < bestDist) {
+          bestDist = dist
+          bestIdx = i
         }
-      },
-      { rootMargin: '-40% 0px -40% 0px', threshold: [0, 0.25, 0.5, 0.75, 1] }
-    )
-    refs.current.forEach((el) => el && observer.observe(el))
-    return () => observer.disconnect()
+      })
+      setActiveIndex((prev) => (prev === bestIdx ? prev : bestIdx))
+    }
+
+    compute()
+    window.addEventListener('scroll', compute, { passive: true })
+    window.addEventListener('resize', compute)
+    return () => {
+      window.removeEventListener('scroll', compute)
+      window.removeEventListener('resize', compute)
+    }
   }, [])
 
   const active = FEATURES[activeIndex]
@@ -117,7 +133,7 @@ export function ScrollFeatures() {
 
                 {/* Mobile inline preview */}
                 <div className="lg:hidden mt-6 aspect-video rounded-2xl overflow-hidden border border-border bg-[#0A0A0A] media-card">
-                  <MediaPreview videoUrl={videoUrl} badge={f.badge} prompt={f.prompt} title={f.title} videoFailed={videoFailed} onError={() => setVideoFailed(true)} />
+                  <MediaPreview videoUrl={videoUrl} badge={f.badge} prompt={f.prompt} title={f.title} tint={f.tint} videoFailed={videoFailed} onError={() => setVideoFailed(true)} />
                 </div>
               </div>
             ))}
@@ -132,6 +148,7 @@ export function ScrollFeatures() {
                   badge={active.badge}
                   prompt={active.prompt}
                   title={active.title}
+                  tint={active.tint}
                   videoFailed={videoFailed}
                   onError={() => setVideoFailed(true)}
                 />
@@ -149,6 +166,7 @@ function MediaPreview({
   badge,
   prompt,
   title,
+  tint,
   videoFailed,
   onError,
 }: {
@@ -156,6 +174,7 @@ function MediaPreview({
   badge: string
   prompt: string
   title: string
+  tint: string
   videoFailed: boolean
   onError: () => void
 }) {
@@ -164,7 +183,8 @@ function MediaPreview({
       {!videoFailed ? (
         <video
           key={videoUrl}
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover transition-[filter] duration-700 ease-out"
+          style={{ filter: tint }}
           autoPlay
           muted
           loop
