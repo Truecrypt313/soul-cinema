@@ -223,7 +223,10 @@ export function CreativePromptSection() {
                 </Button>
               </motion.div>
             </div>
+          </div>
         </div>
+
+
 
         {/* Marquee — dezenter */}
         <div className="mt-16 md:mt-24 relative overflow-hidden border-y border-border/60 py-3 opacity-60">
