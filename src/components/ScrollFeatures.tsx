@@ -148,6 +148,7 @@ export function ScrollFeatures() {
                   badge={active.badge}
                   prompt={active.prompt}
                   title={active.title}
+                  tint={active.tint}
                   videoFailed={videoFailed}
                   onError={() => setVideoFailed(true)}
                 />
@@ -165,6 +166,7 @@ function MediaPreview({
   badge,
   prompt,
   title,
+  tint,
   videoFailed,
   onError,
 }: {
@@ -172,6 +174,7 @@ function MediaPreview({
   badge: string
   prompt: string
   title: string
+  tint: string
   videoFailed: boolean
   onError: () => void
 }) {
@@ -180,7 +183,8 @@ function MediaPreview({
       {!videoFailed ? (
         <video
           key={videoUrl}
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover transition-[filter] duration-700 ease-out"
+          style={{ filter: tint }}
           autoPlay
           muted
           loop
