@@ -1,99 +1,146 @@
 ## Ziel
 
-Bestehende Navbar (lebt aktuell in `src/components/Hero.tsx`, Zeilen 215–278) kontrolliert veredeln — kein Redesign, kein Floating-Pill-Experiment. Klares Plus an Wertigkeit, Kreativität und Kontrast in Light & Dark Mode.
+Soul Cinema gezielt hochwertiger, videolastiger und interaktiver gestalten — inspiriert von kling.ai, aber inhaltlich und visuell sauber im bestehenden Design-System. Kein Redesign der Tokens, keine neuen Libraries, keine zerstörerischen Eingriffe in Admin/Supabase/CMS/Routing.
 
-## Geänderte Datei
+## Geänderte und neue Dateien
 
-- `src/components/Hero.tsx` — nur der `<motion.nav>`-Block (Header + Mobile-Drawer) sowie die `NAV`-Konstante.
-- Optional minimale Feinjustierung an `src/components/brand/SoulCinemaWordmark.tsx` (nur Proportionen/Spark-Sichtbarkeit, kein neues Konzept).
+Neu:
+- `src/components/MiniHeroVideo.tsx`
+- `src/components/ScrollFeatures.tsx`
+- `src/components/CreatorCarousel.tsx`
 
-Alles andere bleibt unangetastet.
+Bearbeitet:
+- `src/components/Hero.tsx` — nur der Nav-Block + Wording
+- `src/components/CreativePromptSection.tsx` — visuell entschärfen
+- `src/pages/Landing.tsx` — Imports + neue Section-Reihenfolge + IDs
+- `src/index.css` — kleine additive Utility-Klassen (keine Token-Änderungen)
 
-## Änderungen im Detail
+Bewusst NICHT angefasst: Hero-Video/Headline-Logik, Services, Portfolio, About, Awards, Pricing, FAQ-Komponente (nur Fallback-Texte in `Landing.tsx`), Contact-Formular, Footer, Admin, Supabase, Analytics, Routing, Tokens.
 
-### 1. Navigation reduzieren
-`NAV` von 7 auf 4 Punkte kürzen:
+## Änderung 1 — Nav linksbündig (Hero.tsx)
 
-```text
-Leistungen   → #services
-Portfolio    → #portfolio
-Prozess      → #process
-Preise       → #pricing
+Im `<motion.nav>`-Block (ca. Zeile 215–304):
+- Outer Wrapper bleibt full-width.
+- Inner Container von `w-full px-5 sm:px-8 lg:px-12` → `max-w-[1400px] ml-0 mr-auto px-5 sm:px-8 lg:px-12`.
+- Logo-Größe, Mobile-Drawer, `solidNav`-Logik, Theme-Toggle, Sound-Button, ThemeToggle bleiben.
+- Wording-Fix: `Product Videos & Social Ads` → `Produktvideos · Social Ads`.
+- Keine Änderung an Tracking / `goContact`.
+
+## Änderung 2 — MiniHeroVideo (neu)
+
+Komponente: Section `id="mini-showcase"`, `bg-background text-foreground py-24 sm:py-32 px-4 overflow-hidden`.
+
+Inhalt zentriert (`max-w-5xl mx-auto`):
+- Pill-Label (Gold-Stil, vorhandene `bg-soft-coral text-primary` / Tracking aus Section-Labels übernehmen): „Aus echten Projekten".
+- H2 (`font-brand text-4xl sm:text-6xl`): „Dein Produkt im _Einsatz_." — „Einsatz" als `italic text-gradient-brand`.
+- Subtext (`text-muted-foreground max-w-xl mx-auto`): „Produktlink oder Bilder rein — fertiges Video raus."
+
+Video-Container (`max-w-3xl mx-auto rounded-2xl overflow-hidden aspect-video border border-border media-card`):
+- `<video autoPlay muted loop playsInline preload="metadata" className="w-full h-full object-cover">`
+- Quelle via `useSettings()` → `setting(s, 'hero_video_url', FALLBACK_VIDEO)` (gleiche Konstante wie Hero, ggf. lokal duplizieren).
+- Fallback: dunkler Gradient-Placeholder mit „Video Preview".
+
+Prompt-Overlay direkt unter Video (`relative z-10 -mt-8 mx-auto inline-flex max-w-[92vw]`):
+- `rounded-full bg-[#1A1A1A] border border-[#C9963B]/40 px-5 py-3 backdrop-blur`
+- Grüner Puls-Dot + `font-mono text-sm text-[#F4F0E8]/85` (Light-Lesbarkeit via expliziter Klasse, da Pill bewusst dunkel bleibt = ok).
+- Text: `→ Produktvideo · Hook-Cut · 9:16 · Meta Ready`.
+
+CTA darunter: Ghost-Button „Jetzt Projekt anfragen →", scrollt zu `#contact`, ruft `track({event_name:'cta_click', cta_id:'mini_showcase'})`.
+
+## Änderung 3 — CreativePromptSection entschärfen
+
+Reduzieren statt umbauen:
+- Floating Sticker-Block (Desktop + Mobile-In-Flow) entfernen.
+- Marquee dezenter: kleinere Schrift `text-xs`, `opacity-60`, Border subtiler (`border-border/60`), langsamere Animation 90s.
+- Top-Background-Radial-Gradient stark abschwächen (`opacity-90` → `opacity-40`).
+- Card-Shadow reduzieren.
+- Restliche Code-Editor-Optik, Inhalte, Tracking, CTA bleiben — das ist jetzt der „Briefing/Workflow"-Moment, MiniHeroVideo ist der emotionale Showcase.
+
+## Änderung 4 — ScrollFeatures (neu)
+
+Section `id="scroll-features"`, eingefügt nach `<Portfolio />` und vor `<TrustSignals />` in `Landing.tsx`.
+
+Layout: `max-w-7xl mx-auto py-32 px-4` + `grid grid-cols-1 lg:grid-cols-2 gap-16`.
+
+Header: Label „Wie wir arbeiten" / H2 „Vom Briefing zum fertigen Creative." / Sub.
+
+Linke Spalte: 4 Feature-Blöcke (Verstehen / Hook / Format / Lieferung — exakte Inhalte wie im Brief). Jedes mit `ref` im `useRef<HTMLDivElement[]>([])`.
+- Aktiv: `opacity-100 border-l-4 border-[#C9963B] pl-6 story-step-active`.
+- Inaktiv: `opacity-30 pl-6 story-step-muted hover:opacity-60`.
+
+Rechte Spalte: `lg:sticky lg:top-32 aspect-video rounded-2xl overflow-hidden border border-border media-card`
+- Ein einziges Video (Hero-Fallback-URL), Overlay-Badge + Prompt-Bar wechseln mit `activeIndex`.
+- Prompt-Bar unten: `prompt-glass` mit `font-mono text-xs sm:text-sm`, Inhalt aus aktivem Feature.
+
+State: `IntersectionObserver` mit `rootMargin: '-40% 0px -40% 0px'` setzt `activeIndex`.
+Reduced motion: keine Transition auf Badge/Prompt-Wechsel.
+Mobile (`<lg`): kein sticky, jedes Feature mit eigener kompakter Preview drunter.
+
+## Änderung 5 — CreatorCarousel (neu)
+
+Section `id="creative-styles"` zwischen `Awards` und `Pricing`.
+- Label „Gemacht für" / H2 „Marken, die _wachsen_ wollen." (italic + brand-gradient) / Sub wie Brief.
+- Tile-Reihe nutzt `team-member-1..7.png` als abstrakte Stil-Tiles (Labels: UGC Hook, Cinematic Product, App Demo, E-Commerce Reel, Launch Teaser, Founder Ad, Before / After) — keine Bezeichnung als Personen/Kunden/Testimonials.
+- Desktop: `flex items-end justify-center gap-4`, Mittelstück `w-24 h-24 ring-2 ring-[#C9963B] ring-offset-2 ring-offset-background`, Nachbarn `w-16 h-16`, Außen `w-12 h-12 opacity-60`. Hover `scale-110 opacity-100`.
+- Mobile: `flex overflow-x-auto snap-x gap-3 px-4` (kein Page-Overflow durch Wrapper `overflow-hidden`).
+- Optional unten: Badge `✦ Dein Projekt hier` → scroll zu `#contact`.
+
+## Änderung 6 — Wording-Fixes (Landing.tsx FAQ-Fallback + Hero)
+
+In `Landing.tsx` `FAQS`:
+- „Alles weitere" → „Alles Weitere".
+- „Ein einzelnes Video typischerweise …" → „Ein einzelnes Video dauert typischerweise 1–2 Wochen, Kampagnenpakete entsprechend länger."
+- „Macht ihr auch laufenden Content?" → „Produziert ihr auch regelmäßig Content?"
+
+In `Hero.tsx` Fallback `hero_subline`: „Sende uns" → „Schick uns". (Nur Fallback-String, CMS-Werte überschreiben weiterhin.)
+
+Allgemeine Wortwahl in neuen Komponenten gemäß Brief (Videokonzept, Kampagnenpakete).
+
+## Änderung 7 — Landing-Reihenfolge
+
+`src/pages/Landing.tsx` `<main>`:
+1. Hero
+2. MiniHeroVideo (`#mini-showcase`)
+3. CreativePromptSection
+4. Services
+5. Portfolio
+6. ScrollFeatures (`#scroll-features`)
+7. TrustSignals
+8. About (`#process`)
+9. Awards (`#why`)
+10. CreatorCarousel (`#creative-styles`)
+11. Pricing
+12. FAQ
+13. Contact
+14. Footer
+
+Bestehende Section-IDs (`#services`, `#portfolio`, `#trust`, `#process`, `#why`, `#pricing`, `#faq`, `#contact`, `#hero`) bleiben unverändert.
+
+## Änderung 8 — index.css Utilities (additiv)
+
+Im `@layer utilities` ergänzen, ohne bestehende Tokens/Mappings zu berühren:
+```
+.stage-section   { @apply bg-background text-foreground; }
+.media-card      { box-shadow: 0 30px 80px -40px rgba(0,0,0,0.35); }
+.prompt-glass    { background: rgba(26,26,26,0.85); backdrop-filter: blur(10px); border: 1px solid color-mix(in srgb, #C9963B 40%, transparent); }
+.soft-nav-shell  { /* placeholder, currently unused but future-proof */ }
+.story-step-active { transition: opacity .3s ease, border-color .3s ease; }
+.story-step-muted  { transition: opacity .3s ease; }
 ```
 
-`Warum`, `FAQ`, `Kontakt` raus aus der Hauptnav (Sections bleiben auf der Seite). Kontakt ist nur noch der CTA rechts.
+## Änderung 9 — A11y / Performance
 
-### 2. Logo präsenter
-- Desktop: `size={40}` (vorher 32 / md:38).
-- Mobile: `h-[32px]`.
-- Klickbar bleibt (Anker `#hero`, smooth scroll).
-- Optional: in der Wordmark Spark-Punkt minimal vergrößern (r 2.5 → 3) und CINEMA-Tracking 0.26em → 0.22em für etwas mehr Gewicht. Nur wenn unauffällig.
+- Alle neuen `<video>`: `muted playsInline loop autoPlay preload="metadata"`, fester `aspect-video` Container → keine Layout-Shifts.
+- `aria-label` an CTAs, `alt=""` an dekorativen Tiles.
+- `prefers-reduced-motion`: ScrollFeatures-Transitionen + Marquee abschalten.
+- Wrapper `overflow-hidden` an Carousel-Section gegen horizontalen Scroll.
 
-### 3. Theme-bewusster Glass-Header
-Aktuell wird im Scroll-Zustand hart `bg-[#0A0A0A]/85` gesetzt — schlecht für Light Mode.
+## Verifikation
 
-Neuer Ansatz, weiterhin sticky/fixed:
+- Build via Harness.
+- Playwright-Screenshots `/` Light + Dark, Desktop 1280×900 und Mobile 390×844, oben + nach Scroll an MiniHeroVideo + ScrollFeatures + CreatorCarousel + Nav (linksbündig).
+- Manuell: Nav-Anker, CTA → `#contact`, kein horizontaler Overflow, Theme-Toggle.
 
-- **Unscrolled (über Hero):** `bg-transparent`, Text in `#F4F0E8` (Hero-Cream), wie heute. Damit über dem Video lesbar.
-- **Scrolled:** theme-aware Glass via Tailwind `dark:`-Varianten:
-  - Light: `bg-background/75 backdrop-blur-xl border-b border-border/60 shadow-[0_8px_24px_-18px_rgba(0,0,0,0.25)]`, Text `text-foreground`.
-  - Dark: `dark:bg-[#0A0A0A]/80 dark:border-white/5`.
-- Übergang via `transition-colors duration-300`.
-- Shadow nur im Scrolled-Zustand.
+## Bewusst nicht im Scope
 
-Damit verschwindet die Navbar weder auf Light- noch Dark-Hintergrund.
-
-### 4. Nav-Links moderner
-- Etwas kompakteres Gap (`gap-6`).
-- Hover-State: kleiner Coral-Dot links + sanfte Color-Transition zu `text-primary`.
-- Focus-Ring sichtbar (`focus-visible:ring-2 focus-visible:ring-primary/40 rounded-full`).
-- Kein neuer Scrollspy.
-
-Markup-Skizze pro Link:
-```tsx
-<a className="group relative inline-flex items-center gap-2 text-sm font-medium
-              text-[color:var(--nav-fg)] hover:text-primary transition-colors">
-  <span className="h-1.5 w-1.5 rounded-full bg-primary opacity-0
-                   group-hover:opacity-100 transition-opacity" />
-  {n.label}
-</a>
-```
-
-`--nav-fg` wird inline gesetzt: im unscrolled-Zustand cream, scrolled = `hsl(var(--foreground))`.
-
-### 5. CTA stärker
-- `rounded-full` statt `rounded-md`.
-- Beibehalt der Coral-Brand-Farbe (`bg-primary text-primary-foreground` statt hardcoded `#C9963B`, damit theme-konsistent).
-- Dezenter Shadow + Hover-Lift (`hover:-translate-y-0.5 hover:shadow-[0_10px_28px_-12px_color-mix(in_srgb,var(--primary)_70%,transparent)]`).
-- Label bleibt `Projekt anfragen`, optional `↗`-Icon (lucide `ArrowUpRight`).
-- Funktion (`goContact`) unverändert — Tracking bleibt.
-
-### 6. Brand-Microline (optional, dezent)
-Neben dem Logo auf Desktop ab `xl:`:
-```text
-Product Videos & Social Ads
-```
-in `text-xs tracking-wide text-foreground/55 dark:text-white/55`, durch `border-l pl-3 ml-3` getrennt. Mobile + `<xl` ausgeblendet. Wird gestrichen, falls es im Build zu voll wirkt.
-
-### 7. Mobile sanft
-- Logo links 32px.
-- Menübutton rechts: `rounded-full` Pill mit Icon + Label „Menü" ab `sm`, nur Icon darunter.
-- Drawer-Struktur bleibt; aber:
-  - Hintergrund theme-aware (`bg-background/95 dark:bg-[#0A0A0A]/95`, `border-l border-border/60`).
-  - Links nutzen `text-foreground` mit hover `bg-primary/10` und `text-primary`.
-  - Mobile-Links: Leistungen, Portfolio, Prozess, Preise, Kontakt.
-  - CTA `Projekt anfragen` prominent (rounded-full, primary).
-- Schließt nach Klick (bereits umgesetzt).
-
-### 8. QA-Checks nach Umsetzung
-- Build via Harness (kein manueller `npm run build`).
-- Playwright-Screenshots `/` in Light & Dark, je oben + nach Scroll, Desktop (1280×900) und Mobile (390×844). Sicherstellen: Logo lesbar, Nav-Links sichtbar, CTA kontrastreich, keine White-on-White-Situation, keine horizontale Scroll-Leiste.
-- Anker-Scroll manuell verifizieren (Leistungen/Portfolio/Prozess/Preise/CTA→Kontakt).
-
-## Bewusst NICHT angefasst
-
-Hero-Video & Headline, CreativePromptSection, Portfolio, Services, About/Prozess, Pricing, FAQ, Contact-Formular & Mailversand, Admin, Supabase, Analytics, Musik-System, Routing, Footer, restliche Farb-Tokens.
-
-## Liefer-Zusammenfassung am Ende
-
-Welche Datei(en) geändert, wie Logo skaliert wurde, welche Nav-Punkte gestrichen, wie CTA/Hover/Glass umgesetzt wurden, Mobile-Anpassungen, was bewusst unangetastet blieb, manuell zu prüfende Stellen.
+Keine neuen Farben/Tokens, keine neuen Libraries, keine echten Kunden-/Testimonial-Daten, keine Übernahme von Kling-Assets, keine Hero-Headline-Logik, keine Admin/Supabase/Edge-Function-Änderungen.

@@ -198,6 +198,18 @@
   .animate-fade-up { animation: fadeUp 0.8s ease-out both; }
 
   .animate-pulse { animation-duration: 6s !important; }
+
+  /* Kling-inspired additive utilities — do not override existing tokens */
+  .stage-section { background-color: var(--background); color: var(--foreground); }
+  .media-card { box-shadow: 0 30px 80px -40px rgba(0, 0, 0, 0.35); }
+  .prompt-glass {
+    background: rgba(26, 26, 26, 0.78);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid color-mix(in srgb, #C9963B 40%, transparent);
+  }
+  .story-step-active { transition: opacity .3s ease, border-color .3s ease; }
+  .story-step-muted { transition: opacity .3s ease; }
 }
 
 /* Scrollbar — token-aware */

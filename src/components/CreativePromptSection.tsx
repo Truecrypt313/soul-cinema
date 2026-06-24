@@ -69,10 +69,10 @@ export function CreativePromptSection() {
       {/* Soft brand gradient backdrop */}
       <div
         aria-hidden
-        className="absolute inset-0 pointer-events-none opacity-90"
+        className="absolute inset-0 pointer-events-none opacity-40"
         style={{
           background:
-            'radial-gradient(ellipse at top, hsl(var(--soft-coral) / 0.35), transparent 60%), radial-gradient(ellipse at bottom right, hsl(var(--soft-blue) / 0.28), transparent 55%)',
+            'radial-gradient(ellipse at top, hsl(var(--soft-coral) / 0.18), transparent 60%), radial-gradient(ellipse at bottom right, hsl(var(--soft-blue) / 0.14), transparent 55%)',
         }}
       />
 
@@ -92,28 +92,10 @@ export function CreativePromptSection() {
           </p>
         </div>
 
-        {/* Card + Stickers */}
+        {/* Card */}
         <div ref={ref} className="relative max-w-4xl mx-auto">
-          {/* Floating stickers — desktop only */}
-          {STICKERS.map((s, i) => (
-            <motion.span
-              key={s.label}
-              aria-hidden
-              className={`hidden md:inline-flex absolute z-20 items-center rounded-full px-3.5 py-1.5 text-xs font-semibold shadow-md ring-1 ring-border ${s.cls} ${s.rot} ${s.pos}`}
-              initial={{ opacity: 0, y: 10 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: 0.4 + i * 0.08, duration: 0.4 }}
-              style={
-                reduce
-                  ? undefined
-                  : { animation: `floatY ${6 + i}s ease-in-out ${i * 0.3}s infinite` }
-              }
-            >
-              {s.label}
-            </motion.span>
-          ))}
 
-          <div className="relative rounded-2xl border border-border bg-card/95 backdrop-blur-sm shadow-[0_30px_80px_-30px_rgba(20,17,13,0.22)] overflow-hidden">
+          <div className="relative rounded-2xl border border-border bg-card/95 backdrop-blur-sm shadow-[0_18px_50px_-30px_rgba(20,17,13,0.18)] overflow-hidden">
             {/* Top highlight line */}
             <div
               aria-hidden
@@ -242,27 +224,17 @@ export function CreativePromptSection() {
               </motion.div>
             </div>
           </div>
-
-          {/* Mobile stickers (in-flow) */}
-          <div className="md:hidden mt-6 flex flex-wrap justify-center gap-2">
-            {STICKERS.map(s => (
-              <span
-                key={s.label}
-                className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ring-1 ring-border ${s.cls} ${s.rot}`}
-              >
-                {s.label}
-              </span>
-            ))}
-          </div>
         </div>
 
-        {/* Marquee */}
-        <div className="mt-16 md:mt-24 relative overflow-hidden border-y border-border py-5">
-          <div className="marquee-track flex gap-10 whitespace-nowrap text-sm md:text-base font-medium text-muted-foreground">
+
+
+        {/* Marquee — dezenter */}
+        <div className="mt-16 md:mt-24 relative overflow-hidden border-y border-border/60 py-3 opacity-60">
+          <div className="marquee-track flex gap-10 whitespace-nowrap text-xs font-medium text-muted-foreground">
             {[...MARQUEE_ITEMS, ...MARQUEE_ITEMS, ...MARQUEE_ITEMS].map((item, i) => (
               <span key={i} className="inline-flex items-center gap-10">
                 {item}
-                <span className="text-primary" aria-hidden>·</span>
+                <span className="text-primary/60" aria-hidden>·</span>
               </span>
             ))}
           </div>
@@ -288,7 +260,7 @@ export function CreativePromptSection() {
           to   { transform: translateX(-33.333%); }
         }
         .marquee-track {
-          animation: marqueeScroll 55s linear infinite;
+          animation: marqueeScroll 90s linear infinite;
           width: max-content;
         }
         @media (prefers-reduced-motion: reduce) {
