@@ -223,7 +223,7 @@ export function Hero() {
               : 'bg-transparent border-b border-transparent'
           }`}
         >
-          <div className="max-w-[1400px] ml-0 mr-auto px-5 sm:px-8 lg:px-12 flex items-center justify-between gap-4">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
             <a
               href="#hero"
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
