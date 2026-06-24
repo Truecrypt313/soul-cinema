@@ -133,7 +133,7 @@ export function ScrollFeatures() {
 
                 {/* Mobile inline preview */}
                 <div className="lg:hidden mt-6 aspect-video rounded-2xl overflow-hidden border border-border bg-[#0A0A0A] media-card">
-                  <MediaPreview videoUrl={videoUrl} badge={f.badge} prompt={f.prompt} title={f.title} videoFailed={videoFailed} onError={() => setVideoFailed(true)} />
+                  <MediaPreview videoUrl={videoUrl} badge={f.badge} prompt={f.prompt} title={f.title} tint={f.tint} videoFailed={videoFailed} onError={() => setVideoFailed(true)} />
                 </div>
               </div>
             ))}
