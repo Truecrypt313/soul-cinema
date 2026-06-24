@@ -44,6 +44,7 @@ const NAV_GROUPS: { label: string; items: { to: string; icon: any; label: string
       { to: '/admin/preise', icon: Tag, label: 'Preise' },
       { to: '/admin/faq', icon: HelpCircle, label: 'FAQ' },
       { to: '/admin/testimonials', icon: Star, label: 'Testimonials' },
+      { to: '/admin/creative-styles', icon: Wand2, label: 'Creative Styles' },
     ],
   },
   {
